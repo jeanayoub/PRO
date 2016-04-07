@@ -13,15 +13,20 @@ package gui;
 
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.*;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -30,19 +35,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-
 import gui.LineChartStat;
+
+import java.util.Locale;
+import extfx.scene.control.*;
 
 /**
  * Class MainWindow represents the application's main window.
  *
  * @author Jean AYOUB
  * @date 06 avril 2016
- * @version 1.2
+ * @version 1.3
  */
 public class MainWindow extends Application{
 	public void start(Stage primaryStage) {
@@ -108,12 +113,51 @@ public class MainWindow extends Application{
 		 */
 		final MenuBar menuBar 	   = new MenuBar();
         final Menu menuStation 	   = new Menu("Station");      
-        final Menu menuOption 	   = new Menu("Option");
-        final Menu menuApropos 	   = new Menu("A propos");
-        final Menu menuDateEtHeure = new Menu("Date et Heure du jour");
-        menuBar.getMenus().addAll(menuStation, menuOption, menuApropos, 
-        													menuDateEtHeure);
+        final Menu menuOptions 	   = new Menu("Option");
+        final Menu menuAbout 	   = new Menu("A propos");
+        final Menu menuCalendar    = new Menu("Calendrier");
+        menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout, 
+        													menuCalendar);
         ((Group) scene.getRoot()).getChildren().addAll(menuBar);
+        
+   
+        /**
+         * The menu item for the menu Calendar and its content which is the 
+         * Calendar view
+         */
+        final MenuItem     miCalendarShow = new MenuItem("Show");
+        final CalendarView cv             = new CalendarView(Locale.FRENCH);
+        menuCalendar.getItems().addAll(miCalendarShow);
+        
+        
+        /**
+         * The dialog box to be shown once pressed on the Show menu item.
+         */
+        final Dialog dialog = new Dialog();
+        dialog.setGraphic(cv);
+        dialog.getDialogPane().setPrefSize(250, 250);
+    
+        
+        /**
+         * Shows the dialog box
+         */
+        miCalendarShow.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	
+           
+            	/**
+            	 * Just to make the close button close the dialog box
+            	 */
+            	dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+                closeButton.managedProperty().bind(closeButton.visibleProperty());
+                closeButton.setVisible(false);
+                dialog.showAndWait();
+            }
+        });
+        
+       
         
 
         
@@ -148,7 +192,6 @@ public class MainWindow extends Application{
         pbPressure.setLayoutY(450);
         pbPressure.setPrefSize(200, 30);
         rootGroup.getChildren().add(pbPressure);
-       
         
         final ProgressBar pbHumidity = new ProgressBar();
         pbHumidity.setLayoutX(400);
@@ -189,8 +232,8 @@ public class MainWindow extends Application{
 		lcs.setPrefSize(400, 250);
 		lcs.setMaxSize(400, 250);
 		
-			return lcs.getLinChartStat();
-		}
+		return lcs.getLinChartStat();
+	}
 
 	/**
 	 * Main function for lunching the window 
