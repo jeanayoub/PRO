@@ -15,7 +15,6 @@ package gui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.*;
@@ -136,7 +135,9 @@ public class MainWindow extends Application{
         final Dialog dialog = new Dialog();
         dialog.setGraphic(cv);
         dialog.getDialogPane().setPrefSize(250, 250);
-    
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+        closeButton.managedProperty().bind(closeButton.visibleProperty());
         
         /**
          * Shows the dialog box
@@ -149,9 +150,7 @@ public class MainWindow extends Application{
             	/**
             	 * Just to make the close button close the dialog box
             	 */
-            	dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
-                closeButton.managedProperty().bind(closeButton.visibleProperty());
+            	
                 closeButton.setVisible(false);
                 dialog.showAndWait();
             }
