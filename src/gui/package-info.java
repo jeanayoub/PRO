@@ -1,6 +1,6 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : 
+ Laboratoire : PRO
  Fichier     : package-info.java
  Auteur(s)   : Jean AYOUB
  Date        : 18 mars 2016

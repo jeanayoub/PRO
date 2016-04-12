@@ -1,7 +1,7 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : 
- Fichier     : LineChartTemperature.java
+ Laboratoire : PRO
+ Fichier     : LineChartStat.java
  Auteur(s)   : Jean AYOUB
  Date        : 6 avr. 2016
  But         : 
@@ -18,17 +18,15 @@ import javafx.scene.chart.XYChart;
 
 import java.util.ArrayList;
 
-import db.Data;
 
 
 /**
  * Class represent a Line Chart for different data
  * 
- * !!! THIS CLASS IS NOT DONE YET: IT IS NOT GENERIC !!!
  *
  * @author Jean AYOUB
  * @date 6 avr. 2016
- * @version 1.0
+ * @version 1.1
  */
 public class LineChartStat extends LineChart<String, Number> {
         

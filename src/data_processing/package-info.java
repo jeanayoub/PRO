@@ -1,6 +1,6 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : 
+ Laboratoire : PRO
  Fichier     : package-info.java
  Auteur(s)   : Jean AYOUB
  Date        : 7 avr. 2016
@@ -10,7 +10,7 @@
  -----------------------------------------------------------------------------------
  */
 /**
- * Class.
+ * This package will contain all the classes that will process all data base data.
  *
  * @author Jean AYOUB
  * @date 7 avr. 2016

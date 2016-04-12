@@ -1,9 +1,9 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : 
- Fichier     : DBData.java
+ Laboratoire : PRO
+ Fichier     : Data.java
  Auteur(s)   : Jean AYOUB
- Date        : 8 avr. 2016
+ Date        : 12 avr. 2016
  But         : 
  Remarque(s) :
  Compilateur : jdk 1.8.0_60
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  *
  * @author Jean AYOUB
  * @date 8 avr. 2016
- * @version 1.0
+ * @version 1.1
  */
 public class Data {
 	
