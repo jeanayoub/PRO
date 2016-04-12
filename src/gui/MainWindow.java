@@ -36,9 +36,12 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import gui.LineChartStat;
 
+import java.util.ArrayList;
 import java.util.Locale;
+
+import db.Data;
+import gui.LineChartStat;
 import extfx.scene.control.*;
 
 /**
@@ -69,7 +72,7 @@ public class MainWindow extends Application{
 		final Text text1 = new Text(100, 80,  "Météo actuelle");
 		final Text text2 = new Text(60 , 400, "Pression atmosphérique");
 		final Text text3 = new Text(370, 80,  "Humidité");
-		final Text text4 = new Text(500, 300, "Statistiques");
+		final Text text4 = new Text(500, 270, "Statistiques");
 		final Text text5 = new Text(600, 80,  "Thermomètre");
 		
 		text1.setFont(Font.font("Arial", FontWeight.BOLD, 18));
@@ -150,7 +153,6 @@ public class MainWindow extends Application{
             	/**
             	 * Just to make the close button close the dialog box
             	 */
-            	
                 closeButton.setVisible(false);
                 dialog.showAndWait();
             }
@@ -171,9 +173,32 @@ public class MainWindow extends Application{
 		
         tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabWind);
 		tabPan.setLayoutX(400);
-		tabPan.setLayoutY(330);
+		tabPan.setLayoutY(280);
 		
-		tabTemperature.setContent(createTabTemperature());
+		/**
+		 * !!! This is just for testing !!!
+		 */
+		ArrayList<Data> dataList = new ArrayList<Data> ();
+		Data data1 = new Data(2016, 4, 12,  8, 0, 10.8);
+		Data data2 = new Data(2016, 4, 12, 10, 0, 12.4);
+		Data data3 = new Data(2016, 4, 12, 12, 0, 15.9);
+		Data data4 = new Data(2016, 4, 12, 14, 0, 22.8);
+		Data data5 = new Data(2016, 4, 12, 16, 0, 25.7);
+		Data data6 = new Data(2016, 4, 12, 18, 0, 20.3);
+		Data data7 = new Data(2016, 4, 12, 20, 0, 14.1);
+		Data data8 = new Data(2016, 4, 12, 22, 0,  8.5);
+		
+		dataList.add(data1);
+		dataList.add(data2);
+		dataList.add(data3);
+		dataList.add(data4);
+		dataList.add(data5);
+		dataList.add(data6);
+		dataList.add(data7);
+		dataList.add(data8);
+		
+		tabTemperature.setContent(createTabTemperature(dataList));
+		tabHumidity.setContent(createTabHumidity(dataList));
 		
 		tabTemperature.setClosable(false);
 		tabHumidity.setClosable(false);
@@ -212,13 +237,10 @@ public class MainWindow extends Application{
 	
 	/**
 	 * This function creats the graph for the Temperature tab.
-	 * 
-	 * !!! NOT DONE YET !!!
-	 * We have to pass the data via the parameter !!!
 	 *
-	 * @return the Line chart
+	 * @return Line chart
 	 */
-	private LineChart<String, Number> createTabTemperature () {
+	private LineChart<String, Number> createTabTemperature (ArrayList<Data> dataList) {
 		
 		CategoryAxis xAxis = new CategoryAxis();
 		NumberAxis   yAxis = new NumberAxis();
@@ -226,13 +248,41 @@ public class MainWindow extends Application{
 		xAxis.setLabel("Heures");
 		yAxis.setLabel("Temperature C");
 		
-		LineChartStat lcs = new LineChartStat(xAxis, yAxis);
+		LineChartStat lcs = new LineChartStat("Température", 
+							"Variation de la température", xAxis, yAxis, dataList);
 	
 		lcs.setPrefSize(400, 250);
 		lcs.setMaxSize(400, 250);
 		
 		return lcs.getLinChartStat();
 	}
+	
+	
+	
+	/**
+	 * This function creats the graph for the Humidity tab.
+	 *
+	 * @param dataList
+	 * @return Line chart
+	 */
+	private LineChart<String, Number> createTabHumidity (ArrayList<Data> dataList) {
+		
+		CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis   yAxis = new NumberAxis();
+		
+		xAxis.setLabel("Heures");
+		yAxis.setLabel("Humidité %");
+		
+		LineChartStat lcs = new LineChartStat("Humidité", 
+								"Variation de l'humidité",xAxis, yAxis, dataList);
+	
+		lcs.setPrefSize(400, 250);
+		lcs.setMaxSize(400, 250);
+		
+		return lcs.getLinChartStat();
+	}
+	
+	
 
 	/**
 	 * Main function for lunching the window 
@@ -241,6 +291,7 @@ public class MainWindow extends Application{
 	 */
 	public static void main(String[] args) {
 		Application.launch(MainWindow.class, args);
+		
 	}
 
 }

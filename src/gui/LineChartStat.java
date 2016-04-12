@@ -16,6 +16,10 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
+import java.util.ArrayList;
+
+import db.Data;
+
 
 /**
  * Class represent a Line Chart for different data
@@ -34,10 +38,14 @@ public class LineChartStat extends LineChart<String, Number> {
 	 * @param xAxis
 	 * @param yAxis
 	 */
-	public LineChartStat(CategoryAxis xAxis, NumberAxis yAxis)  {
+	public LineChartStat(String title, String seriesName, CategoryAxis xAxis, NumberAxis yAxis, 
+												ArrayList<db.Data> dataList) {
 		super(xAxis, yAxis);
-		this.xAxis = xAxis;
-		this.yAxis = yAxis;
+		this.title 		= title;
+		this.seriesName = seriesName;
+		this.xAxis 		= xAxis;
+		this.yAxis		= yAxis;
+		this.dataList 	= (ArrayList<db.Data>)dataList.clone();
 		
 		
 		/**
@@ -45,37 +53,30 @@ public class LineChartStat extends LineChart<String, Number> {
 		 */
 		lineChartStat = new LineChart<String, Number>(this.xAxis, this.yAxis);
 		
-		lineChartStat.setTitle("Temperature");
-		lineChartStat.setPrefSize(400, 250);
-		lineChartStat.setMaxSize(400, 250);
+		lineChartStat.setTitle(title);
+		lineChartStat.setPrefSize(400, 280);
+		lineChartStat.setMaxSize(400, 280);
 		
 		
         /**
          *  Defining a series
          */
         XYChart.Series series = new XYChart.Series();
-        series.setName("Temperature");
-        
+        series.setName(seriesName);
         
         
         /**
          * Populating the series with data
          */
-        series.getData().add(new XYChart.Data("08:00", 23));
-        series.getData().add(new XYChart.Data("10:00", 14));
-        series.getData().add(new XYChart.Data("12:00", 15));
-        series.getData().add(new XYChart.Data("14:00", 24));
-        series.getData().add(new XYChart.Data("16:00", 34));
-        series.getData().add(new XYChart.Data("18:00", 36));
-        series.getData().add(new XYChart.Data("20:00", 22));
- 		
-        lineChartStat.getData().add(series);        
+        for (db.Data data : dataList) {
+        	series.getData().add(new XYChart.Data(data.getTime(), data.getValue()));
+        }
+        lineChartStat.getData().add(series);
 	}
 	
 	
 	/**
-	 * This function returns the Line chart 
-	 * 
+	 * This function returns the Line chart.
 	 *
 	 * @return the Line chart
 	 */
@@ -84,8 +85,11 @@ public class LineChartStat extends LineChart<String, Number> {
 	}
 
 
-	private final CategoryAxis xAxis;
-    private final NumberAxis   yAxis;
+	private final String					 title;
+	private final String					 seriesName;
+	private final CategoryAxis 				 xAxis;
+    private final NumberAxis   			 	 yAxis;
+    private final ArrayList<db.Data>         dataList;
     private final LineChart <String, Number> lineChartStat;
 }
 
