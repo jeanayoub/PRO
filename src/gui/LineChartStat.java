@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 
 /**
- * Class represent a Line Chart for different data
+ * Class represent a personalized Line Chart for different elements 
  * 
  *
  * @author Jean AYOUB
@@ -31,63 +31,47 @@ import java.util.ArrayList;
 public class LineChartStat extends LineChart<String, Number> {
         
 		/**
-	 * Constructeur.
+	 * Constructor.
 	 * 
 	 * @param xAxis
 	 * @param yAxis
 	 */
 	public LineChartStat(String title, String seriesName, CategoryAxis xAxis, NumberAxis yAxis, 
 												ArrayList<db.Data> dataList) {
+		/**
+		 *  Creating the chart
+		 */
 		super(xAxis, yAxis);
 		this.title 		= title;
 		this.seriesName = seriesName;
 		this.xAxis 		= xAxis;
 		this.yAxis		= yAxis;
 		this.dataList 	= (ArrayList<db.Data>)dataList.clone();
-		
-		
-		/**
-		 *  Creating the chart
-		 */
-		lineChartStat = new LineChart<String, Number>(this.xAxis, this.yAxis);
-		
-		lineChartStat.setTitle(title);
-		lineChartStat.setPrefSize(400, 280);
-		lineChartStat.setMaxSize(400, 280);
+		this.setTitle(title);	
 		
 		
         /**
          *  Defining a series
          */
-        XYChart.Series series = new XYChart.Series();
+        series = new XYChart.Series();
         series.setName(seriesName);
         
         
         /**
-         * Populating the series with data
+         * Populating the series with data and adding it to the chart
          */
         for (db.Data data : dataList) {
         	series.getData().add(new XYChart.Data(data.getTime(), data.getValue()));
         }
-        lineChartStat.getData().add(series);
+        this.getData().add(series);
 	}
 	
-	
-	/**
-	 * This function returns the Line chart.
-	 *
-	 * @return the Line chart
-	 */
-	public LineChart <String, Number> getLinChartStat () {
-		return lineChartStat;
-	}
 
-
-	private final String					 title;
-	private final String					 seriesName;
-	private final CategoryAxis 				 xAxis;
-    private final NumberAxis   			 	 yAxis;
-    private final ArrayList<db.Data>         dataList;
-    private final LineChart <String, Number> lineChartStat;
+	private final String			 title;
+	private final String			 seriesName;
+	private final CategoryAxis 		 xAxis;
+    private final NumberAxis   		 yAxis;
+    private final ArrayList<db.Data> dataList;
+    private final XYChart.Series series;
 }
 

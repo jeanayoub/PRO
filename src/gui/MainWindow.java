@@ -124,10 +124,58 @@ public class MainWindow extends Application{
         
    
         /**
+         * The menu item for the menu About and its content which is the 
+         * application's copyright and version.
+         */
+        final MenuItem  miAboutInfo = new MenuItem("Info");
+        menuAbout.getItems().addAll(miAboutInfo);
+        
+        
+        /**
+         * The dialog box to be shown once pressed on the Info menu item.
+         */
+        final Dialog dialogInfo = new Dialog();
+        dialogInfo.getDialogPane().setPrefSize(130, 200);
+        dialogInfo.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Node closeButtonDialogInfo = dialogInfo.getDialogPane().lookupButton(
+        														ButtonType.CLOSE);
+        closeButtonDialogInfo.managedProperty().bind(
+        								 closeButtonDialogInfo.visibleProperty());
+        
+        final Text textDialogInfo = new Text("Station Météo \nVersion 1.0 "
+        		+ "\n\nCopyrights © "
+        		+ "\nPRO HEIG-VD "
+        		+ "\n\nR. Combremont "
+        		+ "\nM. Dupraz "
+        		+ "\nP. Sekley "
+        		+ "\nJ. Ayoub");
+        textDialogInfo.setFont(Font.font ("Verdana", 12));
+        textDialogInfo.setFill(Color.STEELBLUE);      
+        
+        dialogInfo.setGraphic(textDialogInfo);
+        
+        
+        /**
+         * Shows the dialog box
+         */
+        miAboutInfo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	/**
+            	 * Just to make the close button close the dialog box
+            	 */
+            	closeButtonDialogInfo.setVisible(false);
+                dialogInfo.showAndWait();          
+            }
+        });
+        
+        
+        
+        /**
          * The menu item for the menu Calendar and its content which is the 
          * Calendar view
          */
-        final MenuItem     miCalendarShow = new MenuItem("Show");
+        final MenuItem     miCalendarShow = new MenuItem("Afficher");
         final CalendarView cv             = new CalendarView(Locale.FRENCH);
         menuCalendar.getItems().addAll(miCalendarShow);
         
@@ -135,12 +183,13 @@ public class MainWindow extends Application{
         /**
          * The dialog box to be shown once pressed on the Show menu item.
          */
-        final Dialog dialog = new Dialog();
-        dialog.setGraphic(cv);
-        dialog.getDialogPane().setPrefSize(250, 250);
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
-        closeButton.managedProperty().bind(closeButton.visibleProperty());
+        final Dialog dialogCv = new Dialog();
+        dialogCv.setGraphic(cv);
+        dialogCv.getDialogPane().setPrefSize(250, 250);
+        dialogCv.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Node closeButtonDialogCv = dialogCv.getDialogPane().lookupButton(ButtonType.CLOSE);
+        closeButtonDialogCv.managedProperty().bind(
+        									closeButtonDialogCv.visibleProperty());
         
         /**
          * Shows the dialog box
@@ -148,13 +197,11 @@ public class MainWindow extends Application{
         miCalendarShow.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	
-           
             	/**
             	 * Just to make the close button close the dialog box
             	 */
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                closeButtonDialogCv.setVisible(false);
+                dialogCv.showAndWait();
             }
         });
         
@@ -172,7 +219,7 @@ public class MainWindow extends Application{
         final Tab	  tabWind 	     = new Tab("Vent");
 		
         tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabWind);
-		tabPan.setLayoutX(400);
+		tabPan.setLayoutX(350);
 		tabPan.setLayoutY(280);
 		
 		/**
@@ -199,6 +246,8 @@ public class MainWindow extends Application{
 		
 		tabTemperature.setContent(createTabTemperature(dataList));
 		tabHumidity.setContent(createTabHumidity(dataList));
+		tabPressure.setContent(createTabPressure(dataList));
+		tabWind.setContent(createTabWind(dataList));
 		
 		tabTemperature.setClosable(false);
 		tabHumidity.setClosable(false);
@@ -240,24 +289,25 @@ public class MainWindow extends Application{
 	 *
 	 * @return Line chart
 	 */
-	private LineChart<String, Number> createTabTemperature (ArrayList<Data> dataList) {
+	private LineChart<String, Number> 
+								createTabTemperature(ArrayList<Data> dataList) {
 		
-		CategoryAxis xAxis = new CategoryAxis();
-		NumberAxis   yAxis = new NumberAxis();
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis   yAxis = new NumberAxis();
 		
 		xAxis.setLabel("Heures");
-		yAxis.setLabel("Temperature C");
+		yAxis.setLabel("Temperature [C]");
 		
 		LineChartStat lcs = new LineChartStat("Température", 
 							"Variation de la température", xAxis, yAxis, dataList);
 	
-		lcs.setPrefSize(400, 250);
-		lcs.setMaxSize(400, 250);
+		lcs.setPrefSize(450, 290);
+		lcs.setMaxSize(450, 290);
 		
-		return lcs.getLinChartStat();
+		return lcs;
 	}
 	
-	
+	 
 	
 	/**
 	 * This function creats the graph for the Humidity tab.
@@ -265,23 +315,63 @@ public class MainWindow extends Application{
 	 * @param dataList
 	 * @return Line chart
 	 */
-	private LineChart<String, Number> createTabHumidity (ArrayList<Data> dataList) {
+	private LineChart<String, Number> createTabHumidity(ArrayList<Data> dataList) {
 		
-		CategoryAxis xAxis = new CategoryAxis();
-		NumberAxis   yAxis = new NumberAxis();
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis   yAxis = new NumberAxis();
 		
 		xAxis.setLabel("Heures");
-		yAxis.setLabel("Humidité %");
+		yAxis.setLabel("Humidité [%]");
 		
 		LineChartStat lcs = new LineChartStat("Humidité", 
 								"Variation de l'humidité",xAxis, yAxis, dataList);
 	
-		lcs.setPrefSize(400, 250);
-		lcs.setMaxSize(400, 250);
+		lcs.setPrefSize(450, 290);
+		lcs.setMaxSize(450, 290);
 		
-		return lcs.getLinChartStat();
+		return lcs;
 	}
 	
+	
+	
+	
+	private LineChart<String, Number> createTabPressure(ArrayList<Data> dataList) {
+		
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis   yAxis = new NumberAxis();
+		
+		xAxis.setLabel("Heures");
+		yAxis.setLabel("Pression [bar]");
+		
+		LineChartStat lcs = new LineChartStat("Pression", 
+								"Variation de la pression",xAxis, yAxis, dataList);
+	
+		lcs.setPrefSize(450, 290);
+		lcs.setMaxSize(450, 290);
+		
+		return lcs;
+	}
+	
+	
+	
+	private LineChart<String, Number> createTabWind(ArrayList<Data> dataList) {
+		
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis   yAxis = new NumberAxis();
+		
+		xAxis.setLabel("Heures");
+		yAxis.setLabel("Vitesse du vent [km/h]");
+		
+		LineChartStat lcs = new LineChartStat("Vent", 
+								"Variation de la vitesse du vent", 
+														xAxis, yAxis, dataList);
+	
+		lcs.setPrefSize(450, 290);
+		lcs.setMaxSize(450, 290);
+	
+		return lcs;
+		
+	}
 	
 
 	/**
@@ -291,6 +381,7 @@ public class MainWindow extends Application{
 	 */
 	public static void main(String[] args) {
 		Application.launch(MainWindow.class, args);
+		
 		
 	}
 
