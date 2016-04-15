@@ -11,7 +11,6 @@
  */
 package gui;
 
-import data_processing.generateFile;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,20 +35,22 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import db.Data;
 import gui.LineChartStat;
 import extfx.scene.control.*;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
+import data_processing.generateFile;
+
+
+
 
 /**
  * Class MainWindow represents the application's main window.
@@ -59,9 +60,13 @@ import javafx.scene.control.Button;
  * @version 1.3
  */
 public class MainWindow extends Application {
-   TabPane myPane = new TabPane();
+   
+	
 
-   public void start(Stage primaryStage) throws IOException {
+   /* (non-Javadoc)
+ * @see javafx.application.Application#start(javafx.stage.Stage)
+ */
+public void start(Stage primaryStage) throws IOException {
 
       final Group rootGroup = new Group();
       final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
@@ -267,7 +272,7 @@ public class MainWindow extends Application {
       tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabWind);
       tabPan.setLayoutX(350);
       tabPan.setLayoutY(280);
-      myPane = tabPan;
+      copyPane = tabPan;
       
       
 
@@ -275,15 +280,20 @@ public class MainWindow extends Application {
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Data data1 = new Data(2016, 4, 12, 8, 0, 10.8);
-      Data data2 = new Data(2016, 4, 12, 10, 0, 12.4);
-      Data data3 = new Data(2016, 4, 12, 12, 0, 15.9);
-      Data data4 = new Data(2016, 4, 12, 14, 0, 22.8);
-      Data data5 = new Data(2016, 4, 12, 16, 0, 25.7);
-      Data data6 = new Data(2016, 4, 12, 18, 0, 20.3);
-      Data data7 = new Data(2016, 4, 12, 20, 0, 14.1);
-      Data data8 = new Data(2016, 4, 12, 22, 0, 8.5);
-
+      Data data1  = new Data(2016, 4, 12,  6, 0, 6.2);
+      Data data2  = new Data(2016, 4, 12,  8, 0, 10.8);
+      Data data3  = new Data(2016, 4, 12, 10, 0, 12.4);
+      Data data4  = new Data(2016, 4, 12, 12, 0, 15.9);
+      Data data5  = new Data(2016, 4, 12, 14, 0, 22.8);
+      Data data6  = new Data(2016, 4, 12, 16, 0, 25.7);
+      Data data7  = new Data(2016, 4, 12, 18, 0, 20.3);
+      Data data8  = new Data(2016, 4, 12, 20, 0, 14.1);
+      Data data9  = new Data(2016, 4, 12, 22, 0,  8.5);
+      Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
+      Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
+      Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
+      Data data13 = new Data(2016, 4, 13,  7, 7,  35); 
+      
       dataList.add(data1);
       dataList.add(data2);
       dataList.add(data3);
@@ -292,11 +302,29 @@ public class MainWindow extends Application {
       dataList.add(data6);
       dataList.add(data7);
       dataList.add(data8);
+      dataList.add(data9);
+      dataList.add(data10);
+      dataList.add(data11);
+      dataList.add(data12);
 
-      tabTemperature.setContent(createTabTemperature(dataList));
-      tabHumidity.setContent(createTabHumidity(dataList));
-      tabPressure.setContent(createTabPressure(dataList));
-      tabWind.setContent(createTabWind(dataList));
+      final LineChartStat lcsTemperature = 
+    		  						(LineChartStat)createTabTemperature(dataList);
+      final LineChartStat lcsHumidity    = 
+    		  						(LineChartStat)createTabHumidity(dataList);
+      final LineChartStat lcsPressure    = 
+    		  						(LineChartStat)createTabPressure(dataList);
+      final LineChartStat lcsWind        = 
+    		  						(LineChartStat)createTabWind(dataList);
+
+      tabTemperature.setContent(lcsTemperature);
+      tabHumidity.setContent(lcsHumidity);
+      tabPressure.setContent(lcsPressure);
+      tabWind.setContent(lcsWind);
+      
+      /**
+       * !!! Just to test the updateSeries method. !!!
+       */
+      lcsTemperature.updateSeries(data13);
 
       tabTemperature.setClosable(false);
       tabHumidity.setClosable(false);
@@ -330,7 +358,7 @@ public class MainWindow extends Application {
    }
 
    /**
-    * This function creats the graph for the Temperature tab.
+    * This method creats the graph for the Temperature tab.
     *
     * @return Line chart
     */
@@ -353,7 +381,7 @@ public class MainWindow extends Application {
    }
 
    /**
-    * This function creats the graph for the Humidity tab.
+    * This method creats the graph for the Humidity tab.
     *
     * @param dataList
     * @return Line chart
@@ -410,24 +438,30 @@ public class MainWindow extends Application {
       return lcs;
 
    }
+   
+   
+   
    //----------------------------------Pascal----------------------------------------
    /**
-    * This function creats the graph for the Humidity tab.
+    * This method returns a copy of the Tab pane
     *
     * 
-    * @return the actual pane
+    * @return A copy of the actual pane
     */
-   
     private TabPane getTabPane(){
-       return myPane;
+       return copyPane;
     }
    
-   
-   
+    
+
+    
+    /** A copy of the tabPane */
+    private TabPane copyPane = new TabPane();
+      
 	
 
 	/**
-	 * Main method for lunching the window 
+	 * Main method for lunching the user window. 
 	 *
 	 * @param args
 	 */

@@ -70,6 +70,14 @@ public class LineChartStat extends LineChart<String, Number> {
 	
 	
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param title
+	 * @param seriesName
+	 * @param xAxis
+	 * @param yAxis
+	 */
 	public LineChartStat(String title, String seriesName, CategoryAxis xAxis, 
 																NumberAxis yAxis) {
 		/**
