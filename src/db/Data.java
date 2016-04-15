@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 
 /**
- * Class.
+ * Class representing the data type.
  *
  * @author Jean AYOUB
  * @date 8 avr. 2016
@@ -113,7 +113,7 @@ public class Data {
 	
 	
 	/**
-	 * Returns the time of the data
+	 * Returns the time of the data.
 	 *
 	 * @return Time
 	 */
@@ -124,7 +124,7 @@ public class Data {
 	
 	
 	/**
-	 * Returns the date of the data
+	 * Returns the date of the data.
 	 *
 	 * @return Date
 	 */

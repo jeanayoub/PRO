@@ -37,6 +37,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -165,7 +166,7 @@ public class MainWindow extends Application{
             	 * Just to make the close button close the dialog box
             	 */
             	closeButtonDialogInfo.setVisible(false);
-                dialogInfo.showAndWait();          
+                dialogInfo.showAndWait();
             }
         });
         
@@ -226,14 +227,19 @@ public class MainWindow extends Application{
 		 * !!! This is just for testing !!!
 		 */
 		ArrayList<Data> dataList = new ArrayList<Data> ();
-		Data data1 = new Data(2016, 4, 12,  8, 0, 10.8);
-		Data data2 = new Data(2016, 4, 12, 10, 0, 12.4);
-		Data data3 = new Data(2016, 4, 12, 12, 0, 15.9);
-		Data data4 = new Data(2016, 4, 12, 14, 0, 22.8);
-		Data data5 = new Data(2016, 4, 12, 16, 0, 25.7);
-		Data data6 = new Data(2016, 4, 12, 18, 0, 20.3);
-		Data data7 = new Data(2016, 4, 12, 20, 0, 14.1);
-		Data data8 = new Data(2016, 4, 12, 22, 0,  8.5);
+		Data data1  = new Data(2016, 4, 12,  6, 0, 6.2);
+		Data data2  = new Data(2016, 4, 12,  8, 0, 10.8);
+		Data data3  = new Data(2016, 4, 12, 10, 0, 12.4);
+		Data data4  = new Data(2016, 4, 12, 12, 0, 15.9);
+		Data data5  = new Data(2016, 4, 12, 14, 0, 22.8);
+		Data data6  = new Data(2016, 4, 12, 16, 0, 25.7);
+		Data data7  = new Data(2016, 4, 12, 18, 0, 20.3);
+		Data data8  = new Data(2016, 4, 12, 20, 0, 14.1);
+		Data data9  = new Data(2016, 4, 12, 22, 0,  8.5);
+		Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
+		Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
+		Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
+		Data data13 = new Data(2016, 4, 13,  7, 7,  35); 
 		
 		dataList.add(data1);
 		dataList.add(data2);
@@ -243,11 +249,31 @@ public class MainWindow extends Application{
 		dataList.add(data6);
 		dataList.add(data7);
 		dataList.add(data8);
+		dataList.add(data9);
+		dataList.add(data10);
+		dataList.add(data11);
+		dataList.add(data12);
 		
-		tabTemperature.setContent(createTabTemperature(dataList));
-		tabHumidity.setContent(createTabHumidity(dataList));
-		tabPressure.setContent(createTabPressure(dataList));
-		tabWind.setContent(createTabWind(dataList));
+		LineChartStat lcsTemperature = 
+									(LineChartStat)createTabTemperature(dataList);
+		LineChartStat lcsHumidity    = 
+									(LineChartStat)createTabHumidity(dataList);
+		LineChartStat lcsPressure 	 = 
+									(LineChartStat)createTabPressure(dataList);
+		LineChartStat lcsWind 		 = 
+									(LineChartStat)createTabWind(dataList);
+		
+		
+		tabTemperature.setContent(lcsTemperature);
+		tabHumidity.setContent(lcsHumidity);
+		tabPressure.setContent(lcsPressure);
+		tabWind.setContent(lcsWind);
+		
+		/**
+		 * Test to the updateSeries method
+		 */
+		//lcsTemperature.updateSeries(data13);
+		
 		
 		tabTemperature.setClosable(false);
 		tabHumidity.setClosable(false);
@@ -285,7 +311,7 @@ public class MainWindow extends Application{
 	
 	
 	/**
-	 * This function creats the graph for the Temperature tab.
+	 * This method creats the graph for the Temperature tab.
 	 *
 	 * @return Line chart
 	 */
@@ -298,11 +324,13 @@ public class MainWindow extends Application{
 		xAxis.setLabel("Heures");
 		yAxis.setLabel("Temperature [C]");
 		
-		LineChartStat lcs = new LineChartStat("Température", 
-							"Variation de la température", xAxis, yAxis, dataList);
+		LineChartStat lcs = new LineChartStat("Température du " + LocalDate.now(), 
+											  "Variation de la température", 
+											  xAxis, yAxis, dataList);
 	
 		lcs.setPrefSize(450, 290);
 		lcs.setMaxSize(450, 290);
+		
 		
 		return lcs;
 	}
@@ -310,7 +338,7 @@ public class MainWindow extends Application{
 	 
 	
 	/**
-	 * This function creats the graph for the Humidity tab.
+	 * This method creats the graph for the Humidity tab.
 	 *
 	 * @param dataList
 	 * @return Line chart
@@ -323,8 +351,9 @@ public class MainWindow extends Application{
 		xAxis.setLabel("Heures");
 		yAxis.setLabel("Humidité [%]");
 		
-		LineChartStat lcs = new LineChartStat("Humidité", 
-								"Variation de l'humidité",xAxis, yAxis, dataList);
+		LineChartStat lcs = new LineChartStat("Humidité du " + LocalDate.now(), 
+											  "Variation de l'humidité",
+											  xAxis, yAxis, dataList);
 	
 		lcs.setPrefSize(450, 290);
 		lcs.setMaxSize(450, 290);
@@ -343,8 +372,9 @@ public class MainWindow extends Application{
 		xAxis.setLabel("Heures");
 		yAxis.setLabel("Pression [bar]");
 		
-		LineChartStat lcs = new LineChartStat("Pression", 
-								"Variation de la pression",xAxis, yAxis, dataList);
+		LineChartStat lcs = new LineChartStat("Pression du " + LocalDate.now(), 
+											  "Variation de la pression",
+											  xAxis, yAxis, dataList);
 	
 		lcs.setPrefSize(450, 290);
 		lcs.setMaxSize(450, 290);
@@ -362,9 +392,9 @@ public class MainWindow extends Application{
 		xAxis.setLabel("Heures");
 		yAxis.setLabel("Vitesse du vent [km/h]");
 		
-		LineChartStat lcs = new LineChartStat("Vent", 
-								"Variation de la vitesse du vent", 
-														xAxis, yAxis, dataList);
+		LineChartStat lcs = new LineChartStat("Vent du " + LocalDate.now(), 
+											  "Variation de la vitesse du vent", 
+											  xAxis, yAxis, dataList);
 	
 		lcs.setPrefSize(450, 290);
 		lcs.setMaxSize(450, 290);
@@ -375,13 +405,12 @@ public class MainWindow extends Application{
 	
 
 	/**
-	 * Main function for lunching the window 
+	 * Main method for lunching the window 
 	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		Application.launch(MainWindow.class, args);
-		
 		
 	}
 
