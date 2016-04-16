@@ -411,7 +411,7 @@ public class MainWindow extends Application {
    }
    //----------------------------------Pascal----------------------------------------
    /**
-    * This function creats the graph for the Humidity tab.
+    * This function the current tabPane.
     *
     * 
     * @return the actual pane
