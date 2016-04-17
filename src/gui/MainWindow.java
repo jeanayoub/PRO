@@ -443,7 +443,7 @@ public void start(Stage primaryStage) throws IOException {
    
    //----------------------------------Pascal----------------------------------------
    /**
-    * This method returns a copy of the Tab pane
+    * This function the current tabPane.
     *
     * 
     * @return A copy of the actual pane
