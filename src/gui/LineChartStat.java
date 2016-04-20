@@ -30,24 +30,29 @@ import java.util.ArrayList;
  */
 public class LineChartStat extends LineChart<String, Number> {
         
-		/**
+	
+	/**
 	 * Constructor.
 	 * 
+	 * @param title
+	 * @param seriesName
 	 * @param xAxis
 	 * @param yAxis
+	 * @param dataList
 	 */
-	public LineChartStat(String title, String seriesName, CategoryAxis xAxis, NumberAxis yAxis, 
-												ArrayList<db.Data> dataList) {
+	public LineChartStat(String 			title, 
+						 String 			seriesName, 
+						 CategoryAxis 		xAxis, 
+						 NumberAxis 		yAxis, 
+						 ArrayList<db.Data> dataList) {
 		/**
 		 *  Creating the chart
 		 */
 		super(xAxis, yAxis);
-		this.title 		= title;
-		this.seriesName = seriesName;
-		this.xAxis 		= xAxis;
-		this.yAxis		= yAxis;
+		this.setTitle(title);
+		this.series.setName(seriesName);
 		this.dataList 	= (ArrayList<db.Data>)dataList.clone();
-		this.setTitle(title);	
+			
 		
 		
         /**
@@ -61,7 +66,8 @@ public class LineChartStat extends LineChart<String, Number> {
          */
         
         for (db.Data data : dataList) {
-        	series.getData().add(new XYChart.Data(data.getTime(), data.getValue()));
+        	series.getData().add(
+        				new Data<String, Number>(data.getTime(), data.getValue()));
         }
         this.getData().add(series);
 	}
@@ -78,23 +84,21 @@ public class LineChartStat extends LineChart<String, Number> {
 	 * @param xAxis
 	 * @param yAxis
 	 */
-	public LineChartStat(String title, String seriesName, CategoryAxis xAxis, 
-																NumberAxis yAxis) {
+	public LineChartStat(String 	  title, 
+						 String 	  seriesName, 
+						 CategoryAxis xAxis, 
+						 NumberAxis   yAxis) {
 		/**
 		 *  Creating the chart.
 		 */
 		super(xAxis, yAxis);
-		this.title 		= title;
-		this.seriesName = seriesName;
-		this.xAxis 		= xAxis;
-		this.yAxis		= yAxis;
 		this.setTitle(title);
-
+		this.series.setName(seriesName);
 
 		/**
 		 *  Setting the series name.
 		 */
-		series.setName(seriesName);
+		
 	}
 
 
@@ -110,18 +114,16 @@ public class LineChartStat extends LineChart<String, Number> {
 		if (!series.getData().isEmpty() && series.getData().size() >= 12) 
 			series.getData().remove(0);
 		
-		series.getData().add(new XYChart.Data(data.getTime(), data.getValue()));
+		series.getData().add(
+				new XYChart.Data<String, Number> (data.getTime(), data.getValue()));
 	}
 	
 	
-	
-
-	private final String			 title;
-	private final String			 seriesName;
-	private final CategoryAxis 		 xAxis;
-    private final NumberAxis   		 yAxis;
-    private       XYChart.Series 	 series = new XYChart.Series();
-    private       ArrayList<db.Data> dataList;
-    private final int 				 MAX_SHOWING = 8;
+    /**  */
+    private XYChart.Series<String, Number> series = new Series<String, Number>();
+    /**  */
+    private ArrayList<db.Data> dataList;
+    /**  */
+    private final int MAX_SHOWING = 8;
 }
 

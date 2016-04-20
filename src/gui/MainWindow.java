@@ -307,14 +307,42 @@ public void start(Stage primaryStage) throws IOException {
       dataList.add(data11);
       dataList.add(data12);
 
+      
       final LineChartStat lcsTemperature = 
-    		  						(LineChartStat)createTabTemperature(dataList);
+				(LineChartStat)createLineChart("Température", 
+											   "Variation de la température", 
+											   "Heures", 
+											   "Temperature [C]", 
+											   450, 
+											   290, 
+											   dataList);
+      
       final LineChartStat lcsHumidity    = 
-    		  						(LineChartStat)createTabHumidity(dataList);
+    		  	(LineChartStat)createLineChart("Humidité", 
+							   				   "Variation de l'humidité", 
+							   				   "Heures", 
+							   				   "Humidité [%]", 
+							   				   450, 
+							   				   290, 
+							   				   dataList);
+      
       final LineChartStat lcsPressure    = 
-    		  						(LineChartStat)createTabPressure(dataList);
+    		  	(LineChartStat)createLineChart("Pression", 
+						   					   "Variation de la pression", 
+						   					   "Heures", 
+						   					   "Pression [bar]", 
+						   					   450, 
+						   					   290, 
+						   					   dataList);
+      
       final LineChartStat lcsWind        = 
-    		  						(LineChartStat)createTabWind(dataList);
+    		  	(LineChartStat)createLineChart("Vent", 
+						   					   "Variation de la vitesse du vent", 
+						   					   "Heures", 
+						   					   "Vitesse [km/h]", 
+						   					   450, 
+						   					   290, 
+						   					   dataList);
 
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
@@ -357,93 +385,53 @@ public void start(Stage primaryStage) throws IOException {
       rootGroup.getChildren().add(pbTempreture);
    }
 
-   /**
-    * This method creats the graph for the Temperature tab.
-    *
-    * @return Line chart
-    */
-   private LineChart<String, Number>
-           createTabTemperature(ArrayList<Data> dataList) {
 
-      final CategoryAxis xAxis = new CategoryAxis();
-      final NumberAxis yAxis = new NumberAxis();
 
-      xAxis.setLabel("Heures");
-      yAxis.setLabel("Temperature [C]");
 
-      LineChartStat lcs = new LineChartStat("Température",
-              "Variation de la température", xAxis, yAxis, dataList);
-
-      lcs.setPrefSize(450, 290);
-      lcs.setMaxSize(450, 290);
-
-      return lcs;
-   }
-
-   /**
-    * This method creats the graph for the Humidity tab.
-    *
-    * @param dataList
-    * @return Line chart
-    */
-   private LineChart<String, Number> createTabHumidity(ArrayList<Data> dataList) {
-
-      final CategoryAxis xAxis = new CategoryAxis();
-      final NumberAxis yAxis = new NumberAxis();
-
-      xAxis.setLabel("Heures");
-      yAxis.setLabel("Humidité [%]");
-
-      LineChartStat lcs = new LineChartStat("Humidité",
-              "Variation de l'humidité", xAxis, yAxis, dataList);
-
-      lcs.setPrefSize(450, 290);
-      lcs.setMaxSize(450, 290);
-
-      return lcs;
-   }
-
-   private LineChart<String, Number> createTabPressure(ArrayList<Data> dataList) {
-
-      final CategoryAxis xAxis = new CategoryAxis();
-      final NumberAxis yAxis = new NumberAxis();
-
-      xAxis.setLabel("Heures");
-      yAxis.setLabel("Pression [bar]");
-
-      LineChartStat lcs = new LineChartStat("Pression",
-              "Variation de la pression", xAxis, yAxis, dataList);
-
-      lcs.setPrefSize(450, 290);
-      lcs.setMaxSize(450, 290);
-
-      return lcs;
-   }
-
-   private LineChart<String, Number> createTabWind(ArrayList<Data> dataList) {
-
-      final CategoryAxis xAxis = new CategoryAxis();
-      final NumberAxis yAxis = new NumberAxis();
-
-      xAxis.setLabel("Heures");
-      yAxis.setLabel("Vitesse du vent [km/h]");
-
-      LineChartStat lcs = new LineChartStat("Vent",
-              "Variation de la vitesse du vent",
-              xAxis, yAxis, dataList);
-
-      lcs.setPrefSize(450, 290);
-      lcs.setMaxSize(450, 290);
-
-      return lcs;
-
-   }
+	/**
+	 * This method creats a line chart graph customized for this application.
+	 *
+	 * @param title
+	 * @param seriesName
+	 * @param xAxisLabel
+	 * @param yAxisLabel
+	 * @param xSize
+	 * @param ySize
+	 * @param dataList
+	 * @return Line Chart
+	 */
+	private LineChart<String, Number> createLineChart(String 			title, 
+			 										  String 			seriesName,
+			 										  String			xAxisLabel,
+			 										  String			yAxisLabel,
+			 										  double			xSize,
+			 										  double			ySize,
+			 										  ArrayList<db.Data> dataList){
+		
+		final CategoryAxis xAxis = new CategoryAxis();
+	    final NumberAxis   yAxis = new NumberAxis();
+	    
+	    xAxis.setLabel(xAxisLabel);
+	    yAxis.setLabel(yAxisLabel);
+		
+		LineChartStat lcs = new LineChartStat(title,
+	              							  seriesName, 
+	              							  xAxis, 
+	              							  yAxis, 
+	              							  dataList);
+		
+		lcs.setPrefSize(xSize, ySize);
+	    lcs.setMaxSize(xSize, ySize);
+		
+		return lcs;
+		
+	}
    
    
    
    //----------------------------------Pascal----------------------------------------
    /**
-    * This function the current tabPane.
+    * This method returns the current tabPane.
     *
     * 
     * @return A copy of the actual pane
