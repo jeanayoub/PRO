@@ -51,7 +51,6 @@ public class LineChartStat extends LineChart<String, Number> {
 		super(xAxis, yAxis);
 		this.setTitle(title);
 		this.series.setName(seriesName);
-		this.dataList 	= (ArrayList<db.Data>)dataList.clone();
 			
 		
 		
@@ -111,7 +110,7 @@ public class LineChartStat extends LineChart<String, Number> {
 	 */
 	public void updateSeries(db.Data data) {
 		
-		if (!series.getData().isEmpty() && series.getData().size() >= 12) 
+		if (!series.getData().isEmpty() && series.getData().size() >= MAX_SHOWING) 
 			series.getData().remove(0);
 		
 		series.getData().add(
@@ -121,9 +120,8 @@ public class LineChartStat extends LineChart<String, Number> {
 	
     /**  */
     private XYChart.Series<String, Number> series = new Series<String, Number>();
+
     /**  */
-    private ArrayList<db.Data> dataList;
-    /**  */
-    private final int MAX_SHOWING = 8;
+    private final int MAX_SHOWING = 12;
 }
 

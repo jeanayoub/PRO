@@ -154,7 +154,7 @@ public void start(Stage primaryStage) throws IOException {
       /**
        * The dialog box to be shown once pressed on the Info menu item.
        */
-      final Dialog dialogInfo = new Dialog();
+      final Dialog<Text> dialogInfo = new Dialog<Text>();
       dialogInfo.getDialogPane().setPrefSize(130, 200);
       dialogInfo.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
       Node closeButtonDialogInfo = dialogInfo.getDialogPane().lookupButton(
@@ -162,13 +162,14 @@ public void start(Stage primaryStage) throws IOException {
       closeButtonDialogInfo.managedProperty().bind(
               closeButtonDialogInfo.visibleProperty());
 
-      final Text textDialogInfo = new Text("Station Météo \nVersion 1.0 "
-              + "\n\nCopyrights © "
-              + "\nPRO HEIG-VD "
-              + "\n\nR. Combremont "
-              + "\nM. Dupraz "
-              + "\nP. Sekley "
-              + "\nJ. Ayoub");
+      final Text textDialogInfo = new Text("Station Météo \nVersion 1.0"
+              							 + "\n\nCopyrights ©"
+              							 + "\nPRO HEIG-VD"
+              							 + "\n\nR. Combremont"
+              							 + "\nM. Dupraz"
+              							 + "\nP. Sekley"
+              							 + "\nJ. Ayoub");
+      	
       textDialogInfo.setFont(Font.font("Verdana", 12));
       textDialogInfo.setFill(Color.STEELBLUE);
 
@@ -238,7 +239,7 @@ public void start(Stage primaryStage) throws IOException {
       /**
        * The dialog box to be shown once pressed on the Show menu item.
        */
-      final Dialog dialogCv = new Dialog();
+      final Dialog<CalendarView> dialogCv = new Dialog<CalendarView>();
       dialogCv.setGraphic(cv);
       dialogCv.getDialogPane().setPrefSize(250, 250);
       dialogCv.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -429,7 +430,7 @@ public void start(Stage primaryStage) throws IOException {
    
    
    
-   //----------------------------------Pascal----------------------------------------
+   //----------------------------------Pascal--------------------------------------
    /**
     * This method returns the current tabPane.
     *
@@ -439,7 +440,7 @@ public void start(Stage primaryStage) throws IOException {
     private TabPane getTabPane(){
        return copyPane;
     }
-   
+    //----------------------------------Pascal--------------------------------------
     
 
     
