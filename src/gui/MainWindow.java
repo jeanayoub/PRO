@@ -44,7 +44,8 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import db.Data;
+import db.*;
+import db.sensors.Temperature;
 import gui.LineChartStat;
 import extfx.scene.control.*;
 import data_processing.generateFile;
@@ -281,19 +282,19 @@ public void start(Stage primaryStage) throws IOException {
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Data data1  = new Data(2016, 4, 12,  6, 0, 6.2);
-      Data data2  = new Data(2016, 4, 12,  8, 0, 10.8);
-      Data data3  = new Data(2016, 4, 12, 10, 0, 12.4);
-      Data data4  = new Data(2016, 4, 12, 12, 0, 15.9);
-      Data data5  = new Data(2016, 4, 12, 14, 0, 22.8);
-      Data data6  = new Data(2016, 4, 12, 16, 0, 25.7);
-      Data data7  = new Data(2016, 4, 12, 18, 0, 20.3);
-      Data data8  = new Data(2016, 4, 12, 20, 0, 14.1);
-      Data data9  = new Data(2016, 4, 12, 22, 0,  8.5);
-      Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
-      Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
-      Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
-      Data data13 = new Data(2016, 4, 13,  7, 7,  35); 
+      Temperature data1  = new Temperature(2016, 4, 12,  6, 0,  6.2);
+      Temperature data2  = new Temperature(2016, 4, 12,  8, 0, 10.8);
+      Temperature data3  = new Temperature(2016, 4, 12, 10, 0, 12.4);
+	  Temperature data4  = new Temperature(2016, 4, 12, 12, 0, 15.9);
+      Temperature data5  = new Temperature(2016, 4, 12, 14, 0, 22.8);
+      Temperature data6  = new Temperature(2016, 4, 12, 16, 0, 25.7);
+      Temperature data7  = new Temperature(2016, 4, 12, 18, 0, 20.3);
+      Temperature data8  = new Temperature(2016, 4, 12, 20, 0, 14.1);
+      Temperature data9  = new Temperature(2016, 4, 12, 22, 0,  8.5);
+      Temperature data10 = new Temperature(2016, 4, 13, 00, 0,  7.2);
+      Temperature data11 = new Temperature(2016, 4, 13,  2, 0,  6.8);
+      Temperature data12 = new Temperature(2016, 4, 13,  4, 0,  2.9);
+      Temperature data13 = new Temperature(2016, 4, 13,  7, 7, 35.0);
       
       dataList.add(data1);
       dataList.add(data2);
@@ -307,7 +308,6 @@ public void start(Stage primaryStage) throws IOException {
       dataList.add(data10);
       dataList.add(data11);
       dataList.add(data12);
-
       
       final LineChartStat lcsTemperature = 
 				(LineChartStat)createLineChart("Température", 
@@ -354,6 +354,7 @@ public void start(Stage primaryStage) throws IOException {
        * !!! Just to test the updateSeries method. !!!
        */
       lcsTemperature.updateSeries(data13);
+      //lcsTemperature.updateSeries(Temperature.getlastData());
 
       tabTemperature.setClosable(false);
       tabHumidity.setClosable(false);
@@ -401,13 +402,13 @@ public void start(Stage primaryStage) throws IOException {
 	 * @param dataList
 	 * @return Line Chart
 	 */
-	private LineChart<String, Number> createLineChart(String 			title, 
-			 										  String 			seriesName,
-			 										  String			xAxisLabel,
-			 										  String			yAxisLabel,
-			 										  double			xSize,
-			 										  double			ySize,
-			 										  ArrayList<db.Data> dataList){
+	private LineChart<String, Number> createLineChart(String 			 title, 
+			 										  String 			 seriesName,
+			 										  String			 xAxisLabel,
+			 										  String			 yAxisLabel,
+			 										  double			 xSize,
+			 										  double			 ySize,
+			 										  ArrayList<db.Data> dataList) {
 		
 		final CategoryAxis xAxis = new CategoryAxis();
 	    final NumberAxis   yAxis = new NumberAxis();
@@ -425,7 +426,6 @@ public void start(Stage primaryStage) throws IOException {
 	    lcs.setMaxSize(xSize, ySize);
 		
 		return lcs;
-		
 	}
    
    

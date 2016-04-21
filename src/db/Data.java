@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * @date 8 avr. 2016
  * @version 1.1
  */
-public class Data {
+abstract public class Data {
 	
 	
 	/**
@@ -141,8 +141,10 @@ public class Data {
 	public String toString() {
 		return dateAndTime.toString() + ", " + value;
 	}
-
 	
+		
+	/** Date and time of the data */
 	private LocalDateTime dateAndTime;
+	/** Value of the data */
 	private double 		  value;
 }
