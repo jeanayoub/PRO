@@ -11,9 +11,16 @@
  */
 package db.sensors;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
+import db.DBConnection;
 import db.Data;
 
 /**
@@ -89,8 +96,41 @@ public class Temperature extends Data{
 	 * @return the last data in the db.
 	 */
 	public static Data getLastData() {
+		final String QUERY = "CALL derniereValeurCaptee('Capteur de soleil');";
+		DBConnection dbConn = null ; 
+		Double value = 0.;
+		Date date = null;
+		Time time = null;
+		LocalDateTime ldt = null;
+		try{
+			dbConn = new DBConnection();
+			//final PreparedStatement PS = dbConn.prepareStatement(QUERY);
+			ResultSet result = dbConn.executeQuery(QUERY);
+			if (result.next()){
+				value = result.getDouble("mesure");
+				date = result.getDate("dates");
+				time = result.getTime("heure");
+				System.out.println(value + " : " + date + ":" + time);
+				//System.out.println(dateTime);
+				//ldt = LocalDateTime.ofInstant(dateTime.toInstant(), ZoneId.systemDefault());
+				//System.out.println("aaaa");
+				//System.out.println("ldt :"+ldt);
+			}
+			//ldt = dateTime.toInstant().atZone(ZoneId.of("ECT")).toLocalDateTime();
+			//System.out.println("ldt :"+ldt);
 		
-		return null;
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		     }
+
+		     finally {
+		      if (dbConn != null)
+		       dbConn.close();
+		     }
+		
+		return (Data)(new Temperature(ldt, value));
 	}
 	
 	
