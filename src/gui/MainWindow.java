@@ -48,6 +48,7 @@ import db.*;
 import db.sensors.Temperature;
 import gui.LineChartStat;
 import extfx.scene.control.*;
+import data_processing.UpdateData;
 import data_processing.generateFile;
 
 
@@ -64,9 +65,9 @@ public class MainWindow extends Application {
    
 	
 
-   /* (non-Javadoc)
+/* (non-Javadoc)
  * @see javafx.application.Application#start(javafx.stage.Stage)
- */
+*/
 public void start(Stage primaryStage) throws IOException {
 
       final Group rootGroup = new Group();
@@ -79,6 +80,7 @@ public void start(Stage primaryStage) throws IOException {
       primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
          @Override
          public void handle(WindowEvent t) {
+        	UpdateData.timer.cancel();
             System.out.println("Closing...");
          }
       });
@@ -104,25 +106,22 @@ public void start(Stage primaryStage) throws IOException {
       rootGroup.getChildren().add(text4);
       rootGroup.getChildren().add(text5);
 
-      /**
-       * Declaration and definition of all the Images
-       */
-      final Image miSunny = new Image("file:meteoImages/maSunny.png");
-      final Image miSunnyCloud = new Image("file:meteoImages/maSunnyCloud.png");
-      final Image miRainLight = new Image("file:meteoImages/maRainLight.png");
-      final Image miRainHeavy = new Image("file:meteoImages/maRainHeavy.png");
-      final Image miSnow = new Image("file:meteoImages/maSnow.png");
+      
 
       /**
        * This code sets the image in place
        */
-      final ImageView iv1 = new ImageView();
-      iv1.setFitHeight(180);
-      iv1.setFitWidth(180);
-      iv1.setX(60);
-      iv1.setY(100);
-      iv1.setImage(miSunnyCloud);
-      rootGroup.getChildren().add(iv1);
+      iv.setFitHeight(180);
+      iv.setFitWidth(180);
+      iv.setX(60);
+      iv.setY(100);
+      //iv.setImage(miSunnyCloud);
+      rootGroup.getChildren().add(iv);
+      
+      
+     
+      
+      
 
       /**
        * The Menu bar
@@ -168,6 +167,7 @@ public void start(Stage primaryStage) throws IOException {
               							 + "\nPRO HEIG-VD"
               							 + "\n\nR. Combremont"
               							 + "\nM. Dupraz"
+              							 + "\nI. Ounon"
               							 + "\nP. Sekley"
               							 + "\nJ. Ayoub");
       	
@@ -309,7 +309,7 @@ public void start(Stage primaryStage) throws IOException {
       dataList.add(data11);
       dataList.add(data12);
       
-      final LineChartStat lcsTemperature = 
+      lcsTemperature = 
 				(LineChartStat)createLineChart("Température", 
 											   "Variation de la température", 
 											   "Heures", 
@@ -318,7 +318,7 @@ public void start(Stage primaryStage) throws IOException {
 											   290, 
 											   dataList);
       
-      final LineChartStat lcsHumidity    = 
+      lcsHumidity = 
     		  	(LineChartStat)createLineChart("Humidité", 
 							   				   "Variation de l'humidité", 
 							   				   "Heures", 
@@ -327,7 +327,7 @@ public void start(Stage primaryStage) throws IOException {
 							   				   290, 
 							   				   dataList);
       
-      final LineChartStat lcsPressure    = 
+      lcsPressure = 
     		  	(LineChartStat)createLineChart("Pression", 
 						   					   "Variation de la pression", 
 						   					   "Heures", 
@@ -336,7 +336,7 @@ public void start(Stage primaryStage) throws IOException {
 						   					   290, 
 						   					   dataList);
       
-      final LineChartStat lcsWind        = 
+      lcsWind = 
     		  	(LineChartStat)createLineChart("Vent", 
 						   					   "Variation de la vitesse du vent", 
 						   					   "Heures", 
@@ -354,7 +354,7 @@ public void start(Stage primaryStage) throws IOException {
        * !!! Just to test the updateSeries method. !!!
        */
       lcsTemperature.updateSeries(data13);
-      //lcsTemperature.updateSeries(Temperature.getlastData());
+      //lcsTemperature.updateSeries(Temperature.getLastData());
 
       tabTemperature.setClosable(false);
       tabHumidity.setClosable(false);
@@ -366,29 +366,117 @@ public void start(Stage primaryStage) throws IOException {
       /**
        * The Progress Bars
        */
-      final ProgressBar pbPressure = new ProgressBar();
       pbPressure.setLayoutX(65);
       pbPressure.setLayoutY(450);
       pbPressure.setPrefSize(200, 30);
       rootGroup.getChildren().add(pbPressure);
+      //pbPressure.setProgress(0.45);
 
-      final ProgressBar pbHumidity = new ProgressBar();
       pbHumidity.setLayoutX(400);
       pbHumidity.setLayoutY(200);
       pbHumidity.setPrefSize(100, 20);
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
 
-      final ProgressBar pbTempreture = new ProgressBar();
-      pbTempreture.setLayoutX(650);
-      pbTempreture.setLayoutY(200);
-      pbTempreture.setPrefSize(100, 20);
-      pbTempreture.getTransforms().setAll(new Rotate(-90, 0, 0));
-      rootGroup.getChildren().add(pbTempreture);
-   }
+      pbTemperature.setLayoutX(650);
+      pbTemperature.setLayoutY(200);
+      pbTemperature.setPrefSize(100, 20);
+      pbTemperature.getTransforms().setAll(new Rotate(-90, 0, 0));
+      rootGroup.getChildren().add(pbTemperature);
+   
+      
+      // !!! JUST A RANDOM VALUE !!!!!!!!
+      UpdateData updateData = new UpdateData(5000, 72*100000); 
+
+}
 
 
 
+
+	/**
+	 * 
+	 *
+	 * @param iv
+	 * @param image
+	 */
+	public static void updateImageView(Image image) {
+		iv.setImage(image);
+	}
+
+
+	/**
+	 * 
+	 *
+	 * @param value
+	 */
+	public static void updatePbPressure(double value) {
+		pbPressure.setProgress(value);
+	}
+	
+	
+	
+	/**
+	 * 
+	 *
+	 * @param value
+	 */
+	public static void updatePbHumidity(double value) {
+		pbHumidity.setProgress(value);
+	}
+	
+	
+	
+	/**
+	 * 
+	 *
+	 * @param value
+	 */
+	public static void updatePbTemperature(double value) {
+		pbTemperature.setProgress(value);
+	}
+	
+	
+	
+	/**
+	 * 
+	 *
+	 * @param data
+	 */
+	public static void updateLcsTemperature(Data data) {
+		lcsTemperature.updateSeries(data);
+	}
+
+	
+	/**
+	 * 
+	 *
+	 * @param data
+	 */
+	public static void updateLcsHumidity(Data data) {
+		lcsHumidity.updateSeries(data);
+	}
+	
+	
+	/**
+	 * 
+	 *
+	 * @param data
+	 */
+	public static void updateLcsPressure(Data data) {
+		lcsPressure.updateSeries(data);
+	}
+	
+	
+	/**
+	 * 
+	 *
+	 * @param data
+	 */
+	public static void updateLcsWind(Data data) {
+		lcsWind.updateSeries(data);
+	}
+
+	
 
 	/**
 	 * This method creats a line chart graph customized for this application.
@@ -445,7 +533,23 @@ public void start(Stage primaryStage) throws IOException {
 
     
     /** A copy of the tabPane */
-    private TabPane copyPane = new TabPane();
+    private TabPane copyPane 				 = new TabPane();
+    /** The image view */
+    private static ImageView iv 			 = new ImageView();
+    /**  */
+    private static ProgressBar pbPressure    = new ProgressBar();
+    /**  */
+    private static ProgressBar pbHumidity    = new ProgressBar();
+    /**  */
+    private static ProgressBar pbTemperature = new ProgressBar();
+    /**  */
+    private static LineChartStat lcsTemperature; 
+    /**  */
+    private static LineChartStat lcsHumidity;
+    /**  */
+    private static LineChartStat lcsPressure;
+    /**  */
+    private static LineChartStat lcsWind;
       
 	
 

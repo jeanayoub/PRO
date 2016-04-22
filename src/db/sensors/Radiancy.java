@@ -1,9 +1,9 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : PRO
- Fichier     : Temperature.java
+ Laboratoire : 
+ Fichier     : Radiancy.java
  Auteur(s)   : Jean AYOUB
- Date        : 21 avr. 2016
+ Date        : 22 avr. 2016
  But         : 
  Remarque(s) :
  Compilateur : jdk 1.8.0_60
@@ -20,10 +20,10 @@ import db.Data;
  * Class.
  *
  * @author Jean AYOUB
- * @date 21 avr. 2016
+ * @date 22 avr. 2016
  * @version 1.0
  */
-public class Temperature extends Data{
+public class Radiancy extends Data {
 
 	/**
 	 * Constructor.
@@ -35,7 +35,7 @@ public class Temperature extends Data{
 	 * @param minute
 	 * @param value
 	 */
-	public Temperature(int year, int month, int dayOfMonth, int hour, int minute, double value) {
+	public Radiancy(int year, int month, int dayOfMonth, int hour, int minute, double value) {
 		super(year, month, dayOfMonth, hour, minute, value);
 	}
 
@@ -50,7 +50,7 @@ public class Temperature extends Data{
 	 * @param second
 	 * @param value
 	 */
-	public Temperature(int year, int month, int dayOfMonth, int hour, int minute, int second, double value) {
+	public Radiancy(int year, int month, int dayOfMonth, int hour, int minute, int second, double value) {
 		super(year, month, dayOfMonth, hour, minute, second, value);
 	}
 
@@ -66,7 +66,7 @@ public class Temperature extends Data{
 	 * @param nanoOfSecond
 	 * @param value
 	 */
-	public Temperature(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond,
+	public Radiancy(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond,
 			double value) {
 		super(year, month, dayOfMonth, hour, minute, second, nanoOfSecond, value);
 	}
@@ -77,10 +77,9 @@ public class Temperature extends Data{
 	 * @param dateAndTime
 	 * @param value
 	 */
-	public Temperature(LocalDateTime dateAndTime, double value) {
+	public Radiancy(LocalDateTime dateAndTime, double value) {
 		super(dateAndTime, value);
 	}
-
 	
 	
 	/**
@@ -89,10 +88,9 @@ public class Temperature extends Data{
 	 * @return the last data in the db.
 	 */
 	public static Data getLastData() {
-		
+
 		return null;
 	}
-	
 	
 	
 	/**

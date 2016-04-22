@@ -88,7 +88,7 @@ public class Pressure extends Data{
 	 *
 	 * @return the last data in the db.
 	 */
-	public static Data getlastData() {
+	public static Data getLastData() {
 
 		return null;
 	}
