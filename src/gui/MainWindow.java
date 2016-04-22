@@ -51,9 +51,6 @@ import extfx.scene.control.*;
 import data_processing.UpdateData;
 import data_processing.generateFile;
 
-
-
-
 /**
  * Class MainWindow represents the application's main window.
  *
@@ -62,13 +59,11 @@ import data_processing.generateFile;
  * @version 1.3
  */
 public class MainWindow extends Application {
-   
-	
 
-/* (non-Javadoc)
- * @see javafx.application.Application#start(javafx.stage.Stage)
-*/
-public void start(Stage primaryStage) throws IOException {
+   /* (non-Javadoc)
+    * @see javafx.application.Application#start(javafx.stage.Stage)
+    */
+   public void start(Stage primaryStage) throws IOException {
 
       final Group rootGroup = new Group();
       final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
@@ -80,7 +75,7 @@ public void start(Stage primaryStage) throws IOException {
       primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
          @Override
          public void handle(WindowEvent t) {
-        	UpdateData.timer.cancel();
+            UpdateData.timer.cancel();
             System.out.println("Closing...");
          }
       });
@@ -106,8 +101,6 @@ public void start(Stage primaryStage) throws IOException {
       rootGroup.getChildren().add(text4);
       rootGroup.getChildren().add(text5);
 
-      
-
       /**
        * This code sets the image in place
        */
@@ -117,11 +110,6 @@ public void start(Stage primaryStage) throws IOException {
       iv.setY(100);
       //iv.setImage(miSunnyCloud);
       rootGroup.getChildren().add(iv);
-      
-      
-     
-      
-      
 
       /**
        * The Menu bar
@@ -132,14 +120,24 @@ public void start(Stage primaryStage) throws IOException {
       final Menu menuAbout = new Menu("A propos");
       final Menu menuCalendar = new Menu("Calendrier");
       final Menu menuSaveAs = new Menu("Enregistrer sous ");
-      
+      final Menu menuPrevision = new Menu("Prévision météorologique");
+
       final MenuItem menuJpeg = new MenuItem("JPEG");
       final MenuItem menuPdf = new MenuItem("PDF");
+      final MenuItem unJour = new MenuItem("1 jour");
+      final MenuItem deuxJour = new MenuItem("2 jours");
+      final MenuItem uneSemaine = new MenuItem("1 semaine");
       
+
       menuStation.getItems().add(menuSaveAs);
       menuSaveAs.getItems().add(0, menuPdf);
       menuSaveAs.getItems().add(1, menuJpeg);
       
+      menuOptions.getItems().add(menuPrevision);
+      menuPrevision.getItems().add(0, unJour);
+      menuPrevision.getItems().add(1, deuxJour);
+      menuPrevision.getItems().add(2, uneSemaine);
+
       menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
               menuCalendar);
       ((Group) scene.getRoot()).getChildren().addAll(menuBar);
@@ -163,20 +161,18 @@ public void start(Stage primaryStage) throws IOException {
               closeButtonDialogInfo.visibleProperty());
 
       final Text textDialogInfo = new Text("Station Météo \nVersion 1.0"
-              							 + "\n\nCopyrights ©"
-              							 + "\nPRO HEIG-VD"
-              							 + "\n\nR. Combremont"
-              							 + "\nM. Dupraz"
-              							 + "\nI. Ounon"
-              							 + "\nP. Sekley"
-              							 + "\nJ. Ayoub");
-      	
+              + "\n\nCopyrights ©"
+              + "\nPRO HEIG-VD"
+              + "\n\nR. Combremont"
+              + "\nM. Dupraz"
+              + "\nI. Ounon"
+              + "\nP. Sekley"
+              + "\nJ. Ayoub");
+
       textDialogInfo.setFont(Font.font("Verdana", 12));
       textDialogInfo.setFill(Color.STEELBLUE);
 
       dialogInfo.setGraphic(textDialogInfo);
-      
-
 
       /**
        * Shows the dialog box
@@ -191,13 +187,11 @@ public void start(Stage primaryStage) throws IOException {
             dialogInfo.showAndWait();
          }
       });
-      
-      
+
       //--------------------------------PASCAL--------------------------------------
       /**
-       * The menu item for the menu Station and its content 
+       * The menu item for the menu Station and its content
        */
-      
       menuPdf.setOnAction((ActionEvent event) -> {
          final generateFile myFile = new generateFile();
          try {
@@ -211,10 +205,9 @@ public void start(Stage primaryStage) throws IOException {
          alert.setContentText("Sauvegarde en PDF Résussi !!!");
          alert.showAndWait();
       });
-      
+
       //----------------------------------Pascal-------------------------------------
-   
-   menuJpeg.setOnAction((ActionEvent event) -> {
+      menuJpeg.setOnAction((ActionEvent event) -> {
          final generateFile myFile = new generateFile();
          myFile.toJpeg(getTabPane());
          Alert alert = new Alert(AlertType.INFORMATION);
@@ -223,11 +216,6 @@ public void start(Stage primaryStage) throws IOException {
          alert.setContentText("Sauvegarde en JPEG Résussi !!!");
          alert.showAndWait();
       });
-
-      
-      
-
-      
 
       /**
        * The menu item for the menu Calendar and its content which is the Calendar
@@ -275,27 +263,25 @@ public void start(Stage primaryStage) throws IOException {
       tabPan.setLayoutX(350);
       tabPan.setLayoutY(280);
       copyPane = tabPan;
-      
-      
 
       /**
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Temperature data1  = new Temperature(2016, 4, 12,  6, 0,  6.2);
-      Temperature data2  = new Temperature(2016, 4, 12,  8, 0, 10.8);
-      Temperature data3  = new Temperature(2016, 4, 12, 10, 0, 12.4);
-	  Temperature data4  = new Temperature(2016, 4, 12, 12, 0, 15.9);
-      Temperature data5  = new Temperature(2016, 4, 12, 14, 0, 22.8);
-      Temperature data6  = new Temperature(2016, 4, 12, 16, 0, 25.7);
-      Temperature data7  = new Temperature(2016, 4, 12, 18, 0, 20.3);
-      Temperature data8  = new Temperature(2016, 4, 12, 20, 0, 14.1);
-      Temperature data9  = new Temperature(2016, 4, 12, 22, 0,  8.5);
-      Temperature data10 = new Temperature(2016, 4, 13, 00, 0,  7.2);
-      Temperature data11 = new Temperature(2016, 4, 13,  2, 0,  6.8);
-      Temperature data12 = new Temperature(2016, 4, 13,  4, 0,  2.9);
-      Temperature data13 = new Temperature(2016, 4, 13,  7, 7, 35.0);
-      
+      Temperature data1 = new Temperature(2016, 4, 12, 6, 0, 6.2);
+      Temperature data2 = new Temperature(2016, 4, 12, 8, 0, 10.8);
+      Temperature data3 = new Temperature(2016, 4, 12, 10, 0, 12.4);
+      Temperature data4 = new Temperature(2016, 4, 12, 12, 0, 15.9);
+      Temperature data5 = new Temperature(2016, 4, 12, 14, 0, 22.8);
+      Temperature data6 = new Temperature(2016, 4, 12, 16, 0, 25.7);
+      Temperature data7 = new Temperature(2016, 4, 12, 18, 0, 20.3);
+      Temperature data8 = new Temperature(2016, 4, 12, 20, 0, 14.1);
+      Temperature data9 = new Temperature(2016, 4, 12, 22, 0, 8.5);
+      Temperature data10 = new Temperature(2016, 4, 13, 00, 0, 7.2);
+      Temperature data11 = new Temperature(2016, 4, 13, 2, 0, 6.8);
+      Temperature data12 = new Temperature(2016, 4, 13, 4, 0, 2.9);
+      Temperature data13 = new Temperature(2016, 4, 13, 7, 7, 35.0);
+
       dataList.add(data1);
       dataList.add(data2);
       dataList.add(data3);
@@ -308,48 +294,48 @@ public void start(Stage primaryStage) throws IOException {
       dataList.add(data10);
       dataList.add(data11);
       dataList.add(data12);
-      
-      lcsTemperature = 
-				(LineChartStat)createLineChart("Température", 
-											   "Variation de la température", 
-											   "Heures", 
-											   "Temperature [C]", 
-											   450, 
-											   290, 
-											   dataList);
-      
-      lcsHumidity = 
-    		  	(LineChartStat)createLineChart("Humidité", 
-							   				   "Variation de l'humidité", 
-							   				   "Heures", 
-							   				   "Humidité [%]", 
-							   				   450, 
-							   				   290, 
-							   				   dataList);
-      
-      lcsPressure = 
-    		  	(LineChartStat)createLineChart("Pression", 
-						   					   "Variation de la pression", 
-						   					   "Heures", 
-						   					   "Pression [bar]", 
-						   					   450, 
-						   					   290, 
-						   					   dataList);
-      
-      lcsWind = 
-    		  	(LineChartStat)createLineChart("Vent", 
-						   					   "Variation de la vitesse du vent", 
-						   					   "Heures", 
-						   					   "Vitesse [km/h]", 
-						   					   450, 
-						   					   290, 
-						   					   dataList);
+
+      lcsTemperature
+              = (LineChartStat) createLineChart("Température",
+                      "Variation de la température",
+                      "Heures",
+                      "Temperature [C]",
+                      450,
+                      290,
+                      dataList);
+
+      lcsHumidity
+              = (LineChartStat) createLineChart("Humidité",
+                      "Variation de l'humidité",
+                      "Heures",
+                      "Humidité [%]",
+                      450,
+                      290,
+                      dataList);
+
+      lcsPressure
+              = (LineChartStat) createLineChart("Pression",
+                      "Variation de la pression",
+                      "Heures",
+                      "Pression [bar]",
+                      450,
+                      290,
+                      dataList);
+
+      lcsWind
+              = (LineChartStat) createLineChart("Vent",
+                      "Variation de la vitesse du vent",
+                      "Heures",
+                      "Vitesse [km/h]",
+                      450,
+                      290,
+                      dataList);
 
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
       tabPressure.setContent(lcsPressure);
       tabWind.setContent(lcsWind);
-      
+
       /**
        * !!! Just to test the updateSeries method. !!!
        */
@@ -383,184 +369,173 @@ public void start(Stage primaryStage) throws IOException {
       pbTemperature.setPrefSize(100, 20);
       pbTemperature.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbTemperature);
-   
-      
+
       // !!! JUST A RANDOM VALUE !!!!!!!!
-      UpdateData updateData = new UpdateData(5000, 72*100000); 
+      UpdateData updateData = new UpdateData(5000, 72 * 100000);
 
-}
+   }
 
+   /**
+    *
+    *
+    * @param iv
+    * @param image
+    */
+   public static void updateImageView(Image image) {
+      iv.setImage(image);
+   }
 
+   /**
+    *
+    *
+    * @param value
+    */
+   public static void updatePbPressure(double value) {
+      pbPressure.setProgress(value);
+   }
 
+   /**
+    *
+    *
+    * @param value
+    */
+   public static void updatePbHumidity(double value) {
+      pbHumidity.setProgress(value);
+   }
 
-	/**
-	 * 
-	 *
-	 * @param iv
-	 * @param image
-	 */
-	public static void updateImageView(Image image) {
-		iv.setImage(image);
-	}
+   /**
+    *
+    *
+    * @param value
+    */
+   public static void updatePbTemperature(double value) {
+      pbTemperature.setProgress(value);
+   }
 
+   /**
+    *
+    *
+    * @param data
+    */
+   public static void updateLcsTemperature(Data data) {
+      lcsTemperature.updateSeries(data);
+   }
 
-	/**
-	 * 
-	 *
-	 * @param value
-	 */
-	public static void updatePbPressure(double value) {
-		pbPressure.setProgress(value);
-	}
-	
-	
-	
-	/**
-	 * 
-	 *
-	 * @param value
-	 */
-	public static void updatePbHumidity(double value) {
-		pbHumidity.setProgress(value);
-	}
-	
-	
-	
-	/**
-	 * 
-	 *
-	 * @param value
-	 */
-	public static void updatePbTemperature(double value) {
-		pbTemperature.setProgress(value);
-	}
-	
-	
-	
-	/**
-	 * 
-	 *
-	 * @param data
-	 */
-	public static void updateLcsTemperature(Data data) {
-		lcsTemperature.updateSeries(data);
-	}
+   /**
+    *
+    *
+    * @param data
+    */
+   public static void updateLcsHumidity(Data data) {
+      lcsHumidity.updateSeries(data);
+   }
 
-	
-	/**
-	 * 
-	 *
-	 * @param data
-	 */
-	public static void updateLcsHumidity(Data data) {
-		lcsHumidity.updateSeries(data);
-	}
-	
-	
-	/**
-	 * 
-	 *
-	 * @param data
-	 */
-	public static void updateLcsPressure(Data data) {
-		lcsPressure.updateSeries(data);
-	}
-	
-	
-	/**
-	 * 
-	 *
-	 * @param data
-	 */
-	public static void updateLcsWind(Data data) {
-		lcsWind.updateSeries(data);
-	}
+   /**
+    *
+    *
+    * @param data
+    */
+   public static void updateLcsPressure(Data data) {
+      lcsPressure.updateSeries(data);
+   }
 
-	
+   /**
+    *
+    *
+    * @param data
+    */
+   public static void updateLcsWind(Data data) {
+      lcsWind.updateSeries(data);
+   }
 
-	/**
-	 * This method creats a line chart graph customized for this application.
-	 *
-	 * @param title
-	 * @param seriesName
-	 * @param xAxisLabel
-	 * @param yAxisLabel
-	 * @param xSize
-	 * @param ySize
-	 * @param dataList
-	 * @return Line Chart
-	 */
-	private LineChart<String, Number> createLineChart(String 			 title, 
-			 										  String 			 seriesName,
-			 										  String			 xAxisLabel,
-			 										  String			 yAxisLabel,
-			 										  double			 xSize,
-			 										  double			 ySize,
-			 										  ArrayList<db.Data> dataList) {
-		
-		final CategoryAxis xAxis = new CategoryAxis();
-	    final NumberAxis   yAxis = new NumberAxis();
-	    
-	    xAxis.setLabel(xAxisLabel);
-	    yAxis.setLabel(yAxisLabel);
-		
-		LineChartStat lcs = new LineChartStat(title,
-	              							  seriesName, 
-	              							  xAxis, 
-	              							  yAxis, 
-	              							  dataList);
-		
-		lcs.setPrefSize(xSize, ySize);
-	    lcs.setMaxSize(xSize, ySize);
-		
-		return lcs;
-	}
-   
-   
-   
+   /**
+    * This method creats a line chart graph customized for this application.
+    *
+    * @param title
+    * @param seriesName
+    * @param xAxisLabel
+    * @param yAxisLabel
+    * @param xSize
+    * @param ySize
+    * @param dataList
+    * @return Line Chart
+    */
+   private LineChart<String, Number> createLineChart(String title,
+           String seriesName,
+           String xAxisLabel,
+           String yAxisLabel,
+           double xSize,
+           double ySize,
+           ArrayList<db.Data> dataList) {
+
+      final CategoryAxis xAxis = new CategoryAxis();
+      final NumberAxis yAxis = new NumberAxis();
+
+      xAxis.setLabel(xAxisLabel);
+      yAxis.setLabel(yAxisLabel);
+
+      LineChartStat lcs = new LineChartStat(title,
+              seriesName,
+              xAxis,
+              yAxis,
+              dataList);
+
+      lcs.setPrefSize(xSize, ySize);
+      lcs.setMaxSize(xSize, ySize);
+
+      return lcs;
+   }
+
    //----------------------------------Pascal--------------------------------------
    /**
     * This method returns the current tabPane.
     *
-    * 
+    *
     * @return A copy of the actual pane
     */
-    private TabPane getTabPane(){
-       return copyPane;
-    }
+   private TabPane getTabPane() {
+      return copyPane;
+   }
     //----------------------------------Pascal--------------------------------------
-    
 
-    
-    /** A copy of the tabPane */
-    private TabPane copyPane 				 = new TabPane();
-    /** The image view */
-    private static ImageView iv 			 = new ImageView();
-    /**  */
-    private static ProgressBar pbPressure    = new ProgressBar();
-    /**  */
-    private static ProgressBar pbHumidity    = new ProgressBar();
-    /**  */
-    private static ProgressBar pbTemperature = new ProgressBar();
-    /**  */
-    private static LineChartStat lcsTemperature; 
-    /**  */
-    private static LineChartStat lcsHumidity;
-    /**  */
-    private static LineChartStat lcsPressure;
-    /**  */
-    private static LineChartStat lcsWind;
-      
-	
+   /**
+    * A copy of the tabPane
+    */
+   private TabPane copyPane = new TabPane();
+   /**
+    * The image view
+    */
+   private static ImageView iv = new ImageView();
+   /**
+    *    */
+   private static ProgressBar pbPressure = new ProgressBar();
+   /**
+    *    */
+   private static ProgressBar pbHumidity = new ProgressBar();
+   /**
+    *    */
+   private static ProgressBar pbTemperature = new ProgressBar();
+   /**
+    *    */
+   private static LineChartStat lcsTemperature;
+   /**
+    *    */
+   private static LineChartStat lcsHumidity;
+   /**
+    *    */
+   private static LineChartStat lcsPressure;
+   /**
+    *    */
+   private static LineChartStat lcsWind;
 
-	/**
-	 * Main method for lunching the user window. 
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Application.launch(MainWindow.class, args);
-		
-	}
+   /**
+    * Main method for lunching the user window.
+    *
+    * @param args
+    */
+   public static void main(String[] args) {
+      Application.launch(MainWindow.class, args);
+
+   }
 
 }
