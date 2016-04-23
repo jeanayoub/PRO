@@ -161,13 +161,13 @@ public class MainWindow extends Application {
               closeButtonDialogInfo.visibleProperty());
 
       final Text textDialogInfo = new Text("Station Météo \nVersion 1.0"
-              + "\n\nCopyrights ©"
-              + "\nPRO HEIG-VD"
-              + "\n\nR. Combremont"
-              + "\nM. Dupraz"
-              + "\nI. Ounon"
-              + "\nP. Sekley"
-              + "\nJ. Ayoub");
+              							 + "\n\nCopyrights ©"
+              							 + "\nPRO HEIG-VD"
+              							 + "\n\nR. Combremont"
+              							 + "\nM. Dupraz"
+              							 + "\nI. Ounon"
+              							 + "\nP. Sekley"
+              							 + "\nJ. Ayoub");
 
       textDialogInfo.setFont(Font.font("Verdana", 12));
       textDialogInfo.setFill(Color.STEELBLUE);
@@ -297,39 +297,39 @@ public class MainWindow extends Application {
 
       lcsTemperature
               = (LineChartStat) createLineChart("Température",
-                      "Variation de la température",
-                      "Heures",
-                      "Temperature [C]",
-                      450,
-                      290,
-                      dataList);
+                      							"Variation de la température",
+                      							"Heures",
+                      							"Temperature [C]",
+                      							450,
+                      							290,
+                      							dataList);
 
       lcsHumidity
               = (LineChartStat) createLineChart("Humidité",
-                      "Variation de l'humidité",
-                      "Heures",
-                      "Humidité [%]",
-                      450,
-                      290,
-                      dataList);
+                      							"Variation de l'humidité",
+                      							"Heures",
+                      							"Humidité [%]",
+                      							450,
+                      							290,
+                      							dataList);
 
       lcsPressure
               = (LineChartStat) createLineChart("Pression",
-                      "Variation de la pression",
-                      "Heures",
-                      "Pression [bar]",
-                      450,
-                      290,
-                      dataList);
+                      							"Variation de la pression",
+                      							"Heures",
+                      							"Pression [bar]",
+                      							450,
+                      							290,
+                      							dataList);
 
       lcsWind
               = (LineChartStat) createLineChart("Vent",
-                      "Variation de la vitesse du vent",
-                      "Heures",
-                      "Vitesse [km/h]",
-                      450,
-                      290,
-                      dataList);
+                      							"Variation de la vitesse du vent",
+                      							"Heures",
+                      							"Vitesse [km/h]",
+                      							450,
+                      							290,
+                      							dataList);
 
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
@@ -498,34 +498,23 @@ public class MainWindow extends Application {
    }
     //----------------------------------Pascal--------------------------------------
 
-   /**
-    * A copy of the tabPane
-    */
+   /** A copy of the tabPane */
    private TabPane copyPane = new TabPane();
-   /**
-    * The image view
-    */
+   /**  */
    private static ImageView iv = new ImageView();
-   /**
-    *    */
+   /**  */
    private static ProgressBar pbPressure = new ProgressBar();
-   /**
-    *    */
+   /**  */
    private static ProgressBar pbHumidity = new ProgressBar();
-   /**
-    *    */
+   /**  */
    private static ProgressBar pbTemperature = new ProgressBar();
-   /**
-    *    */
+   /**  */
    private static LineChartStat lcsTemperature;
-   /**
-    *    */
+   /**  */
    private static LineChartStat lcsHumidity;
-   /**
-    *    */
+   /**  */
    private static LineChartStat lcsPressure;
-   /**
-    *    */
+   /**  */
    private static LineChartStat lcsWind;
 
    /**

@@ -42,6 +42,12 @@ public class UpdateData {
     
  	
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param period1
+	 * @param period2
+	 */
 	public UpdateData (long period1, long period2) { 
 	
 		timer.schedule(new TimerTask() {
@@ -61,6 +67,10 @@ public class UpdateData {
 		}
 	
 	
+	/**
+	 * 
+	 *
+	 */
 	private void checkLatestData () {
 		
 		double actualTemperatureValue = Temperature.getLastData().getValue();

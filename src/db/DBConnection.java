@@ -34,10 +34,17 @@ public class DBConnection {
 	private static final String URL =  "jdbc:mysql://localhost:3306/xxx?user=root&password=";
 
 	
+	/**  */
 	private Connection connection;
+	/**  */
 	public  Statement  statement;
 
 
+	/**
+	 * Constructor.
+	 * 
+	 * @throws SQLException
+	 */
 	public DBConnection () throws SQLException{
 
 		connection = DriverManager.getConnection(URL);	
@@ -45,31 +52,70 @@ public class DBConnection {
 	}
 
 	
+	/**
+	 * 
+	 *
+	 * @param sql
+	 * @return 
+	 * @throws SQLException
+	 */
 	public ResultSet executeQuery (String sql) throws SQLException {
 		return statement.executeQuery(sql);
 	}
 
 	
+	/**
+	 * 
+	 *
+	 * @param sql
+	 * @return
+	 * @throws SQLException
+	 */
 	public int executeUpdate (String sql) throws SQLException {
 		return statement.executeUpdate(sql);
 	}
 	
 
+	/**
+	 * 
+	 *
+	 * @param sql
+	 * @return
+	 * @throws SQLException
+	 */
 	public PreparedStatement prepareStatement (String sql) throws SQLException {
 		return connection.prepareStatement(sql);
 	}
 	
 	
+	/**
+	 * 
+	 *
+	 * @param sql
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean execute (String sql) throws SQLException {
 		return statement.execute(sql);
 	}
 	
 	
+	/**
+	 * 
+	 *
+	 * @param sql
+	 * @return
+	 * @throws SQLException
+	 */
 	public CallableStatement prepareCall (String sql) throws SQLException {
 		return connection.prepareCall(sql);
 	}
 
 	
+	/**
+	 * 
+	 *
+	 */
 	public void close() {
 		
 		try {
