@@ -14,7 +14,8 @@ package data_processing;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import db.sensors.*;
+import db.Data;
+import db.Data.Sensor;
 import gui.MainWindow;
 import javafx.scene.image.Image;
 
@@ -58,10 +59,11 @@ public class UpdateData {
 		
 		timer.schedule(new TimerTask() {
 			public void run()  {
-				MainWindow.updateLcsTemperature(Temperature.getLastData());
-				MainWindow.updateLcsHumidity(Humidity.getLastData());
-				MainWindow.updateLcsPressure(Pressure.getLastData());
-				MainWindow.updateLcsWind(Wind.getLastData());
+				MainWindow.updateLcsTemperature(Data.getLastData(
+															  Sensor.TEMPERATURE));
+				MainWindow.updateLcsHumidity(Data.getLastData(Sensor.HUMIDITY));
+				MainWindow.updateLcsPressure(Data.getLastData(Sensor.PRESSURE));
+				MainWindow.updateLcsWind(Data.getLastData(    Sensor.WIND));
 			}
 			}, 0, period2);
 		}
@@ -73,11 +75,16 @@ public class UpdateData {
 	 */
 	private void checkLatestData () {
 		
-		double actualTemperatureValue = Temperature.getLastData().getValue();
-		double actualHumidityValue    = Humidity.getLastData().getValue();
-		double actualPressureValue    = Pressure.getLastData().getValue();
-		double actualWindValue        = Wind.getLastData().getValue();
-		double actualRadiancyValue    = Radiancy.getLastData().getValue();
+		double actualTemperatureValue = Data.getLastData(
+										Sensor.TEMPERATURE).getValue();
+		double actualHumidityValue    = Data.getLastData(
+										Sensor.HUMIDITY).getValue();
+		double actualPressureValue    = Data.getLastData(
+										Sensor.PRESSURE).getValue();
+		double actualWindValue        = Data.getLastData(
+										Sensor.WIND).getValue();
+		double actualRadiancyValue    = Data.getLastData(
+										Sensor.RADIANCY).getValue();
 		
 		
 		

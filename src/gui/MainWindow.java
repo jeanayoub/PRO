@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import db.*;
-import db.sensors.Temperature;
 import gui.LineChartStat;
 import extfx.scene.control.*;
 import data_processing.UpdateData;
@@ -83,11 +82,11 @@ public class MainWindow extends Application {
       /**
        * Declaration and definition of all the Text fields
        */
-      final Text text1 = new Text(100, 80, "Météo actuelle");
-      final Text text2 = new Text(60, 400, "Pression atmosphérique");
-      final Text text3 = new Text(370, 80, "Humidité");
+      final Text text1 = new Text(100,  80, "Météo actuelle");
+      final Text text2 = new Text( 60, 400, "Pression atmosphérique");
+      final Text text3 = new Text(370,  80, "Humidité");
       final Text text4 = new Text(500, 270, "Statistiques");
-      final Text text5 = new Text(600, 80, "Thermomètre");
+      final Text text5 = new Text(600,  80, "Thermomètre");
 
       text1.setFont(Font.font("Arial", FontWeight.BOLD, 18));
       text2.setFont(Font.font("Arial", FontWeight.BOLD, 18));
@@ -114,18 +113,18 @@ public class MainWindow extends Application {
       /**
        * The Menu bar
        */
-      final MenuBar menuBar = new MenuBar();
-      final Menu menuStation = new Menu("Station");
-      final Menu menuOptions = new Menu("Option");
-      final Menu menuAbout = new Menu("A propos");
-      final Menu menuCalendar = new Menu("Calendrier");
-      final Menu menuSaveAs = new Menu("Enregistrer sous ");
-      final Menu menuPrevision = new Menu("Prévision météorologique");
+      final MenuBar menuBar 	  = new MenuBar();
+      final Menu 	menuStation   = new Menu("Station");
+      final Menu 	menuOptions   = new Menu("Option");
+      final Menu 	menuAbout     = new Menu("A propos");
+      final Menu 	menuCalendar  = new Menu("Calendrier");
+      final Menu 	menuSaveAs    = new Menu("Enregistrer sous ");
+      final Menu 	menuPrevision = new Menu("Prévision météorologique");
 
-      final MenuItem menuJpeg = new MenuItem("JPEG");
-      final MenuItem menuPdf = new MenuItem("PDF");
-      final MenuItem unJour = new MenuItem("1 jour");
-      final MenuItem deuxJour = new MenuItem("2 jours");
+      final MenuItem menuJpeg 	= new MenuItem("JPEG");
+      final MenuItem menuPdf 	= new MenuItem("PDF");
+      final MenuItem unJour 	= new MenuItem("1 jour");
+      final MenuItem deuxJour 	= new MenuItem("2 jours");
       final MenuItem uneSemaine = new MenuItem("1 semaine");
       
 
@@ -268,19 +267,19 @@ public class MainWindow extends Application {
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Temperature data1 = new Temperature(2016, 4, 12, 6, 0, 6.2);
-      Temperature data2 = new Temperature(2016, 4, 12, 8, 0, 10.8);
-      Temperature data3 = new Temperature(2016, 4, 12, 10, 0, 12.4);
-      Temperature data4 = new Temperature(2016, 4, 12, 12, 0, 15.9);
-      Temperature data5 = new Temperature(2016, 4, 12, 14, 0, 22.8);
-      Temperature data6 = new Temperature(2016, 4, 12, 16, 0, 25.7);
-      Temperature data7 = new Temperature(2016, 4, 12, 18, 0, 20.3);
-      Temperature data8 = new Temperature(2016, 4, 12, 20, 0, 14.1);
-      Temperature data9 = new Temperature(2016, 4, 12, 22, 0, 8.5);
-      Temperature data10 = new Temperature(2016, 4, 13, 00, 0, 7.2);
-      Temperature data11 = new Temperature(2016, 4, 13, 2, 0, 6.8);
-      Temperature data12 = new Temperature(2016, 4, 13, 4, 0, 2.9);
-      Temperature data13 = new Temperature(2016, 4, 13, 7, 7, 35.0);
+      Data data1  = new Data(2016, 4, 12,  6, 0,  6.2);
+      Data data2  = new Data(2016, 4, 12,  8, 0, 10.8);
+      Data data3  = new Data(2016, 4, 12, 10, 0, 12.4);
+      Data data4  = new Data(2016, 4, 12, 12, 0, 15.9);
+      Data data5  = new Data(2016, 4, 12, 14, 0, 22.8);
+      Data data6  = new Data(2016, 4, 12, 16, 0, 25.7);
+      Data data7  = new Data(2016, 4, 12, 18, 0, 20.3);
+      Data data8  = new Data(2016, 4, 12, 20, 0, 14.1);
+      Data data9  = new Data(2016, 4, 12, 22, 0,  8.5);
+      Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
+      Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
+      Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
+      Data data13 = new Data(2016, 4, 13,  7, 7, 35.0);
 
       dataList.add(data1);
       dataList.add(data2);
@@ -356,7 +355,6 @@ public class MainWindow extends Application {
       pbPressure.setLayoutY(450);
       pbPressure.setPrefSize(200, 30);
       rootGroup.getChildren().add(pbPressure);
-      //pbPressure.setProgress(0.45);
 
       pbHumidity.setLayoutX(400);
       pbHumidity.setLayoutY(200);
@@ -503,9 +501,9 @@ public class MainWindow extends Application {
    /**  */
    private static ImageView iv = new ImageView();
    /**  */
-   private static ProgressBar pbPressure = new ProgressBar();
+   private static ProgressBar pbPressure    = new ProgressBar();
    /**  */
-   private static ProgressBar pbHumidity = new ProgressBar();
+   private static ProgressBar pbHumidity    = new ProgressBar();
    /**  */
    private static ProgressBar pbTemperature = new ProgressBar();
    /**  */

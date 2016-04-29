@@ -11,7 +11,13 @@
  */
 package db;
 
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 
 
 /**
@@ -21,7 +27,7 @@ import java.time.LocalDateTime;
  * @date 8 avr. 2016
  * @version 1.1
  */
-abstract public class Data {
+public class Data {
 	
 	
 	/**
@@ -141,6 +147,106 @@ abstract public class Data {
 	public String toString() {
 		return dateAndTime.toString() + ", " + value;
 	}
+	
+	
+	
+	
+	
+	public enum Sensor {
+		
+		TEMPERATURE("sensorTemperature"),
+		HUMIDITY("sensorHumidity"),
+		PRESSURE("sensorPressure"),
+		WIND("sensorWind"),
+		RADIANCY("sensorRadiancy");
+		
+		private Sensor (String id) {
+			this.id = id;
+		}
+		
+		public String toString() {
+			return this.id;
+		}
+		
+		private final String id; 
+	}
+	
+	
+	
+	
+	/**
+	 * 
+	 *
+	 * @param sensor
+	 * @return the last data in the db for the selected sensorID.
+	 */
+	public static Data getLastData(Sensor sensor) {
+		final String QUERY = "CALL derniereValeurCaptee('" + sensor + "');";
+		DBConnection dbConn = null ; 
+		Double value = 0.;
+		Date date = null;
+		Time time = null;
+		
+		int year    = 0, 
+			month   = 0, 
+			day	    = 0, 
+			hours   = 0, 
+			minutes = 0, 
+			seconds = 0;
+		
+		try{
+			dbConn = new DBConnection();
+			
+			ResultSet result = dbConn.executeQuery(QUERY);
+			if (result.next()){
+				value = result.getDouble("mesure");
+				date  = result.getDate("dates");
+				time  = result.getTime("heure");
+				
+				// TEST DB !!!!!
+				//System.out.println(value + " : " + date + ":" + time);
+				String tempString = date.toString();
+				year              = Integer.parseInt(tempString.substring(0, 3));
+				month             = Integer.parseInt(tempString.substring(5,6));
+				day               = Integer.parseInt(tempString.substring(8,9));	
+				
+				tempString        = time.toString();
+				hours             = Integer.parseInt(tempString.substring(0, 1));
+				minutes    		  = Integer.parseInt(tempString.substring(3,4));
+				seconds           = Integer.parseInt(tempString.substring(6,7));	
+			}
+		
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		     }
+
+		     finally {
+		      if (dbConn != null)
+		       dbConn.close();
+		     }
+		
+		return new Data(year, month, day, hours, minutes, seconds, value);
+	}
+	
+	
+	
+	/**
+	 * 
+	 *
+	 * @param sensor
+	 * @param from
+	 * @param to
+	 * @return the data list for the selected interval.
+	 */
+	public static ArrayList<Data> getIntervalData (Sensor 		 sensor,
+												   LocalDateTime from, 
+												   LocalDateTime to) {
+		return null;
+	}
+	
+	
 	
 		
 	/** Date and time of the data */
