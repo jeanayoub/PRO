@@ -158,7 +158,9 @@ public class Data {
 		HUMIDITY("sensorHumidity"),
 		PRESSURE("sensorPressure"),
 		WIND("sensorWind"),
-		RADIANCY("sensorRadiancy");
+		RADIANCY("sensorRadiancy"),
+		RAIN("sensorRain"),
+		AIRQUALITY("sensorAirQuality");
 		
 		private Sensor (String id) {
 			this.id = id;
@@ -181,18 +183,17 @@ public class Data {
 	 * @return the last data in the db for the selected sensorID.
 	 */
 	public static Data getLastData(Sensor sensor) {
-		final String QUERY = "CALL derniereValeurCaptee('" + sensor + "');";
-		DBConnection dbConn = null ; 
-		Double value = 0.;
-		Date date = null;
-		Time time = null;
-		
-		int year    = 0, 
-			month   = 0, 
-			day	    = 0, 
-			hours   = 0, 
-			minutes = 0, 
-			seconds = 0;
+		final String QUERY   = "CALL derniereValeurCaptee('" + sensor + "');";
+		DBConnection dbConn  = null ; 
+		Double 		 value   = 0.;
+		Date   		 date    = null;
+		Time   		 time    = null;
+		int    		 year    = 0, 
+					 month   = 0, 
+					 day	 = 0, 
+					 hours   = 0, 
+					 minutes = 0, 
+					 seconds = 0;
 		
 		try{
 			dbConn = new DBConnection();
