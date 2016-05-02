@@ -45,10 +45,21 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import db.*;
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.Gauge.NeedleSize;
+import eu.hansolo.medusa.Gauge.ScaleDirection;
+import eu.hansolo.medusa.GaugeBuilder;
+import eu.hansolo.medusa.Marker;
+import eu.hansolo.medusa.Section;
+import eu.hansolo.medusa.TickLabelLocation;
+import eu.hansolo.medusa.TickMarkType;
+import eu.hansolo.medusa.skins.ModernSkin;
+import eu.hansolo.medusa.skins.SlimSkin;
 import gui.LineChartStat;
 import extfx.scene.control.*;
 import data_processing.UpdateData;
 import data_processing.generateFile;
+
 
 /**
  * Class MainWindow represents the application's main window.
@@ -362,16 +373,51 @@ public class MainWindow extends Application {
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
 
-      pbTemperature.setLayoutX(650);
-      pbTemperature.setLayoutY(200);
-      pbTemperature.setPrefSize(100, 20);
-      pbTemperature.getTransforms().setAll(new Rotate(-90, 0, 0));
-      rootGroup.getChildren().add(pbTemperature);
+    //-------------------------TEST GAUGE RADIAL---------------------------------------------
+      
+//      pbTemperature.setLayoutX(650);
+//      pbTemperature.setLayoutY(200);
+//      pbTemperature.setPrefSize(100, 20);
+//      pbTemperature.getTransforms().setAll(new Rotate(-90, 0, 0));
+//      rootGroup.getChildren().add(pbTemperature);
+      
+    //-------------------------TEST GAUGE RADIAL---------------------------------------------
+      Gauge gauge = GaugeBuilder.create()
+              .prefSize(160,160)
+              .scaleDirection(ScaleDirection.COUNTER_CLOCKWISE)
+              .tickLabelLocation(TickLabelLocation.OUTSIDE)
+              .startAngle(90)
+              .angleRange(270)
+              .minValue(-1)
+              .maxValue(2)
+              .zeroColor(Color.ORANGE)
+              .majorTickMarkType(TickMarkType.TRIANGLE)
+              .sectionsVisible(true)
+              .sections(new Section(1.5, 2, Color.rgb(200, 0, 0, 0.5)))
+              .areasVisible(true)
+              .areas(new Section(-0.5, 0.5, Color.rgb(0, 200, 0, 0.5)))
+              .markersVisible(true)
+              .markers(new Marker(0.75, "Marker 1", Color.MAGENTA))
+              .needleColor(Color.DARKCYAN)
+              .needleSize(NeedleSize.THICK)
+              .build();
+      gauge.setLayoutX(565);
+      gauge.setLayoutY(90);
+      gauge.setValue(1.5);
+      rootGroup.getChildren().add(gauge);
 
+      
+      
+      
+      
       // !!! JUST A RANDOM VALUE !!!!!!!!
       UpdateData updateData = new UpdateData(5000, 72 * 100000);
 
    }
+   
+//   public static void initTemp(){
+// 	  //radial = new GaugeBuilder().create().prefWidth(150);
+//   }
 
    /**
     *
@@ -406,9 +452,9 @@ public class MainWindow extends Application {
     *
     * @param value
     */
-   public static void updatePbTemperature(double value) {
-      pbTemperature.setProgress(value);
-   }
+//   public static void updatePbTemperature(double value) {
+//      pbTemperature.setProgress(value);
+//   }
 
    /**
     *
@@ -505,7 +551,8 @@ public class MainWindow extends Application {
    /**  */
    private static ProgressBar pbHumidity    = new ProgressBar();
    /**  */
-   private static ProgressBar pbTemperature = new ProgressBar();
+   //private static ProgressBar pbTemperature = new ProgressBar();
+   private static Gauge gauge;
    /**  */
    private static LineChartStat lcsTemperature;
    /**  */
