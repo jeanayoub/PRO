@@ -45,14 +45,20 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import db.*;
+import eu.hansolo.medusa.FGauge;
+import eu.hansolo.medusa.FGaugeBuilder;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.Gauge.NeedleSize;
 import eu.hansolo.medusa.Gauge.ScaleDirection;
 import eu.hansolo.medusa.GaugeBuilder;
+import eu.hansolo.medusa.GaugeDesign;
+import eu.hansolo.medusa.GaugeDesign.GaugeBackground;
 import eu.hansolo.medusa.Marker;
 import eu.hansolo.medusa.Section;
 import eu.hansolo.medusa.TickLabelLocation;
 import eu.hansolo.medusa.TickMarkType;
+import eu.hansolo.medusa.skins.DashboardSkin;
+import eu.hansolo.medusa.skins.KpiSkin;
 import eu.hansolo.medusa.skins.ModernSkin;
 import eu.hansolo.medusa.skins.SlimSkin;
 import gui.LineChartStat;
@@ -290,7 +296,7 @@ public class MainWindow extends Application {
       Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
       Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
       Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
-      Data data13 = new Data(2016, 4, 13,  7, 7, 35.0);
+      Data data13 = new Data(2016, 4, 13,  7, 7, -35.0);
 
       dataList.add(data1);
       dataList.add(data2);
@@ -362,10 +368,10 @@ public class MainWindow extends Application {
       /**
        * The Progress Bars
        */
-      pbPressure.setLayoutX(65);
-      pbPressure.setLayoutY(450);
-      pbPressure.setPrefSize(200, 30);
-      rootGroup.getChildren().add(pbPressure);
+//      pbPressure.setLayoutX(65);
+//      pbPressure.setLayoutY(450);
+//      pbPressure.setPrefSize(200, 30);
+//      rootGroup.getChildren().add(pbPressure);
 
       pbHumidity.setLayoutX(400);
       pbHumidity.setLayoutY(200);
@@ -383,10 +389,10 @@ public class MainWindow extends Application {
       
     //-------------------------TEST GAUGE RADIAL---------------------------------------------
       Gauge gauge = GaugeBuilder.create()
-              .prefSize(160,160)
+              .prefSize(180,180)
               .scaleDirection(ScaleDirection.COUNTER_CLOCKWISE)
               .tickLabelLocation(TickLabelLocation.OUTSIDE)
-              .startAngle(90)
+              .startAngle(0)
               .angleRange(270)
               .minValue(-1)
               .maxValue(2)
@@ -400,12 +406,25 @@ public class MainWindow extends Application {
               .markers(new Marker(0.75, "Marker 1", Color.MAGENTA))
               .needleColor(Color.DARKCYAN)
               .needleSize(NeedleSize.THICK)
+              .title("Temperature")
+              .unit("°C")
               .build();
       gauge.setLayoutX(565);
       gauge.setLayoutY(90);
       gauge.setValue(1.5);
       rootGroup.getChildren().add(gauge);
-
+      
+      PressionGauge = new Gauge();
+      PressionGauge.setSkin(new KpiSkin(PressionGauge));
+      PressionGauge.setUnit("bar");
+      PressionGauge.setLayoutX(50);
+      PressionGauge.setLayoutY(350);
+      PressionGauge.setValue(10);
+      PressionGauge.setBarColor(Color.AQUAMARINE);
+      
+      rootGroup.getChildren().add(PressionGauge);
+      
+      
       
       
       
@@ -434,9 +453,9 @@ public class MainWindow extends Application {
     *
     * @param value
     */
-   public static void updatePbPressure(double value) {
-      pbPressure.setProgress(value);
-   }
+//   public static void updatePbPressure(double value) {
+//      pbPressure.setProgress(value);
+//   }
 
    /**
     *
@@ -547,12 +566,14 @@ public class MainWindow extends Application {
    /**  */
    private static ImageView iv = new ImageView();
    /**  */
-   private static ProgressBar pbPressure    = new ProgressBar();
+   //private static ProgressBar pbPressure    = new ProgressBar();
    /**  */
    private static ProgressBar pbHumidity    = new ProgressBar();
    /**  */
    //private static ProgressBar pbTemperature = new ProgressBar();
-   private static Gauge gauge;
+   private static Gauge temperatureGauge;
+   
+   private static Gauge PressionGauge;
    /**  */
    private static LineChartStat lcsTemperature;
    /**  */
