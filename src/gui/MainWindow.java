@@ -11,15 +11,31 @@
  */
 package gui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import data_processing.UpdateData;
+import data_processing.generateFile;
+import db.Data;
+import eu.hansolo.enzo.lcd.Lcd;
+import eu.hansolo.enzo.lcd.LcdBuilder;
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.GaugeBuilder;
+import extfx.scene.control.CalendarView;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.scene.*;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
@@ -28,43 +44,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import db.*;
-import eu.hansolo.medusa.FGauge;
-import eu.hansolo.medusa.FGaugeBuilder;
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.Gauge.NeedleSize;
-import eu.hansolo.medusa.Gauge.ScaleDirection;
-import eu.hansolo.medusa.GaugeBuilder;
-import eu.hansolo.medusa.GaugeDesign;
-import eu.hansolo.medusa.GaugeDesign.GaugeBackground;
-import eu.hansolo.medusa.Marker;
-import eu.hansolo.medusa.Section;
-import eu.hansolo.medusa.TickLabelLocation;
-import eu.hansolo.medusa.TickMarkType;
-import eu.hansolo.medusa.skins.DashboardSkin;
-import eu.hansolo.medusa.skins.KpiSkin;
-import eu.hansolo.medusa.skins.ModernSkin;
-import eu.hansolo.medusa.skins.SlimSkin;
-import gui.LineChartStat;
-import extfx.scene.control.*;
-import data_processing.UpdateData;
-import data_processing.generateFile;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 /**
@@ -273,7 +262,7 @@ public class MainWindow extends Application {
       final Tab tabTemperature = new Tab("Température");
       final Tab tabHumidity = new Tab("Humidité");
       final Tab tabPressure = new Tab("Pression");
-      final Tab tabWind = new Tab("Vent");
+      final Tab tabWind = new Tab("Qualité d'air");
 
       tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabWind);
       tabPan.setLayoutX(350);
@@ -338,11 +327,11 @@ public class MainWindow extends Application {
                       							290,
                       							dataList);
 
-      lcsWind
-              = (LineChartStat) createLineChart("Vent",
-                      							"Variation de la vitesse du vent",
+      lcsWindQuality
+              = (LineChartStat) createLineChart("Qualité d'air",
+                      							"Variation de la qualité d'air",
                       							"Heures",
-                      							"Vitesse [km/h]",
+                      							"",
                       							450,
                       							290,
                       							dataList);
@@ -350,7 +339,7 @@ public class MainWindow extends Application {
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
       tabPressure.setContent(lcsPressure);
-      tabWind.setContent(lcsWind);
+      tabWind.setContent(lcsWindQuality);
 
       /**
        * !!! Just to test the updateSeries method. !!!
@@ -388,50 +377,56 @@ public class MainWindow extends Application {
 //      rootGroup.getChildren().add(pbTemperature);
       
     //-------------------------TEST GAUGE RADIAL---------------------------------------------
-      Gauge gauge = GaugeBuilder.create()
-              .prefSize(180,180)
-              .scaleDirection(ScaleDirection.COUNTER_CLOCKWISE)
-              .tickLabelLocation(TickLabelLocation.OUTSIDE)
-              .startAngle(0)
-              .angleRange(270)
-              .minValue(-1)
-              .maxValue(2)
-              .zeroColor(Color.ORANGE)
-              .majorTickMarkType(TickMarkType.TRIANGLE)
-              .sectionsVisible(true)
-              .sections(new Section(1.5, 2, Color.rgb(200, 0, 0, 0.5)))
-              .areasVisible(true)
-              .areas(new Section(-0.5, 0.5, Color.rgb(0, 200, 0, 0.5)))
-              .markersVisible(true)
-              .markers(new Marker(0.75, "Marker 1", Color.MAGENTA))
-              .needleColor(Color.DARKCYAN)
-              .needleSize(NeedleSize.THICK)
-              .title("Temperature")
-              .unit("°C")
-              .build();
-      gauge.setLayoutX(565);
-      gauge.setLayoutY(90);
-      gauge.setValue(1.5);
-      rootGroup.getChildren().add(gauge);
+ 
+      lcdTemperature = LcdBuilder.create()
+    		  	.prefWidth(220)
+    		  	.prefHeight(100)
+    		  	.layoutX(560)
+    		  	.layoutY(90)
+    		  	.styleClass(/*Lcd.STYLE_CLASS_FLAT_MIDNIGHT_BLUE*/Lcd.STYLE_CLASS_LIGHTGREEN_BLACK)
+    		  	.backgroundVisible(true)
+    		  	.valueFont(Lcd.LcdFont.DIGITAL_BOLD)
+    		  	.lowerRightTextVisible(true)
+    		  	.lowerRightText("PRO-2016")
+    		  	.value(10)
+    		  	.title("Temperature")
+    		  	.titleVisible(true)
+    		  	.unit("°C")
+    		  	.unitVisible(true)
+    		   	.build();
       
-      PressionGauge = new Gauge();
-      PressionGauge.setSkin(new KpiSkin(PressionGauge));
-      PressionGauge.setUnit("bar");
-      PressionGauge.setLayoutX(50);
-      PressionGauge.setLayoutY(350);
-      PressionGauge.setValue(10);
-      PressionGauge.setBarColor(Color.AQUAMARINE);
+      rootGroup.getChildren().add(lcdTemperature);
       
-      rootGroup.getChildren().add(PressionGauge);
+      pressionGauge = new Gauge();
+      
+      pressionGauge = GaugeBuilder.create()
+    		  			.knobColor(Color.AQUAMARINE)
+    		  			.borderPaint(Paint.valueOf("green"))
+    		  			.prefSize(310, 200)
+    		  			.minValue(0)
+    		  			.maxValue(1100)
+    		  			.title("Pression")
+    		  			.unit("Bar")
+    		  			.value(900)
+    		  			.unit("Pa")
+    		  			.shadowsEnabled(true)
+    		  			.layoutY(410)
+    		  			.build();
       
       
       
+      
+      
+      rootGroup.getChildren().add(pressionGauge);
+      
+      // TEst
+      final Image imRainLight  = new Image("file:meteoImages/imRainLight.png");
       
       
       
       // !!! JUST A RANDOM VALUE !!!!!!!!
       UpdateData updateData = new UpdateData(5000, 72 * 100000);
-
+      updateImageView(imRainLight);
    }
    
 //   public static void initTemp(){
@@ -508,7 +503,7 @@ public class MainWindow extends Application {
     * @param data
     */
    public static void updateLcsWind(Data data) {
-      lcsWind.updateSeries(data);
+	   lcsWindQuality.updateSeries(data);
    }
 
    /**
@@ -571,9 +566,9 @@ public class MainWindow extends Application {
    private static ProgressBar pbHumidity    = new ProgressBar();
    /**  */
    //private static ProgressBar pbTemperature = new ProgressBar();
-   private static Gauge temperatureGauge;
+   private static Lcd lcdTemperature;
    
-   private static Gauge PressionGauge;
+   private static Gauge pressionGauge;
    /**  */
    private static LineChartStat lcsTemperature;
    /**  */
@@ -581,7 +576,7 @@ public class MainWindow extends Application {
    /**  */
    private static LineChartStat lcsPressure;
    /**  */
-   private static LineChartStat lcsWind;
+   private static LineChartStat lcsWindQuality;
 
    /**
     * Main method for lunching the user window.

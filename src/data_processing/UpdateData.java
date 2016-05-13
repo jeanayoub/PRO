@@ -34,7 +34,7 @@ public class UpdateData {
 	final Image imSunny 	 = new Image("file:meteoImages/imSunny.png");
     final Image imSunnyCloud = new Image("file:meteoImages/imSunnyCloud.png");
     final Image imCloudy	 = new Image("file:meteoImages/imCloudy.png");
-    final Image imRainLight  = new Image("file:meteoImages/imRainLight.png");
+    
     final Image imRainHeavy  = new Image("file:meteoImages/imRainHeavy.png");
     final Image imSnow 		 = new Image("file:meteoImages/imSnow.png");
     final Image imNight		 = new Image("file:meteoImages/imNight.png");
@@ -103,7 +103,7 @@ public class UpdateData {
 			temperature = actualTemperatureValue;
 		}
 		
-
+		
 		
 		/*
 		if (Temperature.getLastData().getValue() > 3) 
