@@ -31,14 +31,22 @@ public class UpdateData {
 	/**
      * Declaration and definition of all the Images
      */
+	
+	/**  */
 	final Image imSunny 	 = new Image("file:meteoImages/imSunny.png");
+    /**  */
     final Image imSunnyCloud = new Image("file:meteoImages/imSunnyCloud.png");
+    /**  */
     final Image imCloudy	 = new Image("file:meteoImages/imCloudy.png");
-    
+    /**  */
     final Image imRainHeavy  = new Image("file:meteoImages/imRainHeavy.png");
+    /**  */
     final Image imSnow 		 = new Image("file:meteoImages/imSnow.png");
+    /**  */
     final Image imNight		 = new Image("file:meteoImages/imNight.png");
+    /**  */
     final Image imNightRain	 = new Image("file:meteoImages/imNightRain.png");
+    /**  */
     final Image imNightSnow	 = new Image("file:meteoImages/imNightSnow.png");
     
  	
@@ -63,7 +71,7 @@ public class UpdateData {
 															  Sensor.TEMPERATURE));
 				MainWindow.updateLcsHumidity(Data.getLastData(Sensor.HUMIDITY));
 				MainWindow.updateLcsPressure(Data.getLastData(Sensor.PRESSURE));
-				MainWindow.updateLcsWind(Data.getLastData(    Sensor.WIND));
+				MainWindow.updateLcsAirQuality(Data.getLastData(    Sensor.WIND));
 			}
 			}, 0, period2);
 		}
@@ -81,15 +89,15 @@ public class UpdateData {
 										Sensor.HUMIDITY).getValue();
 		double actualPressureValue    = Data.getLastData(
 										Sensor.PRESSURE).getValue();
-		double actualWindValue        = Data.getLastData(
-										Sensor.WIND).getValue();
+		double actualAirQualityValue  = Data.getLastData(
+										Sensor.AIR_QUALITY).getValue();
 		double actualRadiancyValue    = Data.getLastData(
 										Sensor.RADIANCY).getValue();
 		
 		
 		
 		if (pressure != actualPressureValue) {
-			MainWindow.updatePbPressure(actualPressureValue);
+			MainWindow.updatePressureGauge(actualPressureValue);
 			pressure = actualPressureValue;
 		}
 			
@@ -99,7 +107,7 @@ public class UpdateData {
 		}
 		
 		if (temperature != actualTemperatureValue) {
-			MainWindow.updatePbTemperature(actualTemperatureValue);
+			MainWindow.updateLcdTemperature(actualTemperatureValue);
 			temperature = actualTemperatureValue;
 		}
 		

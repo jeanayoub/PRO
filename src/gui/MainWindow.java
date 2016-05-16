@@ -327,7 +327,7 @@ public class MainWindow extends Application {
                       							290,
                       							dataList);
 
-      lcsWindQuality
+      lcsAirQuality
               = (LineChartStat) createLineChart("Qualité d'air",
                       							"Variation de la qualité d'air",
                       							"Heures",
@@ -339,7 +339,7 @@ public class MainWindow extends Application {
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
       tabPressure.setContent(lcsPressure);
-      tabWind.setContent(lcsWindQuality);
+      tabWind.setContent(lcsAirQuality);
 
       /**
        * !!! Just to test the updateSeries method. !!!
@@ -355,26 +355,15 @@ public class MainWindow extends Application {
       ((Group) scene.getRoot()).getChildren().addAll(tabPan);
 
       /**
-       * The Progress Bars
+       * The humidity Progress Bar
        */
-//      pbPressure.setLayoutX(65);
-//      pbPressure.setLayoutY(450);
-//      pbPressure.setPrefSize(200, 30);
-//      rootGroup.getChildren().add(pbPressure);
-
       pbHumidity.setLayoutX(400);
       pbHumidity.setLayoutY(200);
       pbHumidity.setPrefSize(100, 20);
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
-
-    //-------------------------TEST GAUGE RADIAL---------------------------------------------
       
-//      pbTemperature.setLayoutX(650);
-//      pbTemperature.setLayoutY(200);
-//      pbTemperature.setPrefSize(100, 20);
-//      pbTemperature.getTransforms().setAll(new Rotate(-90, 0, 0));
-//      rootGroup.getChildren().add(pbTemperature);
+
       
     //-------------------------TEST GAUGE RADIAL---------------------------------------------
  
@@ -397,9 +386,9 @@ public class MainWindow extends Application {
       
       rootGroup.getChildren().add(lcdTemperature);
       
-      pressionGauge = new Gauge();
+      pressureGauge = new Gauge();
       
-      pressionGauge = GaugeBuilder.create()
+      pressureGauge = GaugeBuilder.create()
     		  			.knobColor(Color.AQUAMARINE)
     		  			.borderPaint(Paint.valueOf("green"))
     		  			.prefSize(310, 200)
@@ -417,7 +406,7 @@ public class MainWindow extends Application {
       
       
       
-      rootGroup.getChildren().add(pressionGauge);
+      rootGroup.getChildren().add(pressureGauge);
       
       // TEst
       final Image imRainLight  = new Image("file:meteoImages/imRainLight.png");
@@ -436,21 +425,35 @@ public class MainWindow extends Application {
    /**
     *
     *
-    * @param iv
     * @param image
     */
    public static void updateImageView(Image image) {
       iv.setImage(image);
    }
-
+   
+   
+   
    /**
-    *
-    *
-    * @param value
-    */
-//   public static void updatePbPressure(double value) {
-//      pbPressure.setProgress(value);
-//   }
+   *
+   *
+   * @param value
+   */
+  public static void updateLcdTemperature(double value) {
+	  lcdTemperature.setValue(value);
+  }
+  
+  
+  
+  /**
+  *
+  *
+  * @param value
+  */
+ public static void updatePressureGauge(double value) {
+	 pressureGauge.setValue(value);
+ }
+   
+   
 
    /**
     *
@@ -461,14 +464,7 @@ public class MainWindow extends Application {
       pbHumidity.setProgress(value);
    }
 
-   /**
-    *
-    *
-    * @param value
-    */
-//   public static void updatePbTemperature(double value) {
-//      pbTemperature.setProgress(value);
-//   }
+   
 
    /**
     *
@@ -502,9 +498,11 @@ public class MainWindow extends Application {
     *
     * @param data
     */
-   public static void updateLcsWind(Data data) {
-	   lcsWindQuality.updateSeries(data);
+   public static void updateLcsAirQuality(Data data) {
+	   lcsAirQuality.updateSeries(data);
    }
+   
+   
 
    /**
     * This method creats a line chart graph customized for this application.
@@ -557,18 +555,15 @@ public class MainWindow extends Application {
     //----------------------------------Pascal--------------------------------------
 
    /** A copy of the tabPane */
-   private TabPane copyPane = new TabPane();
+   private 		  TabPane 		copyPane 		= new TabPane();
    /**  */
-   private static ImageView iv = new ImageView();
+   private static ImageView 	iv 				= new ImageView();
    /**  */
-   //private static ProgressBar pbPressure    = new ProgressBar();
+   private static ProgressBar 	pbHumidity 		= new ProgressBar();
    /**  */
-   private static ProgressBar pbHumidity    = new ProgressBar();
+   private static Lcd 			lcdTemperature;
    /**  */
-   //private static ProgressBar pbTemperature = new ProgressBar();
-   private static Lcd lcdTemperature;
-   
-   private static Gauge pressionGauge;
+   private static Gauge 		pressureGauge;
    /**  */
    private static LineChartStat lcsTemperature;
    /**  */
@@ -576,7 +571,7 @@ public class MainWindow extends Application {
    /**  */
    private static LineChartStat lcsPressure;
    /**  */
-   private static LineChartStat lcsWindQuality;
+   private static LineChartStat lcsAirQuality;
 
    /**
     * Main method for lunching the user window.

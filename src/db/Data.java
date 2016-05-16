@@ -160,7 +160,7 @@ public class Data {
 		WIND("sensorWind"),
 		RADIANCY("sensorRadiancy"),
 		RAIN("sensorRain"),
-		AIRQUALITY("sensorAirQuality");
+		AIR_QUALITY("sensorAirQuality");
 		
 		private Sensor (String id) {
 			this.id = id;
