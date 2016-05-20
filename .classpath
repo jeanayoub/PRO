@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/Ayoubo/Documents/Eclipse JAVA/PRO/pdfbox-app-1.8.11.jar"/>
-	<classpathentry kind="lib" path="/Users/Ayoubo/Documents/Eclipse JAVA/PRO/Medusa-4.9.jar"/>
-	<classpathentry kind="lib" path="/Users/Ayoubo/Documents/Eclipse JAVA/PRO/Enzo-0.3.6.jar"/>
-	<classpathentry kind="lib" path="/Users/Ayoubo/Documents/Eclipse JAVA/PRO/mysql-connector-java-5.1.39-bin.jar"/>
+	<classpathentry kind="lib" path="lib/Enzo-0.3.6.jar"/>
+	<classpathentry kind="lib" path="lib/Medusa-4.9.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.39-bin.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-app-1.8.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

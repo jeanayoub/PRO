@@ -124,7 +124,6 @@ public class LineChartStat extends LineChart<String, Number> {
 	}
 	
 	
-	
 public void refreshChart () {
 	this.updateAxisRange();
 	}
