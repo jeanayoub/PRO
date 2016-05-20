@@ -210,14 +210,13 @@ public class Data {
 				else
 					month = Integer.parseInt(String.valueOf(tempString.substring(6,7)));
 				
-				
-				if (Integer.parseInt(String.valueOf(tempString.substring(8,9))) == 1)
+				if (Integer.parseInt(String.valueOf(tempString.substring(8,9))) != 0)
 					day = Integer.parseInt(tempString.substring(8,10));
 				else
 					day = Integer.parseInt(String.valueOf(tempString.substring(9,10)));
 				
 				
-				tempString        = time.toString();
+				tempString = time.toString();
 				
 				if (Integer.parseInt(tempString.substring(0, 1)) == 0)
 					hours = Integer.parseInt(tempString.substring(1, 2));
@@ -246,7 +245,7 @@ public class Data {
 		      if (dbConn != null)
 		       dbConn.close();
 		     }
-		
+			
 		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
 	}

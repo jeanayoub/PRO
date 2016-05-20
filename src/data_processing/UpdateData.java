@@ -12,13 +12,11 @@
 package data_processing;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 import db.Data;
 import db.Data.Sensor;
 import gui.MainWindow;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
@@ -128,7 +126,6 @@ public class UpdateData {
 	 *
 	 */
 	private void checkLatestData () {
-		
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
