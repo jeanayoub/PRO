@@ -25,7 +25,10 @@ import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import extfx.scene.control.CalendarView;
+import extfx.scene.control.DatePicker;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -46,6 +49,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -54,6 +58,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 
 
 /**
@@ -226,15 +231,30 @@ public class MainWindow extends Application {
        * The menu item for the menu Calendar and its content which is the Calendar
        * view
        */
+      
+      
+      
       final MenuItem miCalendarShow = new MenuItem("Afficher");
       final CalendarView cv = new CalendarView(Locale.FRENCH);
       menuCalendar.getItems().addAll(miCalendarShow);
+      
+
+      
+      /*
+      cv.setOnMousePressed(new EventHandler<MouseEvent>() {
+          public void handle(MouseEvent me) {
+        	  System.out.println(cv.getSelectedDate());
+            }
+          });
+       */
 
       /**
        * The dialog box to be shown once pressed on the Show menu item.
        */
       final Dialog<CalendarView> dialogCv = new Dialog<CalendarView>();
       dialogCv.setGraphic(cv);
+      //final Dialog<DatePicker> dialogCv = new Dialog<DatePicker>();
+      //dialogCv.setGraphic(dp);
       dialogCv.getDialogPane().setPrefSize(250, 250);
       dialogCv.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
       Node closeButtonDialogCv = dialogCv.getDialogPane().lookupButton(ButtonType.CLOSE);
@@ -262,9 +282,9 @@ public class MainWindow extends Application {
       final Tab tabTemperature = new Tab("Température");
       final Tab tabHumidity = new Tab("Humidité");
       final Tab tabPressure = new Tab("Pression");
-      final Tab tabWind = new Tab("Qualité d'air");
+      final Tab tabAirQuality = new Tab("Qualité d'air");
 
-      tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabWind);
+      tabPan.getTabs().addAll(tabTemperature, tabHumidity, tabPressure, tabAirQuality);
       tabPan.setLayoutX(350);
       tabPan.setLayoutY(280);
       copyPane = tabPan;
@@ -287,6 +307,7 @@ public class MainWindow extends Application {
       Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
       Data data13 = new Data(2016, 4, 13,  7, 7, -35.0);
 
+      
       dataList.add(data1);
       dataList.add(data2);
       dataList.add(data3);
@@ -299,12 +320,14 @@ public class MainWindow extends Application {
       dataList.add(data10);
       dataList.add(data11);
       dataList.add(data12);
+      
+      
 
       lcsTemperature
               = (LineChartStat) createLineChart("Température",
                       							"Variation de la température",
                       							"Heures",
-                      							"Temperature [C]",
+                      							"Temperature [°C]",
                       							450,
                       							290,
                       							dataList);
@@ -322,7 +345,7 @@ public class MainWindow extends Application {
               = (LineChartStat) createLineChart("Pression",
                       							"Variation de la pression",
                       							"Heures",
-                      							"Pression [bar]",
+                      							"Pression [hPa]",
                       							450,
                       							290,
                       							dataList);
@@ -331,7 +354,7 @@ public class MainWindow extends Application {
               = (LineChartStat) createLineChart("Qualité d'air",
                       							"Variation de la qualité d'air",
                       							"Heures",
-                      							"",
+                      							"indice[0 - 5.5]",
                       							450,
                       							290,
                       							dataList);
@@ -339,19 +362,32 @@ public class MainWindow extends Application {
       tabTemperature.setContent(lcsTemperature);
       tabHumidity.setContent(lcsHumidity);
       tabPressure.setContent(lcsPressure);
-      tabWind.setContent(lcsAirQuality);
+      tabAirQuality.setContent(lcsAirQuality);
 
       /**
        * !!! Just to test the updateSeries method. !!!
        */
-      lcsTemperature.updateSeries(data13);
+      //lcsTemperature.updateSeries(data13);
       //lcsTemperature.updateSeries(Temperature.getLastData());
 
       tabTemperature.setClosable(false);
       tabHumidity.setClosable(false);
       tabPressure.setClosable(false);
-      tabWind.setClosable(false);
-
+      tabAirQuality.setClosable(false);
+      
+      tabPan.getSelectionModel().selectedItemProperty().addListener(
+    		    new ChangeListener<Tab>() {
+    		        @Override
+    		        public void changed(ObservableValue<? extends Tab> ov, Tab tabTemperature, Tab tabHumidity) {
+    		        	
+    		        	lcsTemperature.refreshChart();
+    		        	lcsHumidity.refreshChart();
+    		        	lcsPressure.refreshChart();
+    		        	lcsAirQuality.refreshChart();
+    		        }
+    		    }
+    		);
+      
       ((Group) scene.getRoot()).getChildren().addAll(tabPan);
 
       /**
@@ -377,7 +413,6 @@ public class MainWindow extends Application {
     		  	.valueFont(Lcd.LcdFont.DIGITAL_BOLD)
     		  	.lowerRightTextVisible(true)
     		  	.lowerRightText("PRO-2016")
-    		  	.value(10)
     		  	.title("Temperature")
     		  	.titleVisible(true)
     		  	.unit("°C")
@@ -386,8 +421,8 @@ public class MainWindow extends Application {
       
       rootGroup.getChildren().add(lcdTemperature);
       
-      pressureGauge = new Gauge();
       
+      pressureGauge = new Gauge();
       pressureGauge = GaugeBuilder.create()
     		  			.knobColor(Color.AQUAMARINE)
     		  			.borderPaint(Paint.valueOf("green"))
@@ -395,32 +430,24 @@ public class MainWindow extends Application {
     		  			.minValue(0)
     		  			.maxValue(1100)
     		  			.title("Pression")
-    		  			.unit("Bar")
-    		  			.value(900)
-    		  			.unit("Pa")
+    		  			.unit("hPa")
+    		  			.unit("hPa")
     		  			.shadowsEnabled(true)
     		  			.layoutY(410)
     		  			.build();
-      
-      
-      
-      
-      
+
       rootGroup.getChildren().add(pressureGauge);
       
-      // TEst
-      final Image imRainLight  = new Image("file:meteoImages/imRainLight.png");
-      
-      
-      
+ 
       // !!! JUST A RANDOM VALUE !!!!!!!!
-      UpdateData updateData = new UpdateData(5000, 72 * 100000);
-      updateImageView(imRainLight);
+      //UpdateData updateData = new UpdateData(5000);
+      
+      
+      UpdateData updateData = new UpdateData(5000);
+      
    }
    
-//   public static void initTemp(){
-// 	  //radial = new GaugeBuilder().create().prefWidth(150);
-//   }
+
 
    /**
     *
@@ -461,7 +488,8 @@ public class MainWindow extends Application {
     * @param value
     */
    public static void updatePbHumidity(double value) {
-      pbHumidity.setProgress(value);
+      pbHumidity.setProgress(value/100.);
+     // pbHumidity.setVisible(true);
    }
 
    
@@ -580,7 +608,6 @@ public class MainWindow extends Application {
     */
    public static void main(String[] args) {
       Application.launch(MainWindow.class, args);
-
    }
 
 }

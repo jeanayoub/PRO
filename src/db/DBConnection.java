@@ -30,8 +30,8 @@ import java.sql.Statement;
  */
 public class DBConnection {
 
-	// NEED TO BE UPDATED
-	private static final String URL =  "jdbc:mysql://localhost:3306/xxx?user=root&password=";
+	/** NEED TO BE UPDATED */
+	private static final String URL = "jdbc:mysql://limayankee.com:3306/pro_meteo?user=prometeo&password=sO_6qq11";
 
 	
 	/**  */

@@ -150,17 +150,14 @@ public class Data {
 	
 	
 	
-	
-	
 	public enum Sensor {
 		
-		TEMPERATURE("sensorTemperature"),
-		HUMIDITY("sensorHumidity"),
-		PRESSURE("sensorPressure"),
-		WIND("sensorWind"),
-		RADIANCY("sensorRadiancy"),
-		RAIN("sensorRain"),
-		AIR_QUALITY("sensorAirQuality");
+		TEMPERATURE("temperatureSensor"),
+		HUMIDITY("humiditySensor"),
+		PRESSURE("pressureSensor"),
+		RADIANCY("radiancySensor"),
+		RAIN("rainSensor"),
+		AIR_QUALITY("airQualitySensor");
 		
 		private Sensor (String id) {
 			this.id = id;
@@ -183,7 +180,7 @@ public class Data {
 	 * @return the last data in the db for the selected sensorID.
 	 */
 	public static Data getLastData(Sensor sensor) {
-		final String QUERY   = "CALL derniereValeurCaptee('" + sensor + "');";
+		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');";
 		DBConnection dbConn  = null ; 
 		Double 		 value   = 0.;
 		Date   		 date    = null;
@@ -200,23 +197,45 @@ public class Data {
 			
 			ResultSet result = dbConn.executeQuery(QUERY);
 			if (result.next()){
-				value = result.getDouble("mesure");
-				date  = result.getDate("dates");
-				time  = result.getTime("heure");
+				value = result.getDouble("value_");
+				date  = result.getDate  ("date_");
+				time  = result.getTime  ("time_");
 				
 				// TEST DB !!!!!
 				//System.out.println(value + " : " + date + ":" + time);
 				String tempString = date.toString();
-				year              = Integer.parseInt(tempString.substring(0, 3));
-				month             = Integer.parseInt(tempString.substring(5,6));
-				day               = Integer.parseInt(tempString.substring(8,9));	
+				year              = Integer.parseInt(tempString.substring(0, 4));
+				if (Integer.parseInt(tempString.substring(5,6)) == 1)
+					month = Integer.parseInt(tempString.substring(5,7));
+				else
+					month = Integer.parseInt(String.valueOf(tempString.substring(6,7)));
+				
+				
+				if (Integer.parseInt(String.valueOf(tempString.substring(8,9))) == 1)
+					day = Integer.parseInt(tempString.substring(8,10));
+				else
+					day = Integer.parseInt(String.valueOf(tempString.substring(9,10)));
+				
 				
 				tempString        = time.toString();
-				hours             = Integer.parseInt(tempString.substring(0, 1));
-				minutes    		  = Integer.parseInt(tempString.substring(3,4));
-				seconds           = Integer.parseInt(tempString.substring(6,7));	
+				
+				if (Integer.parseInt(tempString.substring(0, 1)) == 0)
+					hours = Integer.parseInt(tempString.substring(1, 2));
+				else
+					hours = Integer.parseInt(tempString.substring(0, 2));
+
+				
+				if (Integer.parseInt(tempString.substring(3, 4)) == 0)
+					minutes = Integer.parseInt(tempString.substring(4, 5));
+				else
+					minutes = Integer.parseInt(tempString.substring(3, 5));
+				
+				
+				if (Integer.parseInt(tempString.substring(6, 7)) == 0)
+					seconds = Integer.parseInt(tempString.substring(7, 8));
+				else
+					seconds = Integer.parseInt(tempString.substring(6, 8));	
 			}
-		
 		}
 		catch (SQLException se){
 		      System.out.println("An error occurated during the execution!");
@@ -228,6 +247,7 @@ public class Data {
 		       dbConn.close();
 		     }
 		
+		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
 	}
 	

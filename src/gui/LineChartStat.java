@@ -110,11 +110,23 @@ public class LineChartStat extends LineChart<String, Number> {
 	 */
 	public void updateSeries(db.Data data) {
 		
-		if (!series.getData().isEmpty() && series.getData().size() >= MAX_SHOWING) 
-			series.getData().remove(0);
+		if (series.getData().size() != 0) {
+			if(data.getTime().substring(0,5).equals(series.getData().get(series.getData().size() - 1).getXValue())) {
+				return;
+			}
+		}
+		
+		if (series.getData().size() >= MAX_SHOWING) 
+			series.getData().remove(0, series.getData().size() - MAX_SHOWING);
 		
 		series.getData().add(
 				new XYChart.Data<String, Number> (data.getTime(), data.getValue()));
+	}
+	
+	
+	
+public void refreshChart () {
+	this.updateAxisRange();
 	}
 	
 	
