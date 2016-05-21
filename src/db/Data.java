@@ -18,6 +18,8 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import gui.MainWindow;
+
 
 
 /**
@@ -181,7 +183,7 @@ public class Data {
 	 */
 	public static Data getLastData(Sensor sensor) {
 		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');";
-		DBConnection dbConn  = null ; 
+		//DBConnection dbConn  = null ; 
 		Double 		 value   = 0.;
 		Date   		 date    = null;
 		Time   		 time    = null;
@@ -193,9 +195,11 @@ public class Data {
 					 seconds = 0;
 		
 		try{
-			dbConn = new DBConnection();
 			
+			dbConn = new DBConnection(MainWindow.getConnectionForm());
+						
 			ResultSet result = dbConn.executeQuery(QUERY);
+			//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
 			if (result.next()){
 				value = result.getDouble("value_");
 				date  = result.getDate  ("date_");
@@ -242,8 +246,8 @@ public class Data {
 		     }
 
 		     finally {
-		      if (dbConn != null)
-		       dbConn.close();
+		      if (OpenConnection.getConnectionLink() != null)
+		    	  OpenConnection.getConnectionLink().close();
 		     }
 			
 		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
@@ -273,4 +277,5 @@ public class Data {
 	private LocalDateTime dateAndTime;
 	/** Value of the data */
 	private double 		  value;
+	private static DBConnection dbConn;
 }

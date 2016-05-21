@@ -11,10 +11,13 @@
  */
 package data_processing;
 
+import java.sql.SQLException;
 import java.util.Timer;
 
+import db.DBConnection;
 import db.Data;
 import db.Data.Sensor;
+import db.OpenConnection;
 import gui.MainWindow;
 import javafx.animation.Timeline;
 import javafx.event.Event;
@@ -56,6 +59,8 @@ public class UpdateData {
     /**  */
     final Image imNightSnow	  = new Image("file:meteoImages/imNightSnow.png");
     
+     
+    
  	
 	
 	/**
@@ -63,13 +68,23 @@ public class UpdateData {
 	 * 
 	 * @param period1
 	 * @param period2
+	 * @throws SQLException 
 	 */
-	public UpdateData (long period) {
-		
+	public UpdateData (long period){
+		System.out.println("initialisation");
 		final Timeline timeline = new Timeline(
 			      new KeyFrame(Duration.millis(3000), new EventHandler() {
 			        @Override public void handle(Event event) {
-			        	checkLatestData();
+//			        	status = MainWindow.getConnectionForm().getFormStatus();
+//			        	System.out.println("enAttente");
+//			        	if(status == true){
+//			        		status = false;
+//			        		System.out.println("TRUE");
+//			        		OpenConnection openConnection = new OpenConnection(MainWindow.getConnectionForm());
+			        		checkLatestData();
+			        	//}
+			        	
+			        	
 			        }
 			      }),  
 			      new KeyFrame(Duration.millis(period))
@@ -78,6 +93,7 @@ public class UpdateData {
 		 timeline.play();
 		 
 	}
+	
 		
 		/*
 		new Timeline( new Timeline(
@@ -225,7 +241,7 @@ public class UpdateData {
 			if (Data.getLastData(Sensor.RADIANCY).getValue() > 250) {
 				
 				/**
-				 * It's extremly sunny
+				 * It's extremely sunny
 				 */
 				if (Data.getLastData(Sensor.RADIANCY).getValue() > 450)
 					MainWindow.updateImageView(imSunny);
@@ -262,4 +278,7 @@ public class UpdateData {
 	private double humidity;
 	/** The actual temperature */
 	private double temperature;
+	
+	private static boolean status;
+	private static int timeToStop;
 }

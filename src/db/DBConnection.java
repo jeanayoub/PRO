@@ -31,8 +31,8 @@ import java.sql.Statement;
 public class DBConnection {
 
 	/** NEED TO BE UPDATED */
-	private static final String URL = "jdbc:mysql://limayankee.com:3306/pro_meteo?user=prometeo&password=sO_6qq11";
-
+	//private static final String URL = "jdbc:mysql://limayankee.com:3306/pro_meteo?user=prometeo&password=sO_6qq11";
+	private static String URL;
 	
 	/**  */
 	private Connection connection;
@@ -45,8 +45,21 @@ public class DBConnection {
 	 * 
 	 * @throws SQLException
 	 */
-	public DBConnection () throws SQLException{
+	public DBConnection (ConnectionForm connectionForm) throws SQLException{
+		System.out.println("InDBconnectionDebug");
+		System.out.println("Status = "+connectionForm.getFormStatus());
 
+		System.out.println("CheckFormStatusOut");
+		URL = "jdbc:mysql://"+connectionForm.getHostname()+":"+connectionForm.getPort()+"/"+connectionForm.getConnectionName()+"?user="+connectionForm.getUsername()+"&password="+connectionForm.getPassword();
+		
+		// To check out the informations entered in the form
+		System.out.println(connectionForm.getHostname());
+		System.out.println(connectionForm.getPort());
+		System.out.println(connectionForm.getConnectionName());
+		System.out.println(connectionForm.getUsername());
+		System.out.println(connectionForm.getPassword());
+		
+		
 		connection = DriverManager.getConnection(URL);	
 		statement  = connection.createStatement();
 	}
