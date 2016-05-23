@@ -17,7 +17,6 @@ import java.util.Timer;
 import db.DBConnection;
 import db.Data;
 import db.Data.Sensor;
-import db.OpenConnection;
 import gui.MainWindow;
 import javafx.animation.Timeline;
 import javafx.event.Event;
@@ -70,21 +69,24 @@ public class UpdateData {
 	 * @param period2
 	 * @throws SQLException 
 	 */
-	public UpdateData (long period){
-		System.out.println("initialisation");
-		final Timeline timeline = new Timeline(
+	public UpdateData (long period) {
+
+		timeline = new Timeline(
 			      new KeyFrame(Duration.millis(3000), new EventHandler() {
 			        @Override public void handle(Event event) {
-//			        	status = MainWindow.getConnectionForm().getFormStatus();
-//			        	System.out.println("enAttente");
-//			        	if(status == true){
-//			        		status = false;
-//			        		System.out.println("TRUE");
-//			        		OpenConnection openConnection = new OpenConnection(MainWindow.getConnectionForm());
+			        	
+			        	try {
+			    			DBConnection dbConn = new DBConnection(MainWindow.getConnectionForm());
+			    			connectionError = false;
+			    			System.out.println("connection successful");
+			    		} catch (SQLException e) {
+			    			connectionError = true;
+			    			System.out.println("connection failed !");
+			    			return;
+			    		}
+			    		
 			        		checkLatestData();
-			        	//}
-			        	
-			        	
+
 			        }
 			      }),  
 			      new KeyFrame(Duration.millis(period))
@@ -94,54 +96,13 @@ public class UpdateData {
 		 
 	}
 	
-		
-		/*
-		new Timeline( new Timeline(
-		        Duration.millis(period),
-		        
-		        //setCycleCount(Timeline.INDEFINITE)
-		        
-		       ae -> checkLatestData()))
-			
-		    .play();
-		        
-	}
-	*/
-		        
-		  /*      
-	
-		Timeline.schedule(new TimerTask() {
-			public void run()  {
-				checkLatestData ();
-				
-				MainWindow.updateLcsTemperature(Data.getLastData(
-						Sensor.TEMPERATURE));
-		MainWindow.updateLcsHumidity   (Data.getLastData(
-						Sensor.HUMIDITY));
-		MainWindow.updateLcsPressure   (Data.getLastData(
-						Sensor.PRESSURE));
-		MainWindow.updateLcsAirQuality (Data.getLastData(
-						Sensor.AIR_QUALITY));
-		
-			}
-			}, 2000, period);
-			
-		
-		//timer.schedule(new TimerTask() {
-			//public void run()  {
-				
-			//}
-			//}, 0, period2);
-			
-		}
-		*/
-	
 	
 	/**
 	 * 
 	 *
 	 */
 	private void checkLatestData () {
+		
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -155,13 +116,11 @@ public class UpdateData {
 				Sensor.RADIANCY);
 		
 		
-		
 		double actualTemperatureValue = actualTemperature.getValue();
 		double actualHumidityValue    = actualHumidity.getValue();
 		double actualPressureValue    = actualPressure.getValue();
 		//double actualAirQualityValue  = actualAirQuality.getValue();
 		//double actualRadiancyValue    = actualRadiancy.getValue();
-		
 		
 		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
@@ -179,15 +138,12 @@ public class UpdateData {
 			temperature = actualTemperatureValue;
 		}
 		
-		
 
 		MainWindow.updateLcsTemperature(actualTemperature);
 		MainWindow.updateLcsHumidity   (actualHumidity);
 		MainWindow.updateLcsPressure   (actualPressure);
 		MainWindow.updateLcsAirQuality (actualAirQuality);
-		
-		
-		
+				
 		
 		
 		/**
@@ -268,6 +224,11 @@ public class UpdateData {
 	
 	
 	
+	public static boolean getConnectionError() {
+		return connectionError;
+	}
+	
+	
 	
 	/**  */
 	public static Timer timer = new Timer();
@@ -281,4 +242,8 @@ public class UpdateData {
 	
 	private static boolean status;
 	private static int timeToStop;
+	
+	private static boolean connectionError = false;
+	
+	private Timeline timeline = new Timeline();
 }

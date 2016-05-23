@@ -10,7 +10,6 @@ public class OpenConnection {
 			System.out.println("OpenConexDebug");
 			dbConn = new DBConnection(connectionForm);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Error in openning connection to the database");
 			e.printStackTrace();
 		}

@@ -14,10 +14,10 @@ public class ConnectionForm {
 	
 	public ConnectionForm(String connectionName, String hostname, int port, String username, String password){
 		this.connectionName = connectionName;
-		this.hostname = hostname;
-		this.port = port;
-		this.username = username;
-		this.password = password;
+		this.hostname 		= hostname;
+		this.port 			= port;
+		this.username 		= username;
+		this.password 		= password;
 		
 		formFilled = true;
 	}
@@ -49,7 +49,7 @@ public class ConnectionForm {
 	
 	private  String connectionName;
 	private  String hostname;
-	private  int port;
+	private  int 	port;
 	private  String username;
 	private  String password;
 	private boolean formFilled = false;

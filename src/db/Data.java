@@ -182,8 +182,7 @@ public class Data {
 	 * @return the last data in the db for the selected sensorID.
 	 */
 	public static Data getLastData(Sensor sensor) {
-		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');";
-		//DBConnection dbConn  = null ; 
+		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');"; 
 		Double 		 value   = 0.;
 		Date   		 date    = null;
 		Time   		 time    = null;
@@ -197,7 +196,6 @@ public class Data {
 		try{
 			
 			dbConn = new DBConnection(MainWindow.getConnectionForm());
-						
 			ResultSet result = dbConn.executeQuery(QUERY);
 			//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
 			if (result.next()){
@@ -206,7 +204,7 @@ public class Data {
 				time  = result.getTime  ("time_");
 				
 				// TEST DB !!!!!
-				//System.out.println(value + " : " + date + ":" + time);
+				//cvalue + " : " + date + ":" + time);
 				String tempString = date.toString();
 				year              = Integer.parseInt(tempString.substring(0, 4));
 				if (Integer.parseInt(tempString.substring(5,6)) == 1)
@@ -239,6 +237,7 @@ public class Data {
 				else
 					seconds = Integer.parseInt(tempString.substring(6, 8));	
 			}
+			
 		}
 		catch (SQLException se){
 		      System.out.println("An error occurated during the execution!");
@@ -249,7 +248,7 @@ public class Data {
 		      if (OpenConnection.getConnectionLink() != null)
 		    	  OpenConnection.getConnectionLink().close();
 		     }
-			
+		
 		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
 	}
@@ -271,11 +270,24 @@ public class Data {
 	}
 	
 	
+	/**
+	 * 
+	 *
+	 * @return
+	 */
+	//public static boolean getConnectioErrorStatus () {
+	//	return connectionError;
+	//}
+	
+	
 	
 		
 	/** Date and time of the data */
 	private LocalDateTime dateAndTime;
 	/** Value of the data */
 	private double 		  value;
+	/**  */
 	private static DBConnection dbConn;
+	/**  */
+	//private static boolean connectionError = false;
 }

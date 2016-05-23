@@ -12,6 +12,7 @@
 package gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -27,10 +28,13 @@ import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import extfx.scene.control.CalendarView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -74,6 +78,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 
 
@@ -647,10 +652,35 @@ public class MainWindow extends Application {
  
       
       // Before updating data we need to connect to the data base
-         //connectionForm = new ConnectionForm();
-	     UpdateData updateData = new UpdateData(5000);
-
+      connectionForm = new ConnectionForm();
+	   
+      timeline = new Timeline(
+		      	 new KeyFrame(Duration.millis(3000), new EventHandler() {
+		      	@Override public void handle(Event event) {
+		        		//checkLatestData();
+		        	System.out.println("waiting for conection");
+		        	if (connectionForm.getFormStatus()) {	
+		          		UpdateData updateData = new UpdateData(5000);
+		          		//if (!Data.getConnectioErrorStatus())
+		          		//	timeline.stop();
+		          		
+		          		if (!UpdateData.getConnectionError()) {
+		          			timeline.stop();
+		          		}
+		          		
+		          		
+		          		}
+		        }
+		      }),  
+		    new KeyFrame(Duration.millis(3000))
+		    );
+     
+	 timeline.setCycleCount(Timeline.INDEFINITE);
+	 timeline.play();
+   
    }
+   
+   
    
 //
 //   public static void getConnexionInfo(Button btnLogin){
@@ -821,6 +851,8 @@ public class MainWindow extends Application {
    private static LineChartStat lcsAirQuality;
    
    private static ConnectionForm connectionForm;
+   
+   private Timeline timeline;
    
    //private static DBConnection dbConn;
 
