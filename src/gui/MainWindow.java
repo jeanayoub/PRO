@@ -230,7 +230,8 @@ public class MainWindow extends Application {
          try {
             myFile.toPDF();
          } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(
+            		MainWindow.class.getName()).log(Level.SEVERE, null, ex);
          }
          Alert alert = new Alert(AlertType.INFORMATION);
          alert.setTitle("Information Dialog");
@@ -239,7 +240,7 @@ public class MainWindow extends Application {
          alert.showAndWait();
       });
 
-      //----------------------------------Pascal-------------------------------------
+      //----------------------------------Pascal-----------------------------------
       menuJpeg.setOnAction((ActionEvent event) -> {
          final generateFile myFile = new generateFile();
          myFile.toJpeg(getTabPane());
@@ -250,7 +251,7 @@ public class MainWindow extends Application {
          alert.showAndWait();
       });
       
-      //-------------------------------------------------------------------------------
+      //---------------------------------------------------------------------------
       /**
        * Create a connection to a data base in order to fetch data and display them
        */
@@ -259,21 +260,21 @@ public class MainWindow extends Application {
     	  @Override public void handle(ActionEvent e) {
     		  Stage stage = new Stage();
 
-    		  GridPane root = new GridPane();
-    		  HBox btnPanel = new HBox(12);
-    		  Label lblTitle = new Label("Connexion");
-    		  Label lblConnexionName = new Label("Connection Name:");
-    		  TextField tfdConnectionName = new TextField();
-    		  Label lblHostName = new Label("Hostname:");
-    		  TextField tfdHostname = new TextField();
-    		  Label lblPort = new Label("Port:");
-    		  TextField tfdPort = new TextField();
-    		  Label lblUsername = new Label("Username:");
-    		  TextField tfdUsername = new TextField();
-    		  Label lblPassword = new Label("Password:");
-    		  Button btnLogin = new Button("Login");
-    		  Button btnCancel = new Button("Cancel");
-    		  PasswordField pwfPassword = new PasswordField();
+    		  GridPane 		root 			  = new GridPane();
+    		  HBox 	   		btnPanel 		  = new HBox(12);
+    		  Label    		lblTitle 		  = new Label("Connexion");
+    		  Label 		lblConnexionName  = new Label("Connection Name:");
+    		  TextField 	tfdConnectionName = new TextField();
+    		  Label 		lblHostName 	  = new Label("Hostname:");
+    		  TextField 	tfdHostname 	  = new TextField();
+    		  Label 		lblPort 		  = new Label("Port:");
+    		  TextField 	tfdPort 		  = new TextField();
+    		  Label 		lblUsername 	  = new Label("Username:");
+    		  TextField 	tfdUsername 	  = new TextField();
+    		  Label 		lblPassword 	  = new Label("Password:");
+    		  Button		btnLogin 		  = new Button("Login");
+    		  Button 		btnCancel 		  = new Button("Cancel");
+    		  PasswordField pwfPassword 	  = new PasswordField();
 
     		  stage.setTitle("Connexion à la base de données");
     		  
@@ -284,12 +285,14 @@ public class MainWindow extends Application {
     				  null ));
     		  root.setBackground(backGroundColor);
     		  // Bind to avoid errors
-    		  pwfPassword.disableProperty().bind(tfdUsername.textProperty().isEmpty());
-    		  btnLogin.disableProperty().bind(tfdConnectionName.textProperty().isEmpty()
-    				  						.or(tfdUsername.textProperty().isEmpty())
-    				  						.or(pwfPassword.textProperty().isEmpty()
-    				  						.or(tfdPort.textProperty().isEmpty()
-    				  						.or(tfdHostname.textProperty().isEmpty()))));
+    		  pwfPassword.disableProperty().bind(
+    				  						tfdUsername.textProperty().isEmpty());
+    		  btnLogin.disableProperty().bind(
+    				  				   tfdConnectionName.textProperty().isEmpty()
+    				  				   .or(tfdUsername.textProperty().isEmpty())
+    				  				   .or(pwfPassword.textProperty().isEmpty()
+    				  				   .or(tfdPort.textProperty().isEmpty()
+    				  				   .or(tfdHostname.textProperty().isEmpty()))));
 
     		  //--- Title
     		  lblTitle.setFont(Font.font("System", FontWeight.BOLD, 20));
@@ -335,26 +338,30 @@ public class MainWindow extends Application {
     		  stage.setScene(new Scene(root));
     		  
     		  // Set shadow on mouse event
-    		  btnLogin.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>(){
+    		  btnLogin.addEventHandler(MouseEvent.MOUSE_ENTERED, 
+    				  								new EventHandler<MouseEvent>(){
 				@Override
 				public void handle(MouseEvent event) {
 					btnLogin.setEffect(new DropShadow());
 				}
     		  });
-    		  btnLogin.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>(){
+    		  btnLogin.addEventHandler(MouseEvent.MOUSE_EXITED, 
+    				  								new EventHandler<MouseEvent>(){
   				@Override
   				public void handle(MouseEvent event) {
   					btnLogin.setEffect(null);
   				}
       		  });
     		  
-    		  btnCancel.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>(){
+    		  btnCancel.addEventHandler(MouseEvent.MOUSE_ENTERED, 
+    				  								new EventHandler<MouseEvent>(){
   				@Override
   				public void handle(MouseEvent event) {
   					btnCancel.setEffect(new DropShadow());
   				}
       		  });
-    		  btnCancel.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>(){
+    		  btnCancel.addEventHandler(MouseEvent.MOUSE_EXITED, 
+    				  								new EventHandler<MouseEvent>(){
     				@Override
     				public void handle(MouseEvent event) {
     					btnCancel.setEffect(null);
@@ -366,8 +373,12 @@ public class MainWindow extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					
-				    connectionForm = new ConnectionForm(tfdConnectionName.getText(), tfdHostname.getText(), Integer.parseInt(tfdPort.getText()),
-				    		tfdUsername.getText(), pwfPassword.getText());
+				    connectionForm = new ConnectionForm(
+				    							tfdConnectionName.getText(), 
+				    							tfdHostname.getText(), 
+				    							Integer.parseInt(tfdPort.getText()),
+				    							tfdUsername.getText(), 
+				    							pwfPassword.getText());
 				    
 				    // Close the window when login button is clicked
 				    stage.close();
@@ -376,7 +387,8 @@ public class MainWindow extends Application {
 				    Alert dialogW = new Alert(AlertType.INFORMATION);
 				    dialogW.setTitle("Confirmation");
 				    dialogW.setHeaderText(null); // No header
-				    dialogW.setContentText("Tentative de connexion à la base de données !");
+				    dialogW.setContentText(
+				    			"Tentative de connexion à la base de données !");
 				    dialogW.showAndWait();
 					
 				}
@@ -504,21 +516,20 @@ public class MainWindow extends Application {
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Data data1  = new Data(2016, 4, 12,  6, 0,  6.2);
-      Data data2  = new Data(2016, 4, 12,  8, 0, 10.8);
-      Data data3  = new Data(2016, 4, 12, 10, 0, 12.4);
-      Data data4  = new Data(2016, 4, 12, 12, 0, 15.9);
-      Data data5  = new Data(2016, 4, 12, 14, 0, 22.8);
-      Data data6  = new Data(2016, 4, 12, 16, 0, 25.7);
-      Data data7  = new Data(2016, 4, 12, 18, 0, 20.3);
-      Data data8  = new Data(2016, 4, 12, 20, 0, 14.1);
-      Data data9  = new Data(2016, 4, 12, 22, 0,  8.5);
-      Data data10 = new Data(2016, 4, 13, 00, 0,  7.2);
-      Data data11 = new Data(2016, 4, 13,  2, 0,  6.8);
-      Data data12 = new Data(2016, 4, 13,  4, 0,  2.9);
-      Data data13 = new Data(2016, 4, 13,  7, 7, -35.0);
+      Data data1  = new Data(2016, 4, 12,  6, 0, 0,  6.2);
+      Data data2  = new Data(2016, 4, 12,  8, 0, 0, 10.8);
+      Data data3  = new Data(2016, 4, 12, 10, 0, 0, 12.4);
+      Data data4  = new Data(2016, 4, 12, 12, 0, 0, 15.9);
+      Data data5  = new Data(2016, 4, 12, 14, 0, 0, 22.8);
+      Data data6  = new Data(2016, 4, 12, 16, 0, 0, 25.7);
+      Data data7  = new Data(2016, 4, 12, 18, 0, 0, 20.3);
+      Data data8  = new Data(2016, 4, 12, 20, 0, 0, 14.1);
+      Data data9  = new Data(2016, 4, 12, 22, 0, 0,  8.5);
+      Data data10 = new Data(2016, 4, 13, 00, 0, 0,  7.2);
+      Data data11 = new Data(2016, 4, 13,  2, 0, 0,  6.8);
+      Data data12 = new Data(2016, 4, 13,  4, 0, 0,  2.9);
+      Data data13 = new Data(2016, 4, 13,  7, 7, 0,-35.0);
 
-      
       dataList.add(data1);
       dataList.add(data2);
       dataList.add(data3);
@@ -531,7 +542,6 @@ public class MainWindow extends Application {
       dataList.add(data10);
       dataList.add(data11);
       dataList.add(data12);
-      
       
 
       lcsTemperature
@@ -589,7 +599,9 @@ public class MainWindow extends Application {
       tabPan.getSelectionModel().selectedItemProperty().addListener(
     		    new ChangeListener<Tab>() {
     		        @Override
-    		        public void changed(ObservableValue<? extends Tab> ov, Tab tabTemperature, Tab tabHumidity) {
+    		        public void changed(ObservableValue<? extends Tab> ov, 
+    		        					Tab tabTemperature, 
+    		        					Tab tabHumidity) {
     		        	
     		        	lcsTemperature.refreshChart();
     		        	lcsHumidity.refreshChart();
@@ -619,7 +631,8 @@ public class MainWindow extends Application {
     		  	.prefHeight(100)
     		  	.layoutX(560)
     		  	.layoutY(90)
-    		  	.styleClass(/*Lcd.STYLE_CLASS_FLAT_MIDNIGHT_BLUE*/Lcd.STYLE_CLASS_LIGHTGREEN_BLACK)
+    		  	/*Lcd.STYLE_CLASS_FLAT_MIDNIGHT_BLUE*/
+    		  	.styleClass(Lcd.STYLE_CLASS_LIGHTGREEN_BLACK)
     		  	.backgroundVisible(true)
     		  	.valueFont(Lcd.LcdFont.DIGITAL_BOLD)
     		  	.lowerRightTextVisible(true)
@@ -655,24 +668,22 @@ public class MainWindow extends Application {
       connectionForm = new ConnectionForm();
 	   
       timeline = new Timeline(
-		      	 new KeyFrame(Duration.millis(3000), new EventHandler() {
-		      	@Override public void handle(Event event) {
-		        		//checkLatestData();
+		      	 new KeyFrame(Duration.millis(PERIOD_CONNECTION), 
+		      	 new EventHandler() {
+		      	 @Override public void handle(Event event) {
+	
 		        	System.out.println("waiting for conection");
 		        	if (connectionForm.getFormStatus()) {	
-		          		UpdateData updateData = new UpdateData(5000);
-		          		//if (!Data.getConnectioErrorStatus())
-		          		//	timeline.stop();
+		          		UpdateData updateData = new UpdateData(PERIOD_INITIATE ,
+		          											   PERIOD_UPDATE);
 		          		
 		          		if (!UpdateData.getConnectionError()) {
 		          			timeline.stop();
 		          		}
-		          		
-		          		
-		          		}
+		          	}
 		        }
 		      }),  
-		    new KeyFrame(Duration.millis(3000))
+		    new KeyFrame(Duration.millis(PERIOD_CONNECTION))
 		    );
      
 	 timeline.setCycleCount(Timeline.INDEFINITE);
@@ -802,7 +813,7 @@ public class MainWindow extends Application {
            ArrayList<db.Data> dataList) {
 
       final CategoryAxis xAxis = new CategoryAxis();
-      final NumberAxis yAxis = new NumberAxis();
+      final NumberAxis   yAxis = new NumberAxis();
 
       xAxis.setLabel(xAxisLabel);
       yAxis.setLabel(yAxisLabel);
@@ -832,11 +843,11 @@ public class MainWindow extends Application {
     //----------------------------------Pascal--------------------------------------
 
    /** A copy of the tabPane */
-   private 		  TabPane 		copyPane 		= new TabPane();
+   private 		  TabPane 		copyPane   = new TabPane();
    /**  */
-   private static ImageView 	iv 				= new ImageView();
+   private static ImageView 	iv 		   = new ImageView();
    /**  */
-   private static ProgressBar 	pbHumidity 		= new ProgressBar();
+   private static ProgressBar 	pbHumidity = new ProgressBar();
    /**  */
    private static Lcd 			lcdTemperature;
    /**  */
@@ -849,12 +860,17 @@ public class MainWindow extends Application {
    private static LineChartStat lcsPressure;
    /**  */
    private static LineChartStat lcsAirQuality;
-   
+   /**  */
    private static ConnectionForm connectionForm;
+   /**  */
+   private        Timeline 		 timeline;
+   /**  */
+   private final  long           PERIOD_CONNECTION = 10000;
+   /**  */
+   private final  long 			 PERIOD_UPDATE 	   = 30000;
+   /**  */
+   private final  long			 PERIOD_INITIATE   = 3000;
    
-   private Timeline timeline;
-   
-   //private static DBConnection dbConn;
 
    /**
     * Main method for lunching the user window.

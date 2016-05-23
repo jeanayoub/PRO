@@ -16,6 +16,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 
@@ -51,7 +52,7 @@ public class LineChartStat extends LineChart<String, Number> {
 		super(xAxis, yAxis);
 		this.setTitle(title);
 		this.series.setName(seriesName);
-			
+		this.title = title;	
 		
 		
         /**
@@ -93,6 +94,7 @@ public class LineChartStat extends LineChart<String, Number> {
 		super(xAxis, yAxis);
 		this.setTitle(title);
 		this.series.setName(seriesName);
+		this.title = title;
 
 		/**
 		 *  Setting the series name.
@@ -109,18 +111,33 @@ public class LineChartStat extends LineChart<String, Number> {
 	 * @param data
 	 */
 	public void updateSeries(db.Data data) {
+	
 		
 		if (series.getData().size() != 0) {
-			if(data.getTime().substring(0,5).equals(series.getData().get(series.getData().size() - 1).getXValue())) {
+			System.out.println(data.getTime().substring(0,PRECISION_MIN) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
+			if(data.getTime().substring(0,PRECISION_MIN).equals(
+			   series.getData().get(series.getData().size() - 1).getXValue())) {
 				return;
 			}
 		}
 		
-		if (series.getData().size() >= MAX_SHOWING) 
+		if (series.getData().size() >= MAX_SHOWING) {
 			series.getData().remove(0, series.getData().size() - MAX_SHOWING);
+			series.getData().size();
+		}
 		
 		series.getData().add(
 				new XYChart.Data<String, Number> (data.getTime(), data.getValue()));
+		
+		if (data.getDate() != lastDate.toString()) {
+			
+			
+			lastDate = data.getDate();
+			date = " - " + lastDate;
+			
+			setTitle(title + date);
+		}
+		
 	}
 	
 	
@@ -131,8 +148,20 @@ public void refreshChart () {
 	
     /**  */
     private XYChart.Series<String, Number> series = new Series<String, Number>();
-
     /**  */
-    private final int MAX_SHOWING = 12;
+    private final  int MAX_SHOWING = 12;
+    
+    //private static LocalDate lastDate = LocalDate.of(1000, 1, 1);
+    private static String lastDate = "1000-01-01";
+    
+    private static String date = "";
+    
+    private static String title;
+    
+    private final  int    PRECISION_MIN = 5;
+    
+    private final  int 	  PRECISION_SEC = 8;
+   
+    
 }
 
