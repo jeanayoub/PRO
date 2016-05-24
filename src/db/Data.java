@@ -15,6 +15,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -250,6 +251,80 @@ public class Data {
 		System.out.println("Sensor " + sensor 
 					  + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
+	}
+	
+	public static ArrayList<Data> getValueInDay(Sensor sensor, LocalDate searchDate) {
+		final String QUERY   = "CALL capturedValueInDay('" + sensor + "','" + searchDate + "');"; 
+		Double 		 value   = 0.;
+		Date   		 date    = null;
+		Time   		 time    = null;
+		int    		 year    = 0, 
+					 month   = 0, 
+					 day	 = 0, 
+					 hours   = 0, 
+					 minutes = 0, 
+					 seconds = 0;
+		ArrayList<Data> listData = new ArrayList<>();
+		
+		try{
+			
+			dbConn = new DBConnection(MainWindow.getConnectionForm());
+			ResultSet result = dbConn.executeQuery(QUERY);
+			//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
+			if (result.next()){
+				value = result.getDouble("value_");
+				date  = result.getDate  ("date_");
+				time  = result.getTime  ("time_");
+				
+				// TEST DB !!!!!
+				//cvalue + " : " + date + ":" + time);
+				String tempString = date.toString();
+				year              = Integer.parseInt(tempString.substring(0, 4));
+				if (Integer.parseInt(tempString.substring(5,6)) == 1)
+					month = Integer.parseInt(tempString.substring(5,7));
+				else
+					month = Integer.parseInt(String.valueOf(tempString.substring(6,7)));
+				
+				if (Integer.parseInt(String.valueOf(tempString.substring(8,9))) != 0)
+					day = Integer.parseInt(tempString.substring(8,10));
+				else
+					day = Integer.parseInt(String.valueOf(tempString.substring(9,10)));
+				
+				
+				tempString = time.toString();
+				
+				if (Integer.parseInt(tempString.substring(0, 1)) == 0)
+					hours = Integer.parseInt(tempString.substring(1, 2));
+				else
+					hours = Integer.parseInt(tempString.substring(0, 2));
+
+				
+				if (Integer.parseInt(tempString.substring(3, 4)) == 0)
+					minutes = Integer.parseInt(tempString.substring(4, 5));
+				else
+					minutes = Integer.parseInt(tempString.substring(3, 5));
+				
+				
+				if (Integer.parseInt(tempString.substring(6, 7)) == 0)
+					seconds = Integer.parseInt(tempString.substring(7, 8));
+				else
+					seconds = Integer.parseInt(tempString.substring(6, 8));	
+			}
+			listData.add(new Data(year, month, day, hours, minutes, seconds, value));
+			
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		     }
+
+		     finally {
+		      if (OpenConnection.getConnectionLink() != null)
+		    	  OpenConnection.getConnectionLink().close();
+		     }
+		
+		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
+		return listData;
 	}
 	
 	
