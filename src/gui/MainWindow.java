@@ -11,13 +11,10 @@
  */
 package gui;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import data_processing.UpdateData;
 import data_processing.generateFile;
@@ -27,7 +24,6 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
-import extfx.scene.control.CalendarView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -69,18 +65,16 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
-
 
 /**
  * Class MainWindow represents the application's main window.
@@ -150,26 +144,25 @@ public class MainWindow extends Application {
       final Menu 	menuOptions   = new Menu("Option");
       final Menu 	menuAbout     = new Menu("A propos");
       final Menu 	menuCalendar  = new Menu("Calendrier");
-      final Menu 	menuSaveAs    = new Menu("Enregistrer sous ");
+      final Menu 	menuSaveAs    = new Menu("Enregistrer Sous");
       final Menu 	menuPrevision = new Menu("Prévision météorologique");
 
-      final MenuItem menuJpeg 	= new MenuItem("JPEG");
-      final MenuItem menuPdf 	= new MenuItem("PDF");
-      final MenuItem unJour 	= new MenuItem("1 jour");
-      final MenuItem deuxJour 	= new MenuItem("2 jours");
-      final MenuItem uneSemaine = new MenuItem("1 semaine");
+      
+      final MenuItem exit       = new MenuItem("Quitter");
+      final MenuItem oneday 	= new MenuItem("1 jour");
+      final MenuItem twoDays 	= new MenuItem("2 jours");
+      final MenuItem oneWeek = new MenuItem("1 semaine");
       final MenuItem connection = new MenuItem("Connexion");
       
 
       menuStation.getItems().add(connection);
       menuStation.getItems().add(menuSaveAs);
-      menuSaveAs.getItems().add(0, menuPdf);
-      menuSaveAs.getItems().add(1, menuJpeg);
+      menuStation.getItems().add(exit);
       
       menuOptions.getItems().add(menuPrevision);
-      menuPrevision.getItems().add(0, unJour);
-      menuPrevision.getItems().add(1, deuxJour);
-      menuPrevision.getItems().add(2, uneSemaine);
+      menuPrevision.getItems().add(0, oneday);
+      menuPrevision.getItems().add(1, twoDays);
+      menuPrevision.getItems().add(2, oneWeek);
 
       menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
               menuCalendar);
@@ -220,36 +213,70 @@ public class MainWindow extends Application {
             dialogInfo.showAndWait();
          }
       });
+      
+      exit.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  UpdateData.timer.cancel();
+              System.out.println("Closing...");
+        	  primaryStage.close();
+          }
+       });
+      
+ 
 
       //--------------------------------PASCAL--------------------------------------
       /**
        * The menu item for the menu Station and its content
        */
-      menuPdf.setOnAction((ActionEvent event) -> {
-         final generateFile myFile = new generateFile();
-         try {
-            myFile.toPDF();
-         } catch (IOException ex) {
-            Logger.getLogger(
-            		MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         Alert alert = new Alert(AlertType.INFORMATION);
-         alert.setTitle("Information Dialog");
-         alert.setHeaderText(null);
-         alert.setContentText("Sauvegarde en PDF Résussi !!!");
-         alert.showAndWait();
+      menuSaveAs.setOnAction(new EventHandler<ActionEvent>() {
+    	  @Override
+          public void handle(ActionEvent event) {
+        	  final generateFile myFile = new generateFile();
+
+        	  FileChooser fileChooser = new FileChooser();
+        	  fileChooser.setTitle("Enregistrer sous ...");
+        	  fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
+
+        	  FileChooser.ExtensionFilter extFilterPdf = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
+        	  fileChooser.getExtensionFilters().add(extFilterPdf);
+
+        	  FileChooser.ExtensionFilter extFilterJpeg = new FileChooser.ExtensionFilter("JPEG files (*.jpeg)", "*.jpeg");
+        	  fileChooser.getExtensionFilters().add(extFilterJpeg);
+
+        	  File file = fileChooser.showSaveDialog(primaryStage);
+        	  if (file != null) {
+        		  
+        		  // Save the file into pdf format
+        		  if(fileChooser.getSelectedExtensionFilter().getDescription().equals("PDF files (*.pdf)")){
+        			  try {
+        				  myFile.toPDF(getTabPane(),file.toPath().toString());
+        				  Alert alert = new Alert(AlertType.INFORMATION);
+        				  alert.setTitle("Information Dialog");
+        				  alert.setHeaderText(null);
+        				  alert.setContentText("Sauvegarde en PDF Résussi !!!");
+        				  alert.showAndWait();
+        			  } catch (Exception e1) {
+        				  // TODO Auto-generated catch block
+        				  e1.printStackTrace();
+        			  }
+        		  }
+        		  // Save the file into jpeg format
+        		  if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JPEG files (*.jpeg)")){
+        			  myFile.toJpeg(getTabPane(), file.toPath().toString());
+        			  Alert alert = new Alert(AlertType.INFORMATION);
+        			  alert.setTitle("Information Dialog");
+        			  alert.setHeaderText(null);
+        			  alert.setContentText("Sauvegarde en JPEG Résussi !!!");
+        			  alert.showAndWait();
+        		  }
+
+        	  }
+    		  
+    	  }
+
       });
 
-      //----------------------------------Pascal-----------------------------------
-      menuJpeg.setOnAction((ActionEvent event) -> {
-         final generateFile myFile = new generateFile();
-         myFile.toJpeg(getTabPane());
-         Alert alert = new Alert(AlertType.INFORMATION);
-         alert.setTitle("Information Dialog");
-         alert.setHeaderText(null);
-         alert.setContentText("Sauvegarde en JPEG Résussi !!!");
-         alert.showAndWait();
-      });
       
       //---------------------------------------------------------------------------
       /**
@@ -448,55 +475,6 @@ public class MainWindow extends Application {
       });
    
       
-      
-//      final CalendarView cv = new CalendarView(Locale.FRENCH);
-//      menuCalendar.getItems().addAll(miCalendarShow);
-//      
-//
-//      
-//      /*
-//      cv.setOnMousePressed(new EventHandler<MouseEvent>() {
-//          public void handle(MouseEvent me) {
-//        	  System.out.println(cv.getSelectedDate());
-//            }
-//          });
-//       */
-//
-//      /**
-//       * The dialog box to be shown once pressed on the Show menu item.
-//       */
-//      final Dialog<CalendarView> dialogCv = new Dialog<CalendarView>();
-//      dialogCv.setGraphic(cv);
-//      //final Dialog<DatePicker> dialogCv = new Dialog<DatePicker>();
-//      //dialogCv.setGraphic(dp);
-//      dialogCv.getDialogPane().setPrefSize(250, 250);
-//      dialogCv.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-//      Node closeButtonDialogCv = dialogCv.getDialogPane().lookupButton(ButtonType.CLOSE);
-//      closeButtonDialogCv.managedProperty().bind(
-//              closeButtonDialogCv.visibleProperty());
-//
-//      /**
-//       * Shows the dialog box
-//       */
-//      miCalendarShow.setOnAction(new EventHandler<ActionEvent>() {
-//         @Override
-//         public void handle(ActionEvent event) {
-//            /**
-//             * Just to make the close button close the dialog box
-//             */
-//            closeButtonDialogCv.setVisible(false);
-//            dialogCv.showAndWait();
-//         }
-//      });
-      //-------------------------------------------------------------------------
-      
-      
-      
-      
-      
-      
-      
-      
 
       /**
        * The Tab Pane
@@ -616,11 +594,15 @@ public class MainWindow extends Application {
       /**
        * The humidity Progress Bar
        */
+      progressTextValue = new Text(430, 150, "%");
+      progressTextValue.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+      //progressTextValue.setVisible(true);
       pbHumidity.setLayoutX(400);
       pbHumidity.setLayoutY(200);
       pbHumidity.setPrefSize(100, 20);
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
+      rootGroup.getChildren().add(progressTextValue);
       
 
       
@@ -745,7 +727,7 @@ public class MainWindow extends Application {
     */
    public static void updatePbHumidity(double value) {
       pbHumidity.setProgress(value/100.);
-     // pbHumidity.setVisible(true);
+      progressTextValue.setText(pbHumidity.getProgress()*100. + " %");
    }
 
    
@@ -847,7 +829,11 @@ public class MainWindow extends Application {
    /**  */
    private static ImageView 	iv 		   = new ImageView();
    /**  */
-   private static ProgressBar 	pbHumidity = new ProgressBar();
+   private static ProgressBar 	pbHumidity 		= new ProgressBar();
+   
+   /**  */
+   private static Text   progressTextValue;
+
    /**  */
    private static Lcd 			lcdTemperature;
    /**  */
