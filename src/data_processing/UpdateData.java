@@ -39,24 +39,26 @@ public class UpdateData {
      * Declaration and definition of all the Images
      */
 	
+	
+	
 	/**  */
-	final Image imSunny 	  = new Image("file:meteoImages/imSunny.png");
+	final Image imSunny 	  = new Image(ResourceLoader.load("meteoImages/imSunny.png"));
     /**  */
-    final Image imSunnyCloudy = new Image("file:meteoImages/imSunnyCloudy.png");
+    final Image imSunnyCloudy = new Image(ResourceLoader.load("meteoImages/imSunnyCloudy.png"));
     /**  */
-    final Image imCloudy	  = new Image("file:meteoImages/imCloudy.png");
+    final Image imCloudy	  = new Image(ResourceLoader.load("meteoImages/imCloudy.png"));
     /** */
-    final Image imRainLight   = new Image("file:meteoImages/imRainLight.png");
+    final Image imRainLight   = new Image(ResourceLoader.load("meteoImages/imRainLight.png"));
     /**  */
-    final Image imRainHeavy   = new Image("file:meteoImages/imRainHeavy.png");
+    final Image imRainHeavy   = new Image(ResourceLoader.load("meteoImages/imRainHeavy.png"));
     /**  */
-    final Image imSnow 		  = new Image("file:meteoImages/imSnow.png");
+    final Image imSnow 		  = new Image(ResourceLoader.load("meteoImages/imSnow.png"));
     /**  */
-    final Image imNight		  = new Image("file:meteoImages/imNight.png");
+    final Image imNight		  = new Image(ResourceLoader.load("meteoImages/imNight.png"));
     /**  */
-    final Image imNightRain	  = new Image("file:meteoImages/imNightRain.png");
+    final Image imNightRain	  = new Image(ResourceLoader.load("meteoImages/imNightRain.png"));
     /**  */
-    final Image imNightSnow	  = new Image("file:meteoImages/imNightSnow.png");
+    final Image imNightSnow	  = new Image(ResourceLoader.load("meteoImages/imNightSnow.png"));
     
      
     
