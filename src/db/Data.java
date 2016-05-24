@@ -203,8 +203,6 @@ public class Data {
 				date  = result.getDate  ("date_");
 				time  = result.getTime  ("time_");
 				
-				// TEST DB !!!!!
-				//cvalue + " : " + date + ":" + time);
 				String tempString = date.toString();
 				year              = Integer.parseInt(tempString.substring(0, 4));
 				if (Integer.parseInt(tempString.substring(5,6)) == 1)
@@ -249,7 +247,8 @@ public class Data {
 		    	  OpenConnection.getConnectionLink().close();
 		     }
 		
-		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
+		System.out.println("Sensor " + sensor 
+					  + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
 	}
 	
@@ -269,25 +268,11 @@ public class Data {
 		return null;
 	}
 	
-	
-	/**
-	 * 
-	 *
-	 * @return
-	 */
-	//public static boolean getConnectioErrorStatus () {
-	//	return connectionError;
-	//}
-	
-	
-	
-		
+
 	/** Date and time of the data */
-	private LocalDateTime dateAndTime;
+	private 	   LocalDateTime dateAndTime;
 	/** Value of the data */
-	private double 		  value;
+	private 	   double 		 value;
 	/**  */
-	private static DBConnection dbConn;
-	/**  */
-	//private static boolean connectionError = false;
+	private static DBConnection  dbConn;
 }

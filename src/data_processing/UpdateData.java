@@ -71,14 +71,15 @@ public class UpdateData {
 	 * @param period2
 	 * @throws SQLException 
 	 */
-	public UpdateData (long period) {
+	public UpdateData (long period_1, long period_2) {
 
 		timeline = new Timeline(
-			      new KeyFrame(Duration.millis(3000), new EventHandler() {
+			      new KeyFrame(Duration.millis(period_1), new EventHandler() {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
-			    			DBConnection dbConn = new DBConnection(MainWindow.getConnectionForm());
+			    			DBConnection dbConn = 
+			    				new DBConnection(MainWindow.getConnectionForm());
 			    			connectionError = false;
 			    			System.out.println("connection successful");
 			    		} catch (SQLException e) {
@@ -91,7 +92,7 @@ public class UpdateData {
 
 			        }
 			      }),  
-			      new KeyFrame(Duration.millis(period))
+			      new KeyFrame(Duration.millis(period_2))
 			    );
 		 timeline.setCycleCount(Timeline.INDEFINITE);
 		 timeline.play();
@@ -223,9 +224,6 @@ public class UpdateData {
 		}
 	}
 	
-	
-	
-	
 	public static boolean getConnectionError() {
 		return connectionError;
 	}
@@ -233,19 +231,19 @@ public class UpdateData {
 	
 	
 	/**  */
-	public static Timer timer = new Timer();
-	
+	public  static Timer   timer = new Timer();
 	/** The actual pressure */
-	private double pressure;
+	private 	   double  pressure;
 	/** The actual humidity */
-	private double humidity;
+	private 	   double  humidity;
 	/** The actual temperature */
-	private double temperature;
-	
+	private 	   double  temperature;
+	/**  */
 	private static boolean status;
-	private static int timeToStop;
-	
+	/**  */
+	private static int 	   timeToStop;
+	/**  */
 	private static boolean connectionError = false;
-	
-	private Timeline timeline = new Timeline();
+	/**  */
+	private 	   Timeline timeline;
 }
