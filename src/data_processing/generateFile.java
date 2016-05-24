@@ -61,7 +61,7 @@ public class generateFile {
 		final float xPosDefault = xPos;
 		float yPos = 610;
 		final float yPosDefault = yPos;
-		final String heigLogoPath = "./meteoImages/HEIG-VD_Logo.png";
+		final String heigLogoPath = "meteoImages/HEIG-VD_Logo.png";
 
 		try {
 			PDPageContentStream contentStream_1 = null;
@@ -83,7 +83,7 @@ public class generateFile {
 				//try (PDPageContentStream content = new PDPageContentStream(document,page)) {
 				//page_1 = (PDPage)document.getDocumentCatalog().getAllPages().get(0);
 
-				xHeigLogoImage = ImageIO.read(new File(heigLogoPath));
+				xHeigLogoImage = ImageIO.read(ResourceLoader.load(heigLogoPath));
 				ximageLogoHeig = new PDPixelMap(document, xHeigLogoImage);
 				contentStream_1.drawXObject(ximageLogoHeig, 80, 700, ximageLogoHeig.getWidth()-130, ximageLogoHeig.getHeight()-50);
 

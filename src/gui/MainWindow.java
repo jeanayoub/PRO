@@ -257,7 +257,6 @@ public class MainWindow extends Application {
         				  alert.setContentText("Sauvegarde en PDF Résussi !!!");
         				  alert.showAndWait();
         			  } catch (Exception e1) {
-        				  // TODO Auto-generated catch block
         				  e1.printStackTrace();
         			  }
         		  }
@@ -445,17 +444,12 @@ public class MainWindow extends Application {
 		public void handle(ActionEvent event) {
 			// Date Picker
 	          DatePicker dPicker = new DatePicker();
+	          dPicker.setPrefSize(230, 30);
 	          dPicker.setShowWeekNumbers(true);
 	          Stage dateStage = new Stage();
 	          dateStage.setTitle("Calendrier");
 	          HBox hbox = new HBox(dPicker);
-	       // Set color of the hbox
-    		  Background backGroundColor = new Background(
-    				  new BackgroundFill(Color.LIGHTPINK,
-    				  CornerRadii.EMPTY,
-    				  null ));
-	          hbox.setBackground(backGroundColor);
-	          Scene scene = new Scene(hbox, 240, 240);
+	          Scene scene = new Scene(hbox, 230, 30);
 	          dateStage.setScene(scene);
 	          dateStage.show();
 	          

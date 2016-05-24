@@ -114,12 +114,24 @@ public class LineChartStat extends LineChart<String, Number> {
 	
 		
 		if (series.getData().size() != 0) {
-			System.out.println(data.getTime().substring(0,PRECISION_MIN) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
-			if(data.getTime().substring(0,PRECISION_MIN).equals(
-			   series.getData().get(series.getData().size() - 1).getXValue())) {
-				return;
+			if (data.getTime().length() == 8) {
+				System.out.println(data.getTime().substring(0,PRECISION_SEC) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
+				if(data.getTime().substring(0,PRECISION_SEC).equals(
+						series.getData().get(series.getData().size() - 1).getXValue())) {
+					return;
+				}
+			}
+			
+			else {
+				
+				System.out.println(data.getTime().substring(0,PRECISION_MIN) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
+				if(data.getTime().substring(0,PRECISION_MIN).equals(
+						series.getData().get(series.getData().size() - 1).getXValue())) {
+						return;
+				}
 			}
 		}
+		
 		
 		if (series.getData().size() >= MAX_SHOWING) {
 			series.getData().remove(0, series.getData().size() - MAX_SHOWING);
@@ -133,7 +145,7 @@ public class LineChartStat extends LineChart<String, Number> {
 			
 			
 			lastDate = data.getDate();
-			date = " - " + lastDate;
+			date = ", Dernière mise à jour " + lastDate;
 			
 			setTitle(title + date);
 		}
@@ -149,14 +161,14 @@ public void refreshChart () {
     /**  */
     private XYChart.Series<String, Number> series = new Series<String, Number>();
     /**  */
-    private final  int MAX_SHOWING = 12;
+    private final  int    MAX_SHOWING = 12;
     
     //private static LocalDate lastDate = LocalDate.of(1000, 1, 1);
     private static String lastDate = "1000-01-01";
     
     private static String date = "";
     
-    private static String title;
+    private 	   String title;
     
     private final  int    PRECISION_MIN = 5;
     

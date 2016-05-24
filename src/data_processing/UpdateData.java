@@ -40,15 +40,8 @@ public class UpdateData {
 	/**
      * Declaration and definition of all the Images
      */
-	
-	
-	
-	/**  */
-	final Image imSunny 	  = new Image(ResourceLoader.load("meteoImages/imSunny.png"));
     /**  */
     final Image imSunnyCloudy = new Image(ResourceLoader.load("meteoImages/imSunnyCloudy.png"));
-    /**  */
-    final Image imCloudy	  = new Image(ResourceLoader.load("meteoImages/imCloudy.png"));
     /** */
     final Image imRainLight   = new Image(ResourceLoader.load("meteoImages/imRainLight.png"));
     /**  */
@@ -61,8 +54,6 @@ public class UpdateData {
     final Image imNightRain	  = new Image(ResourceLoader.load("meteoImages/imNightRain.png"));
     /**  */
     final Image imNightSnow	  = new Image(ResourceLoader.load("meteoImages/imNightSnow.png"));
-    
-     
     
  	
 	
@@ -89,9 +80,7 @@ public class UpdateData {
 			    			System.out.println("connection failed !");
 			    			return;
 			    		}
-			    		
 			        		checkLatestData();
-
 			        }
 			      }),  
 			      new KeyFrame(Duration.millis(period_2))
@@ -199,23 +188,11 @@ public class UpdateData {
 			/**
 			 * If it's day time
 			 */
-			if (Data.getLastData(Sensor.RADIANCY).getValue() > 250) {
-				
+			if (Data.getLastData(Sensor.RADIANCY).getValue() > 160) {
 				/**
-				 * It's extremely sunny
+				 * It's sunny / with few clouds
 				 */
-				if (Data.getLastData(Sensor.RADIANCY).getValue() > 450)
-					MainWindow.updateImageView(imSunny);
-				/**
-				 * It's sunny with few clouds
-				 */
-				else if (Data.getLastData(Sensor.RADIANCY).getValue() > 300)
-					MainWindow.updateImageView(imSunnyCloudy);
-				/**
-				 * It's cloudy
-				 */
-				else
-					MainWindow.updateImageView(imCloudy);
+				MainWindow.updateImageView(imSunnyCloudy);
 			}
 			
 			/**
