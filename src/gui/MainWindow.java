@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import data_processing.ReceivedData;
 import data_processing.UpdateData;
 import data_processing.generateFile;
 import db.ConnectionForm;
@@ -65,6 +66,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -432,40 +434,55 @@ public class MainWindow extends Application {
        * The menu item for the menu Calendar and its content which is the Calendar
        * view
        */
-      
-      
       final MenuItem miCalendarShow = new MenuItem("Afficher");
       menuCalendar.getItems().add(miCalendarShow);
       
       
       miCalendarShow.setOnAction(new EventHandler<ActionEvent>(){
 
-		@Override
-		public void handle(ActionEvent event) {
-			// Date Picker
-	          DatePicker dPicker = new DatePicker();
-	          dPicker.setPrefSize(230, 30);
-	          dPicker.setShowWeekNumbers(true);
-	          Stage dateStage = new Stage();
-	          dateStage.setTitle("Calendrier");
-	          HBox hbox = new HBox(dPicker);
-	          Scene scene = new Scene(hbox, 230, 30);
-	          dateStage.setScene(scene);
-	          dateStage.show();
-	          
-	          // Get the date when clicked
-	          dPicker.setOnAction(e -> {
-	          LocalDate date = dPicker.getValue();
-	          System.out.println("Selected date: " + date);
-	          
-	          // Here is an example how to get date values
-	          int day = date.getDayOfMonth(); // 1..31
-	          int month = date.getMonthValue(); // 1..12
-	          int year = date.getYear();
-	          });
-			
-		}
-    	
+
+		 public void handle(ActionEvent event) {
+		      // Date Picker
+		            DatePicker dPicker = new DatePicker();
+		            dPicker.setPrefSize(230, 30);
+		            dPicker.setShowWeekNumbers(true);
+		            Stage dateStage = new Stage();
+		            dateStage.setTitle("Calendrier");
+		            HBox hbox = new HBox(dPicker);
+		            Scene scene = new Scene(hbox, 230, 30);
+		            dateStage.setScene(scene);
+		            Button button = new Button("Chercher");
+		            dPicker.setOnAction(e -> {
+		             LocalDate date = dPicker.getValue();
+		             button.setOnAction(new EventHandler<ActionEvent>() {
+
+		                  public void handle(ActionEvent event) {
+		                      System.out.println("date rechercée " + date);
+		                      final Stage dialog = new Stage();
+		                      VBox dialogVbox = new VBox(100);
+		                      ReceivedData data = new ReceivedData(date);
+		                      dialogVbox.getChildren().add(new Text("Données récupéré au " + date));
+		                      dialogVbox.getChildren().add(new Text("Temperature : "));
+		                      for (int i = 0; i < data.getTemperatureData().size(); i++){
+		                        Data dataR = data.getTemperatureData().get(i);
+		                        dialogVbox.getChildren().add(new Text(dataR.getValue() + "Dégré"));
+		                      }
+		                      //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
+		                     // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
+		                     // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
+		                     // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
+		                      Scene dialogScene = new Scene(dialogVbox, 300, 200);
+		                      dialog.setScene(dialogScene);
+		                      dialog.show();   
+		                  }
+		              });
+		            
+		            });
+		           
+		           
+		            hbox.getChildren().add(button);
+		            dateStage.show();
+		    }
       });
    
       
