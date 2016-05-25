@@ -71,16 +71,16 @@ public class UpdateData {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
-			    			DBConnection dbConn = 
-			    				new DBConnection(MainWindow.getConnectionForm());
+			    			//DBConnection dbConn = 
+			    				//new DBConnection(MainWindow.getConnectionForm())
+			        		System.out.println("hellozzzzzzzzzzzzzzzz");
+			        		checkLatestData();
 			    			connectionError = false;
 			    			System.out.println("connection successful");
 			    		} catch (SQLException e) {
 			    			connectionError = true;
 			    			System.out.println("connection failed !");
-			    			return;
-			    		}
-			        		checkLatestData();
+			    		}	
 			        }
 			      }),  
 			      new KeyFrame(Duration.millis(period_2))
@@ -95,8 +95,7 @@ public class UpdateData {
 	 * 
 	 *
 	 */
-	private void checkLatestData () {
-		
+	private void checkLatestData () throws SQLException {
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -108,13 +107,17 @@ public class UpdateData {
 				Sensor.AIR_QUALITY);
 		Data actualRadiancy    = Data.getLastData(
 				Sensor.RADIANCY);
+		Data actualRain        = Data.getLastData(
+				Sensor.RAIN);
 		
 		
 		double actualTemperatureValue = actualTemperature.getValue();
 		double actualHumidityValue    = actualHumidity.getValue();
 		double actualPressureValue    = actualPressure.getValue();
+		double actualRainValue		  = actualRain.getValue();
+		double actualRadiancyValue    = actualRadiancy.getValue();
 		//double actualAirQualityValue  = actualAirQuality.getValue();
-		//double actualRadiancyValue    = actualRadiancy.getValue();
+		
 		
 		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
@@ -143,16 +146,16 @@ public class UpdateData {
 		/**
 		 * If it's raining or snowing 
 		 */
-		if (Data.getLastData(Sensor.RAIN).getValue() == 1) {
+		if (actualRainValue == 1) {
 			/**
 			 * If it's day time
 			 */
-			if (Data.getLastData(Sensor.RADIANCY).getValue() > 250) {
+			if (actualRadiancyValue > 250) {
 				
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
-				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0)
+				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imRainLight);
 				/**
 				 * Else it's snowing (below 0 degree)
@@ -170,7 +173,7 @@ public class UpdateData {
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
-				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0)
+				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imNightRain);
 				/**
 				 * Else it's snowing (below 0 degree)
@@ -188,7 +191,7 @@ public class UpdateData {
 			/**
 			 * If it's day time
 			 */
-			if (Data.getLastData(Sensor.RADIANCY).getValue() > 160) {
+			if (actualRadiancyValue > 160) {
 				/**
 				 * It's sunny / with few clouds
 				 */

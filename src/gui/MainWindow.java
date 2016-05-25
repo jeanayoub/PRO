@@ -20,7 +20,9 @@ import data_processing.ReceivedData;
 import data_processing.UpdateData;
 import data_processing.generateFile;
 import db.ConnectionForm;
+import db.DBConnection;
 import db.Data;
+import db.OpenConnection;
 import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.medusa.Gauge;
@@ -78,6 +80,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+
 /**
  * Class MainWindow represents the application's main window.
  *
@@ -100,7 +103,7 @@ public class MainWindow extends Application {
       primaryStage.setScene(scene);
       primaryStage.show();
       primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-         @Override
+    	 @Override
          public void handle(WindowEvent t) {
             UpdateData.timer.cancel();
             System.out.println("Closing...");
@@ -664,12 +667,10 @@ public class MainWindow extends Application {
 		      	 new KeyFrame(Duration.millis(PERIOD_CONNECTION), 
 		      	 new EventHandler() {
 		      	 @Override public void handle(Event event) {
-	
 		        	System.out.println("waiting for conection");
 		        	if (connectionForm.getFormStatus()) {	
 		          		UpdateData updateData = new UpdateData(PERIOD_INITIATE ,
 		          											   PERIOD_UPDATE);
-		          		
 		          		if (!UpdateData.getConnectionError()) {
 		          			timeline.stop();
 		          		}
@@ -678,10 +679,8 @@ public class MainWindow extends Application {
 		      }),  
 		    new KeyFrame(Duration.millis(PERIOD_CONNECTION))
 		    );
-     
 	 timeline.setCycleCount(Timeline.INDEFINITE);
 	 timeline.play();
-   
    }
    
    
@@ -843,7 +842,7 @@ public class MainWindow extends Application {
    private static ProgressBar 	pbHumidity 		= new ProgressBar();
    
    /**  */
-   private static Text   progressTextValue;
+   private static Text   		progressTextValue;
 
    /**  */
    private static Lcd 			lcdTemperature;

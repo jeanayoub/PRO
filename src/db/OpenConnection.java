@@ -18,6 +18,10 @@ public class OpenConnection {
 	public static DBConnection getConnectionLink(){
 		return dbConn;
 	}
+	
+	public static void closeConnection() {
+		dbConn.close();
+	}
 
 	
 	private static DBConnection dbConn; 
