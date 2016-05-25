@@ -57,6 +57,10 @@ public class generateFile {
 	 * @throws IOException
 	 */
 	public void toPDF(TabPane tabPaneStat, String pdfFilePathname) throws IOException{
+		
+		/**
+		 * Position of the header into the file to be generated
+		 */
 		float xPos = 100;
 		final float xPosDefault = xPos;
 		float yPos = 610;
@@ -64,6 +68,9 @@ public class generateFile {
 		final String heigLogoPath = "meteoImages/HEIG-VD_Logo.png";
 
 		try {
+			/**
+			 * Initialization of Content stream that helps us to write into the file
+			 */
 			PDPageContentStream contentStream_1 = null;
 			PDPageContentStream contentStream_2 = null;
 			BufferedImage buffImage = null;
@@ -72,25 +79,27 @@ public class generateFile {
 			PDXObjectImage ximageLogoHeig = null;
 			
 			try (PDDocument document = new PDDocument()) {
+				
 				PDPage page_1 = new PDPage();
 				PDPage page_2 = new PDPage();
 				document.addPage(page_1);
 				document.addPage(page_2);
-
+				
+				/**
+				 * We get the first page and write the header
+				 */
 				page_1 = (PDPage)document.getDocumentCatalog().getAllPages().get(0);
 				contentStream_1 = new PDPageContentStream(document, page_1, true, true);
 				contentStream_2 = new PDPageContentStream(document, page_2, true, true);
-				//try (PDPageContentStream content = new PDPageContentStream(document,page)) {
-				//page_1 = (PDPage)document.getDocumentCatalog().getAllPages().get(0);
-
+				
+				// Read the image and then draw it in the file at a specific position mentioned
 				xHeigLogoImage = ImageIO.read(ResourceLoader.load(heigLogoPath));
 				ximageLogoHeig = new PDPixelMap(document, xHeigLogoImage);
 				contentStream_1.drawXObject(ximageLogoHeig, 80, 700, ximageLogoHeig.getWidth()-130, ximageLogoHeig.getHeight()-50);
 
-
+				// Beginning of writing text and settings of the font
 				contentStream_1.beginText();
 				contentStream_1.setFont(PDType1Font.HELVETICA_BOLD_OBLIQUE, 26);
-				//java.awt.Color color = null;
 				
 				contentStream_1.setNonStrokingColor(255,0,0);
 				contentStream_1.moveTextPositionByAmount(420, 720);
@@ -109,7 +118,10 @@ public class generateFile {
 				contentStream_1.moveTextPositionByAmount(80, 200);//80, 400
 				contentStream_1.endText();
 
-
+				/**
+				 * We get the second page of the document in which we are going to draw images from statistics
+				 * especially graphs
+				 */
 				page_2 = (PDPage)document.getDocumentCatalog().getAllPages().get(1);
 				for(int i = 0; i < tabPaneStat.getTabs().size(); i++){
 					buffImage = generate_png_from_container(tabPaneStat.getTabs().get(i).getContent());
@@ -118,31 +130,19 @@ public class generateFile {
 					contentStream_2.drawXObject(ximage, xPos, yPos, ximage.getWidth()-70, ximage.getHeight()-110);
 					yPos -= 200;
 				}
+				// We close the stream after writing into it
 				contentStream_1.close();
 				contentStream_2.close();
-				/*		
-					content.endText();
-
-					content.beginText();
-					content.setFont(PDType1Font.HELVETICA, 16);
-					content.moveTextPositionByAmount(80, 700);
-					content.drawString("Température : " );
-					content.endText();
-				 */
-
-				//}
 
 				// We sent to the default value for further treatments
 				xPos = xPosDefault;
 				yPos = yPosDefault;
 
+				// Save the file uder the name specified by the user
 				document.save(pdfFilePathname);
 
 			}
 
-			System.out.println("your file created in : " + 
-
-					System.getProperty("user.dir"));
 		} catch (COSVisitorException ex) {
 			Logger.getLogger(generateFile.class.getName()).log(Level.SEVERE, null, ex);
 		}

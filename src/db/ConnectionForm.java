@@ -41,8 +41,21 @@ public class ConnectionForm {
 		return connectionName;
 	}
 	
-	public boolean getFormStatus(){
+	public static boolean getFormStatus(){
 		return formFilled;
+	}
+	
+	public static void setFormStatus(boolean status){
+		formFilled = status;
+	}
+	
+	public void resetConnectionForm(){
+		this.connectionName = "";
+		this.hostname = "";
+		this.port = 0;
+		this.username = "";
+		this.password = "";
+		setFormStatus(false);
 	}
 	
 	
@@ -52,6 +65,6 @@ public class ConnectionForm {
 	private  int 	port;
 	private  String username;
 	private  String password;
-	private boolean formFilled = false;
+	private static boolean formFilled = false;
 
 }

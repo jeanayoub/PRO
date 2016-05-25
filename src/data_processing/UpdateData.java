@@ -14,6 +14,7 @@ package data_processing;
 import java.sql.SQLException;
 import java.util.Timer;
 
+import db.ConnectionForm;
 import db.DBConnection;
 import db.Data;
 import db.Data.Sensor;
@@ -24,6 +25,9 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.animation.KeyFrame;
 
@@ -73,11 +77,21 @@ public class UpdateData {
 			        	try {
 			    			DBConnection dbConn = 
 			    				new DBConnection(MainWindow.getConnectionForm());
-			    			connectionError = false;
+			    			connectionError = errorLogin = false;
 			    			System.out.println("connection successful");
 			    		} catch (SQLException e) {
 			    			connectionError = true;
 			    			System.out.println("connection failed !");
+			    			
+			    			// Show an alert box to the user
+			    			Alert alert = new Alert(AlertType.ERROR);
+		          			alert.setTitle("Erreur");
+		          			alert.setHeaderText(null);
+		          			alert.setContentText("Echec de connexion. Veuillez recommencer svp !");
+		          			MainWindow.getConnectionForm().resetConnectionForm();
+		          			//ConnectionForm.setFormStatus(false);
+		          			errorLogin = true;
+		          			alert.show();
 			    			return;
 			    		}
 			        		checkLatestData();
@@ -97,6 +111,9 @@ public class UpdateData {
 	 */
 	private void checkLatestData () {
 		
+		iconText = new Text(90, 300, "");
+		
+		iconText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -152,13 +169,19 @@ public class UpdateData {
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
-				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0)
+				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 					MainWindow.updateImageView(imRainLight);
+					iconText.setText("Pluie");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
-				else
+				else{
 					MainWindow.updateImageView(imSnow);
+					iconText.setText("Neige");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 			}
 					
 			
@@ -170,13 +193,19 @@ public class UpdateData {
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
-				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0)
+				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 					MainWindow.updateImageView(imNightRain);
+					iconText.setText("Pluie");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
-				else
+				else{
 					MainWindow.updateImageView(imNightSnow);
+					iconText.setText("Neige");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 			}
 		}
 		
@@ -193,18 +222,26 @@ public class UpdateData {
 				 * It's sunny / with few clouds
 				 */
 				MainWindow.updateImageView(imSunnyCloudy);
+				iconText.setText("Ensoleillé");
+				MainWindow.getRootGroup().getChildren().add(iconText);
 			}
 			
 			/**
 			 * Then it's night time without any rain or snow fall
 			 */
-			else
+			else{
 				MainWindow.updateImageView(imNight);
+				
+			}
 		}
 	}
 	
 	public static boolean getConnectionError() {
 		return connectionError;
+	}
+	
+	public static boolean getErrorLogin(){
+		return errorLogin;
 	}
 	
 	
@@ -223,6 +260,12 @@ public class UpdateData {
 	private static int 	   timeToStop;
 	/**  */
 	private static boolean connectionError = false;
+	
+	private static boolean errorLogin = true;
 	/**  */
 	private 	   Timeline timeline;
+	
+	private static Text   iconText;
+	
+	
 }

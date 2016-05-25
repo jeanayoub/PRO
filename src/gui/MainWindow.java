@@ -93,6 +93,7 @@ public class MainWindow extends Application {
    public void start(Stage primaryStage) throws IOException {
 
       final Group rootGroup = new Group();
+      rootGroupCopy = rootGroup;
       final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
 
       primaryStage.setTitle("Station Météo");
@@ -111,7 +112,7 @@ public class MainWindow extends Application {
        * Declaration and definition of all the Text fields
        */
       final Text text1 = new Text(100,  80, "Météo actuelle");
-      final Text text2 = new Text( 60, 400, "Pression atmosphérique");
+      final Text text2 = new Text( 60, 350, "Pression atmosphérique");
       final Text text3 = new Text(370,  80, "Humidité");
       final Text text4 = new Text(500, 270, "Statistiques");
       final Text text5 = new Text(600,  80, "Thermomètre");
@@ -153,8 +154,9 @@ public class MainWindow extends Application {
       final MenuItem exit       = new MenuItem("Quitter");
       final MenuItem oneday 	= new MenuItem("1 jour");
       final MenuItem twoDays 	= new MenuItem("2 jours");
-      final MenuItem oneWeek = new MenuItem("1 semaine");
+      final MenuItem oneWeek 	= new MenuItem("1 semaine");
       final MenuItem connection = new MenuItem("Connexion");
+      final MenuItem refreshPeriod = new MenuItem("Fixer le délai de rafraichissement");
       
 
       menuStation.getItems().add(connection);
@@ -162,6 +164,7 @@ public class MainWindow extends Application {
       menuStation.getItems().add(exit);
       
       menuOptions.getItems().add(menuPrevision);
+      menuOptions.getItems().add(refreshPeriod);
       menuPrevision.getItems().add(0, oneday);
       menuPrevision.getItems().add(1, twoDays);
       menuPrevision.getItems().add(2, oneWeek);
@@ -215,6 +218,40 @@ public class MainWindow extends Application {
             dialogInfo.showAndWait();
          }
       });
+      
+      refreshPeriod.setOnAction(new EventHandler<ActionEvent>(){
+
+		@Override
+		public void handle(ActionEvent event) {
+			// TODO Auto-generated method stub
+			Stage stage = new Stage();
+			stage.setTitle("Période de rafraichissement");
+			
+			GridPane root = new GridPane();
+			Label 		lblPeriod  = new Label("Période:");
+  		    TextField 	tfdPeriod = new TextField();
+			
+  		    root.add(lblPeriod, 0, 1);
+  		    root.add(tfdPeriod, 1, 1);
+  		    
+  		  root.setAlignment(Pos.CENTER);
+		  root.setPadding(new Insets(20));
+		  root.setHgap(10);
+		  root.setVgap(15);
+
+		  stage.setMinWidth(100);
+		  stage.setMinHeight(50);
+		  stage.setScene(new Scene(root));
+		  stage.show();
+		}
+    	  
+      });
+      
+      
+      
+      
+      
+      
       
       exit.setOnAction(new EventHandler<ActionEvent>() {
           @Override
@@ -614,8 +651,7 @@ public class MainWindow extends Application {
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
       rootGroup.getChildren().add(progressTextValue);
-      
-
+ 
       
     //-------------------------TEST GAUGE RADIAL---------------------------------------------
  
@@ -624,6 +660,7 @@ public class MainWindow extends Application {
     		  	.prefHeight(100)
     		  	.layoutX(560)
     		  	.layoutY(90)
+    		  	.decimals(1)
     		  	/*Lcd.STYLE_CLASS_FLAT_MIDNIGHT_BLUE*/
     		  	.styleClass(Lcd.STYLE_CLASS_LIGHTGREEN_BLACK)
     		  	.backgroundVisible(true)
@@ -650,7 +687,7 @@ public class MainWindow extends Application {
     		  			.unit("hPa")
     		  			.unit("hPa")
     		  			.shadowsEnabled(true)
-    		  			.layoutY(410)
+    		  			.layoutY(370)
     		  			.build();
 
       rootGroup.getChildren().add(pressureGauge);
@@ -670,7 +707,13 @@ public class MainWindow extends Application {
 		          		UpdateData updateData = new UpdateData(PERIOD_INITIATE ,
 		          											   PERIOD_UPDATE);
 		          		
-		          		if (!UpdateData.getConnectionError()) {
+		          		// Connection is good we stop
+		          		if ((!UpdateData.getConnectionError()) && (!UpdateData.getErrorLogin())) {
+		          			Alert alert = new Alert(AlertType.CONFIRMATION);
+		          			alert.setTitle("Confirmation");
+		          			alert.setHeaderText(null);
+		          			alert.setContentText("Connexion réussi !");
+		          			alert.show();
 		          			timeline.stop();
 		          		}
 		          	}
@@ -738,7 +781,10 @@ public class MainWindow extends Application {
     */
    public static void updatePbHumidity(double value) {
       pbHumidity.setProgress(value/100.);
-      progressTextValue.setText(pbHumidity.getProgress()*100. + " %");
+      double copyValue = pbHumidity.getProgress()*100;
+	  String textValue = String.format("%.2f", copyValue);
+	  textValue += " %";
+      progressTextValue.setText(textValue);
    }
 
    
@@ -781,6 +827,10 @@ public class MainWindow extends Application {
    
    public static ConnectionForm getConnectionForm(){
 	   return  connectionForm;
+   }
+   
+   public static Group getRootGroup(){
+	   return rootGroupCopy;
    }
    
    
@@ -867,6 +917,8 @@ public class MainWindow extends Application {
    private final  long 			 PERIOD_UPDATE 	   = 30000;
    /**  */
    private final  long			 PERIOD_INITIATE   = 3000;
+   
+   private static Group rootGroupCopy = new Group();
    
 
    /**
