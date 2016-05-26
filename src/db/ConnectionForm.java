@@ -12,7 +12,7 @@ public class ConnectionForm {
 		this.formFilled = false;
 	}
 	
-	public ConnectionForm(String connectionName, String hostname, int port, String username, String password){
+	public void setConnectionForm(String connectionName, String hostname, int port, String username, String password){
 		this.connectionName = connectionName;
 		this.hostname 		= hostname;
 		this.port 			= port;

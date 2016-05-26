@@ -53,7 +53,7 @@ public class DBConnection {
 							  + connectionForm.getUsername() 	   + "&password="
 							  + connectionForm.getPassword();
 		
-		connection = DriverManager.getConnection(URL);	
+		connection = DriverManager.getConnection(URL);
 		statement  = connection.createStatement();
 	}
 

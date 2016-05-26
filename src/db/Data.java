@@ -182,7 +182,7 @@ public class Data {
 	 * @param sensor
 	 * @return the last data in the db for the selected sensorID.
 	 */
-	public static Data getLastData(Sensor sensor) {
+	public static Data getLastData(Sensor sensor) throws SQLException  {
 		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');"; 
 		Double 		 value   = 0.;
 		Date   		 date    = null;
@@ -196,9 +196,8 @@ public class Data {
 		
 		try{
 			
-			dbConn = new DBConnection(MainWindow.getConnectionForm());
+			DBConnection dbConn = new DBConnection(MainWindow.getConnectionForm());
 			ResultSet result = dbConn.executeQuery(QUERY);
-			//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
 			if (result.next()){
 				value = result.getDouble("value_");
 				date  = result.getDate  ("date_");
@@ -239,14 +238,15 @@ public class Data {
 			
 		}
 		catch (SQLException se){
-		      System.out.println("An error occurated during the execution!");
-		      se.printStackTrace();
+				throw se;
+			//System.out.println("An error occurated during the execution!");
+		      //se.printStackTrace();
 		     }
-
-		     finally {
-		      if (OpenConnection.getConnectionLink() != null)
-		    	  OpenConnection.getConnectionLink().close();
-		     }
+     
+		finally {
+			if (OpenConnection.getConnectionLink() != null)
+				OpenConnection.getConnectionLink().close();
+			}
 		
 		System.out.println("Sensor " + sensor 
 					  + new Data(year, month, day, hours, minutes, seconds, value));

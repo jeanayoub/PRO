@@ -161,12 +161,12 @@ public void refreshChart () {
     /**  */
     private XYChart.Series<String, Number> series = new Series<String, Number>();
     /**  */
-    private final  int    MAX_SHOWING = 12;
+    private final  int    MAX_SHOWING 	= 12;
     
     //private static LocalDate lastDate = LocalDate.of(1000, 1, 1);
-    private static String lastDate = "1000-01-01";
+    private static String lastDate 		= "1000-01-01";
     
-    private static String date = "";
+    private static String date 			= "";
     
     private 	   String title;
     

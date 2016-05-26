@@ -75,27 +75,42 @@ public class UpdateData {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
-			    			DBConnection dbConn = 
-			    				new DBConnection(MainWindow.getConnectionForm());
-			    			connectionError = errorLogin = false;
-			    			System.out.println("connection successful");
+			        		System.out.println("Je suis UPDATE_1");
+			        		
+			        		// We try to get a connection if the user filled the connection form
+			        		if(MainWindow.getConnectionForm().getFormStatus() || MainWindow.getIsConnected()){
+			        			System.out.println("Je suis UPDATE_2");
+			        			DBConnection dbConn = 
+			        					new DBConnection(MainWindow.getConnectionForm());
+			        			
+			        			MainWindow.setIsConnected(true);
+			        			//connectionError = false;
+			        			System.out.println("connection successful");
+			        			checkLatestData();
+
+			        		}
 			    		} catch (SQLException e) {
-			    			connectionError = true;
+			    			//e.printStackTrace();
+			    			System.out.println("IsConnected = "+MainWindow.getIsConnected());
+			    			System.out.println("FormStatus  = "+MainWindow.getConnectionForm().getFormStatus());
+			    			MainWindow.setIsConnected(false);
+			    			//connectionError = true;
 			    			System.out.println("connection failed !");
-			    			
+
 			    			// Show an alert box to the user
 			    			Alert alert = new Alert(AlertType.ERROR);
 		          			alert.setTitle("Erreur");
 		          			alert.setHeaderText(null);
 		          			alert.setContentText("Echec de connexion. Veuillez recommencer svp !");
+		          			
+		          			// We reset the connection from and let the user  try again
 		          			MainWindow.getConnectionForm().resetConnectionForm();
-		          			//ConnectionForm.setFormStatus(false);
-		          			errorLogin = true;
 		          			alert.show();
 			    			return;
 			    		}
-			        		checkLatestData();
-			        }
+
+			    		}	
+			        //}
 			      }),  
 			      new KeyFrame(Duration.millis(period_2))
 			    );
@@ -109,7 +124,7 @@ public class UpdateData {
 	 * 
 	 *
 	 */
-	private void checkLatestData () {
+	private void checkLatestData() throws SQLException{
 		
 		iconText = new Text(90, 300, "");
 		
@@ -125,13 +140,17 @@ public class UpdateData {
 				Sensor.AIR_QUALITY);
 		Data actualRadiancy    = Data.getLastData(
 				Sensor.RADIANCY);
+		Data actualRain        = Data.getLastData(
+				Sensor.RAIN);
 		
 		
 		double actualTemperatureValue = actualTemperature.getValue();
 		double actualHumidityValue    = actualHumidity.getValue();
 		double actualPressureValue    = actualPressure.getValue();
+		double actualRainValue		  = actualRain.getValue();
+		double actualRadiancyValue    = actualRadiancy.getValue();
 		//double actualAirQualityValue  = actualAirQuality.getValue();
-		//double actualRadiancyValue    = actualRadiancy.getValue();
+		
 		
 		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
@@ -160,16 +179,17 @@ public class UpdateData {
 		/**
 		 * If it's raining or snowing 
 		 */
-		if (Data.getLastData(Sensor.RAIN).getValue() == 1) {
+		if (actualRainValue == 1) {
 			/**
 			 * If it's day time
 			 */
-			if (Data.getLastData(Sensor.RADIANCY).getValue() > 250) {
+			if (actualRadiancyValue > 250) {
 				
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
 				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
+				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imRainLight);
 					iconText.setText("Pluie");
 					MainWindow.getRootGroup().getChildren().add(iconText);
@@ -194,6 +214,7 @@ public class UpdateData {
 				 * If it's raining (depending on the temperature)
 				 */
 				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
+				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imNightRain);
 					iconText.setText("Pluie");
 					MainWindow.getRootGroup().getChildren().add(iconText);
@@ -217,7 +238,7 @@ public class UpdateData {
 			/**
 			 * If it's day time
 			 */
-			if (Data.getLastData(Sensor.RADIANCY).getValue() > 160) {
+			if (actualRadiancyValue > 160) {
 				/**
 				 * It's sunny / with few clouds
 				 */
@@ -255,9 +276,9 @@ public class UpdateData {
 	/** The actual temperature */
 	private 	   double  temperature;
 	/**  */
-	private static boolean status;
+	//private static boolean status;
 	/**  */
-	private static int 	   timeToStop;
+	//private static int 	   timeToStop;
 	/**  */
 	private static boolean connectionError = false;
 	
