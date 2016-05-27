@@ -123,8 +123,7 @@ public class UpdateData {
 		timelineLcs = new TimelineLcs();
 		pt 					   = new ParallelTransition();
 		  
-		timelineLcs.setPeriod(Duration.seconds(0), 
-										 Duration.seconds(120));
+		timelineLcs.setPeriod(DURATION_TO_START, DURATION_1_DEFAULT);
 		 
 		pt.getChildren().add(timelineRealTime);
 		pt.getChildren().add(timelineLcs.getTimeline());
