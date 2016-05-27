@@ -151,6 +151,10 @@ public class Data {
 		return dateAndTime.toString() + ", " + value;
 	}
 	
+	public static DBConnection getdbConnection(){
+		return dbConn;
+	}
+	
 	
 	
 	public enum Sensor {
@@ -195,13 +199,25 @@ public class Data {
 					 seconds = 0;
 		
 		try{
-			
+
 			DBConnection dbConn = new DBConnection(MainWindow.getConnectionForm());
 			ResultSet result = dbConn.executeQuery(QUERY);
 			if (result.next()){
 				value = result.getDouble("value_");
 				date  = result.getDate  ("date_");
 				time  = result.getTime  ("time_");
+			}
+		}
+		catch (SQLException se){
+			throw se;
+			//System.out.println("An error occurated during the execution!");
+			//se.printStackTrace();
+		}
+
+		finally {
+			if (dbConn != null)
+				dbConn.close();
+		}
 				
 				String tempString = date.toString();
 				year              = Integer.parseInt(tempString.substring(0, 4));
@@ -234,19 +250,9 @@ public class Data {
 					seconds = Integer.parseInt(tempString.substring(7, 8));
 				else
 					seconds = Integer.parseInt(tempString.substring(6, 8));	
-			}
 			
-		}
-		catch (SQLException se){
-				throw se;
-			//System.out.println("An error occurated during the execution!");
-		      //se.printStackTrace();
-		     }
-     
-		finally {
-			if (OpenConnection.getConnectionLink() != null)
-				OpenConnection.getConnectionLink().close();
-			}
+			
+		
 		
 		System.out.println("Sensor " + sensor 
 					  + new Data(year, month, day, hours, minutes, seconds, value));
@@ -275,6 +281,17 @@ public class Data {
 				value = result.getDouble("value_");
 				date  = result.getDate  ("date_");
 				time  = result.getTime  ("time_");
+			}
+		}
+		catch (SQLException se){
+			System.out.println("An error occurated during the execution!");
+			se.printStackTrace();
+		}
+
+		finally {
+			if (dbConn != null)
+				dbConn.close();
+		}
 				
 				// TEST DB !!!!!
 				//cvalue + " : " + date + ":" + time);
@@ -309,19 +326,10 @@ public class Data {
 					seconds = Integer.parseInt(tempString.substring(7, 8));
 				else
 					seconds = Integer.parseInt(tempString.substring(6, 8));	
-			}
+			//}
 			listData.add(new Data(year, month, day, hours, minutes, seconds, value));
 			
-		}
-		catch (SQLException se){
-		      System.out.println("An error occurated during the execution!");
-		      se.printStackTrace();
-		     }
-
-		     finally {
-		      if (OpenConnection.getConnectionLink() != null)
-		    	  OpenConnection.getConnectionLink().close();
-		     }
+		
 		
 		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
 		return listData;

@@ -13,6 +13,7 @@ package gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -80,6 +81,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import db.DBConnection;
 
 
 /**
@@ -93,14 +95,15 @@ public class MainWindow extends Application {
    /* (non-Javadoc)
     * @see javafx.application.Application#start(javafx.stage.Stage)
     */
-   public void start(Stage primaryStage) throws IOException {
+   @SuppressWarnings("static-access")
+public void start(Stage primaryStage) throws IOException {
 	   
 	   // Icon to be place for active and inactive connection   
-	    final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
-	    final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
+	    //final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
+	    //final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
 	    
-	    final Text textActiv = new Text(430, 27, "Actif");
-	    final Text textInactiv = new Text(430, 27, "Inactif");
+	    //final Text textActiv = new Text(740, 27, "Actif");
+	    //final Text textInactiv = new Text(740, 27, "Inactif");
 	    textActiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
 	    textInactiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
 	    
@@ -154,7 +157,7 @@ public class MainWindow extends Application {
       /**
        * This code sets the activ and inactiv image in place
        */
-      ivConnect.setX(400);
+      ivConnect.setX(710);
       ivConnect.setY(10);
       
       ivConnect.setImage(imInactiv);
@@ -179,10 +182,12 @@ public class MainWindow extends Application {
       final MenuItem twoDays 	= new MenuItem("2 jours");
       final MenuItem oneWeek 	= new MenuItem("1 semaine");
       final MenuItem connection = new MenuItem("Connexion");
+      final MenuItem disconnection = new MenuItem("Déconnexion");
       final MenuItem refreshPeriod = new MenuItem("Fixer le délai de rafraichissement");
       
 
       menuStation.getItems().add(connection);
+      menuStation.getItems().add(disconnection);
       menuStation.getItems().add(menuSaveAs);
       menuStation.getItems().add(exit);
       
@@ -191,6 +196,8 @@ public class MainWindow extends Application {
       menuPrevision.getItems().add(0, oneday);
       menuPrevision.getItems().add(1, twoDays);
       menuPrevision.getItems().add(2, oneWeek);
+      
+      disconnection.setDisable(true);
 
       menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
               menuCalendar);
@@ -342,7 +349,7 @@ public class MainWindow extends Application {
         				  Alert alert = new Alert(AlertType.INFORMATION);
         				  alert.setTitle("Information Dialog");
         				  alert.setHeaderText(null);
-        				  alert.setContentText("Sauvegarde en PDF Résussi !!!");
+        				  alert.setContentText("Sauvegarde en PDF Réussi !!!");
         				  alert.showAndWait();
         			  } catch (Exception e1) {
         				  e1.printStackTrace();
@@ -490,6 +497,8 @@ public class MainWindow extends Application {
 					// We try to get the value of the port which must be an Integer value
 					// If we couldn't we sent an error alert to the user in order to give
 					// a valid value
+					DBConnection testConnection = null;
+					
 					try{
 						portNumber = Integer.parseInt(tfdPort.getText());
 
@@ -499,17 +508,59 @@ public class MainWindow extends Application {
 								portNumber,
 								tfdUsername.getText(), 
 								pwfPassword.getText());
+						
+						// We try to get a connection to the database
+						System.out.println("Waiting to connect");
+						if (connectionForm.getFormStatus() && (MainWindow.getIsConnected()==false)) {
+							System.out.println("Apres waiting");
+							try{
+								testConnection = new DBConnection(MainWindow.getConnectionForm());
+								testConnection.close();
+								isConnected = true;
+								System.out.println("Connection Successful");
 
-						// Close the window when login button is clicked
-						stage.close();
+								// Close the window when login button is clicked
+								stage.close();
 
-						// Show an alert box to confirm an attempt of connection to the data base
-						Alert dialogW = new Alert(AlertType.INFORMATION);
-						dialogW.setTitle("Confirmation");
-						dialogW.setHeaderText(null); // No header
-						dialogW.setContentText(
-								"Tentative de connexion à la base de données !");
-						dialogW.showAndWait();
+								Alert alert = new Alert(AlertType.CONFIRMATION);
+								alert.setTitle("Confirmation");
+								alert.setHeaderText(null);
+								alert.setContentText("Connexion réussi !");
+								alert.show();
+								
+								// Update the connectivity icon image
+								ivConnect.setImage(imActiv);
+				        		rootGroup.getChildren().remove(imInactiv);
+				        		rootGroup.getChildren().remove(textInactiv);
+				        		rootGroup.getChildren().add(textActiv);
+				        		
+				        		disconnection.setDisable(false);
+								
+								// Start updating
+								UpdateData updateData = new UpdateData(PERIOD_INITIATE, PERIOD_UPDATE);
+
+							}
+							catch(SQLException e){
+								System.out.println("Connection failed, try again");
+								
+								// We reset the connection form for the next try
+								MainWindow.getConnectionForm().resetConnectionForm();
+								
+								// Show an alert box to the user
+				    			Alert alert = new Alert(AlertType.ERROR);
+			          			alert.setTitle("Erreur");
+			          			alert.setHeaderText(null);
+			          			alert.setContentText("Echec de connexion. Veuillez recommencer svp !");
+			          			alert.show();
+							}
+							finally{
+								// Disability the menu connection in order to disconnect before
+								// trying to get connected again
+								connection.setDisable(true);
+							}
+
+						}
+						//System.out.println("Isconnected = " + getIsConnected());
 
 					}
 					// The port value is not valid and the user have to correct the port number
@@ -520,8 +571,7 @@ public class MainWindow extends Application {
 						alert.setContentText("Le port doit être de valeur numérique");
 						alert.show();
 					}
-					
-					
+										
 				}
     			  
     		  });
@@ -571,10 +621,7 @@ public class MainWindow extends Application {
 		                        Data dataR = data.getTemperatureData().get(i);
 		                        dialogVbox.getChildren().add(new Text(dataR.getValue() + "Dégré"));
 		                      }
-		                      //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
-		                     // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
+		                      
 		                      Scene dialogScene = new Scene(dialogVbox, 300, 200);
 		                      dialog.setScene(dialogScene);
 		                      dialog.show();   
@@ -589,6 +636,30 @@ public class MainWindow extends Application {
 		    }
       });
    
+      
+      disconnection.setOnAction(new EventHandler<ActionEvent>() {
+
+		@Override
+		public void handle(ActionEvent event) {
+			if(isConnected){
+				connection.setDisable(false);
+				isConnected = false;
+				MainWindow.getConnectionForm().resetConnectionForm();
+				disconnection.setDisable(true);
+				
+				resetStation();
+				
+				// Update the connectivity icon image
+				ivConnect.setImage(imInactiv);
+        		rootGroup.getChildren().remove(imActiv);
+        		rootGroup.getChildren().remove(textActiv);
+        		rootGroup.getChildren().add(textInactiv);
+
+			}
+			
+		}
+    	  
+      });
       
 
       /**
@@ -759,50 +830,52 @@ public class MainWindow extends Application {
 
       rootGroup.getChildren().add(pressureGauge);
       
- 
-      
-      // Before updating data we need to connect to the data base
-      //connectionForm = new ConnectionForm();
-	   
-      timeline = new Timeline(
-		      	 new KeyFrame(Duration.millis(PERIOD_CONNECTION), 
-		      	 new EventHandler() {
-		      	 @Override public void handle(Event event) {
-		        	System.out.println("waiting for connection");
-		        	if (connectionForm.getFormStatus() && (MainWindow.getIsConnected()==false)) {
-		        		System.out.println("Apres waiting");
-		          		UpdateData updateData = new UpdateData(PERIOD_INITIATE ,
-		          											   PERIOD_UPDATE);
-		          		
-		          	}
-		        	
-		        	// To set the the connection status to active for the user so that he kmows
-		        	// that he is connected.
-		        	if(MainWindow.getIsConnected() == true){
-		        		ivConnect.setImage(imActiv);
-		        		rootGroup.getChildren().remove(imInactiv);
-		        		rootGroup.getChildren().remove(textInactiv);
-		        		rootGroup.getChildren().add(textActiv);
-		        		timeline.stop();
-		        	}
-		        	 //Connection is good we stop
-//		        	if( MainWindow.getIsConnected() == true){
-//		        		MainWindow.getConnectionForm().resetConnectionForm();
-//		        		Alert alert = new Alert(AlertType.CONFIRMATION);
-//		        		alert.setTitle("Confirmation");
-//		        		alert.setHeaderText(null);
-//		        		alert.setContentText("Connexion réussi !");
-//		        		alert.show();
-//		        		timeline.stop();
-//		        	}
-		        }
-		      })//,  
-		    //new KeyFrame(Duration.millis(PERIOD_CONNECTION))
-		    );
-	 timeline.setCycleCount(Timeline.INDEFINITE);
-	 timeline.play();
    }
    
+   
+   
+   
+   
+   public static ImageView getIvConnect(){
+	   return ivConnect;
+   }
+      
+   
+   
+   
+   public static void updateConnectivityIcon(String status){
+	// Update the connectivity icon image
+	   if(status.equals("imActiv")){
+		   
+		   MainWindow.getRootGroup().getChildren().remove(imActiv);
+		   MainWindow.getRootGroup().getChildren().remove(textActiv);
+		   ivConnect.setImage(imActiv);
+		   //MainWindow.getRootGroup().getChildren().add(textInactiv);
+	   }
+	   else if(status.equals("imInactiv")){
+		   ivConnect.setImage(imInactiv);
+		   MainWindow.getRootGroup().getChildren().remove(imActiv);
+		   MainWindow.getRootGroup().getChildren().remove(textActiv);
+		   //MainWindow.getRootGroup().getChildren().add(textInactiv);
+	   }
+   }
+   
+
+   /**
+   *
+   *
+   * @param 
+   */
+   public static void resetStation(){
+	   updateImageView(null);
+	   updateLcdTemperature(0.);
+	   updatePressureGauge(0.);
+//	   lcsTemperature.getData().clear();
+//	   lcsHumidity.getData().clear();
+//	   lcsPressure.getData().clear();
+//	   lcsAirQuality.getData().clear();
+	   updatePbHumidity(0.);
+   }
 
    /**
     *
@@ -819,15 +892,11 @@ public class MainWindow extends Application {
    * @param image
    */
   public static void updateImageConnect(Image image) {
-	  ivConnect.setImage(image);
+	  updateImageView(image);
+	  
   }
    
-   
-   
-   
-   
-   
-   
+
    /**
    *
    *
@@ -836,7 +905,6 @@ public class MainWindow extends Application {
   public static void updateLcdTemperature(double value) {
 	  lcdTemperature.setValue(value);
   }
-  
   
   
   /**
@@ -849,7 +917,6 @@ public class MainWindow extends Application {
  }
    
    
-
    /**
     *
     *
@@ -1011,9 +1078,12 @@ public class MainWindow extends Application {
    
    private int portNumber;
    
-   
-   
-   
+   private static final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
+   private static final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
+   private static final Text textActiv = new Text(740, 27, "Actif");
+   private static final Text textInactiv = new Text(740, 27, "Inactif");
+      
+
 
    /**
     * Main method for lunching the user window.

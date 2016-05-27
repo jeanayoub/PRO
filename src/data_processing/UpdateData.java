@@ -75,42 +75,39 @@ public class UpdateData {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
+			        		if(lostConnection){
+			        			System.out.println("Connection Lost");
+			        			MainWindow.updateConnectivityIcon("imInactiv");
+			        		}
 			        		System.out.println("Je suis UPDATE_1");
 			        		
 			        		// We try to get a connection if the user filled the connection form
-			        		if(MainWindow.getConnectionForm().getFormStatus() || MainWindow.getIsConnected()){
-			        			System.out.println("Je suis UPDATE_2");
-			        			DBConnection dbConn = 
-			        					new DBConnection(MainWindow.getConnectionForm());
-			        			
+			        		if(MainWindow.getConnectionForm().getFormStatus()){
+			        			System.out.println("Je suis UPDATE_2");			        			
 			        			MainWindow.setIsConnected(true);
-			        			//connectionError = false;
 			        			System.out.println("connection successful");
+			        			
 			        			checkLatestData();
-
+			        			lostConnection = false;
+			        			//if(lostConnection){
+			        				MainWindow.updateConnectivityIcon("imActiv");
+			        				//lostConnection = false;
+			        			//}
+			        		}
+			        		else{
+			        			// Connection is lost for instance disconnection
+		        				return;
 			        		}
 			    		} catch (SQLException e) {
 			    			//e.printStackTrace();
 			    			System.out.println("IsConnected = "+MainWindow.getIsConnected());
 			    			System.out.println("FormStatus  = "+MainWindow.getConnectionForm().getFormStatus());
-			    			MainWindow.setIsConnected(false);
-			    			//connectionError = true;
-			    			System.out.println("connection failed !");
+			    			lostConnection = true;
+			    			
 
-			    			// Show an alert box to the user
-			    			Alert alert = new Alert(AlertType.ERROR);
-		          			alert.setTitle("Erreur");
-		          			alert.setHeaderText(null);
-		          			alert.setContentText("Echec de connexion. Veuillez recommencer svp !");
-		          			
-		          			// We reset the connection from and let the user  try again
-		          			MainWindow.getConnectionForm().resetConnectionForm();
-		          			alert.show();
-			    			return;
 			    		}
 
 			    		}	
-			        //}
 			      }),  
 			      new KeyFrame(Duration.millis(period_2))
 			    );
@@ -128,7 +125,7 @@ public class UpdateData {
 		
 		iconText = new Text(90, 300, "");
 		
-		iconText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
+		iconText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -243,7 +240,7 @@ public class UpdateData {
 				 * It's sunny / with few clouds
 				 */
 				MainWindow.updateImageView(imSunnyCloudy);
-				iconText.setText("Ensoleillé");
+				iconText.setText("Ensoleillé - Nuageux");
 				MainWindow.getRootGroup().getChildren().add(iconText);
 			}
 			
@@ -287,6 +284,8 @@ public class UpdateData {
 	private 	   Timeline timeline;
 	
 	private static Text   iconText;
+	
+	private static boolean lostConnection = false;
 	
 	
 }
