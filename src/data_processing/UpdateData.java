@@ -91,11 +91,12 @@ public class UpdateData {
 			        			System.out.println("connection successful");
 			        			
 			        			checkLatestDataRealTime();
-			        			lostConnection = false;
-			        			//if(lostConnection){
+			        			//lostConnection = false;
+			        			if(lostConnection){
+			        				System.out.println("Je passe");
 			        				MainWindow.updateConnectivityIcon("imActiv");
-			        				//lostConnection = false;
-			        			//}
+			        				lostConnection = false;
+			        			}
 			        		}
 			        		else{
 			        			// Connection is lost for instance disconnection
@@ -377,7 +378,7 @@ public class UpdateData {
 	/**  */
 	private static final Duration DURATION_TO_START  = Duration.millis(0);
 	/**  */
-	private static final Duration DURATION_1_DEFAULT = Duration.seconds(30);
+	private static final Duration DURATION_1_DEFAULT = Duration.seconds(30);//30 s
 	/**  */
 	private static final Duration DURATION_2		 = Duration.minutes(5);
 	/**  */

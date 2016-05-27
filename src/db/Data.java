@@ -353,8 +353,8 @@ public class Data {
 		}
 
 		 finally {
-		      if (OpenConnection.getConnectionLink() != null)
-		    	  OpenConnection.getConnectionLink().close();
+		      if (dbConn != null)
+		    	  dbConn.close();
 		 }
 		 return dateFound;				
 	}
@@ -421,8 +421,8 @@ public class Data {
 		}
 
 		 finally {
-		      if (OpenConnection.getConnectionLink() != null)
-		    	  OpenConnection.getConnectionLink().close();
+		      if (dbConn != null)
+		    	  dbConn.close();
 		 }
 		 return new Data(year, month, day, hours, minutes, seconds, averageValue);
 		

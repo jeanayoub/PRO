@@ -233,6 +233,8 @@ public void start(Stage primaryStage) throws IOException {
       menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout, menuCalendar);
       ((Group) scene.getRoot()).getChildren().addAll(menuBar);
       
+      miDisconnection.setDisable(true);
+      
       
       
       
@@ -611,9 +613,10 @@ public void start(Stage primaryStage) throws IOException {
 								alert.show();
 								
 								// Update the connectivity icon image
-								ivConnect.setImage(imActiv);
+								
 				        		rootGroup.getChildren().remove(imInactiv);
 				        		rootGroup.getChildren().remove(textInactiv);
+				        		ivConnect.setImage(imActiv);
 				        		rootGroup.getChildren().add(textActiv);
 				        		
 				        		miDisconnection.setDisable(false);
@@ -792,7 +795,6 @@ public void start(Stage primaryStage) throws IOException {
 				isConnected = false;
 				MainWindow.getConnectionForm().resetConnectionForm();
 				miDisconnection.setDisable(true);
-				
 				resetStation();
 				
 				// Update the connectivity icon image
@@ -957,11 +959,7 @@ public void start(Stage primaryStage) throws IOException {
    
    }
       
-   //}
-   
-   
-   
-   
+ 
    
    public static ImageView getIvConnect(){
 	   return ivConnect;
@@ -972,17 +970,24 @@ public void start(Stage primaryStage) throws IOException {
    public static void updateConnectivityIcon(String status){
 	// Update the connectivity icon image
 	   if(status.equals("imActiv")){
-		   
-		   MainWindow.getRootGroup().getChildren().remove(imActiv);
-		   MainWindow.getRootGroup().getChildren().remove(textActiv);
-		   ivConnect.setImage(imActiv);
-		   //MainWindow.getRootGroup().getChildren().add(textInactiv);
+		   System.out.println("Dans imActiv");
+		   if(MainWindow.getRootGroup().getChildren().contains(textInactiv)){
+			   System.out.println("Lost_connection_Update_To_Activ");
+			   MainWindow.getRootGroup().getChildren().remove(imInactiv);
+			   MainWindow.getRootGroup().getChildren().remove(textInactiv);
+			   ivConnect.setImage(imActiv);
+			   MainWindow.getRootGroup().getChildren().add(textActiv);
+		   }
 	   }
 	   else if(status.equals("imInactiv")){
-		   ivConnect.setImage(imInactiv);
-		   MainWindow.getRootGroup().getChildren().remove(imActiv);
-		   MainWindow.getRootGroup().getChildren().remove(textActiv);
-		   //MainWindow.getRootGroup().getChildren().add(textInactiv);
+		   System.out.println("Dans imInactiv");
+		   if(MainWindow.getRootGroup().getChildren().contains(textActiv)){
+			   System.out.println("Lost_connection_Update_To_Inactiv");
+			   MainWindow.getRootGroup().getChildren().remove(imActiv);
+			   MainWindow.getRootGroup().getChildren().remove(textActiv);
+			   ivConnect.setImage(imInactiv);
+			   MainWindow.getRootGroup().getChildren().add(textInactiv);
+		   }
 	   }
    }
    
@@ -1198,7 +1203,7 @@ public void start(Stage primaryStage) throws IOException {
    /**  */
    private final  long           PERIOD_CONNECTION = 10000;
    /**  */
-   private final  long 			 PERIOD_UPDATE 	   = 20000;//30000
+   private final  long 			 PERIOD_UPDATE 	   = 2000;//30000
    /**  */
    private final  long			 PERIOD_INITIATE   = 3000;
    
