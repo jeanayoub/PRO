@@ -1,7 +1,9 @@
 package data_processing;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import db.Data;
@@ -9,31 +11,31 @@ import db.Data.Sensor;
 
 public class ReceivedData {
 	
-	public ReceivedData(LocalDate date){
+	public ReceivedData(LocalDate date, Time beginTime, Time endTime){
 		this.date = date;
+		this.beginTime = beginTime;
+		this.endTime = endTime;
 	}
 	
 	
-	public ArrayList<Data> getTemperatureData(){
-		return Data.getValueInDay(
-				Sensor.TEMPERATURE, date);
+	public Data getTemperatureData(){
+		return Data.averageValue(Sensor.TEMPERATURE, date, beginTime, endTime);
 	}
 	
-	public ArrayList<Data> getHumidityData(){
-		return Data.getValueInDay(
-				Sensor.HUMIDITY, date);
+	public Data getHumidityData(){
+		return Data.averageValue(Sensor.HUMIDITY, date, beginTime, endTime);
 	}
 	
-	public ArrayList<Data> getPressureData(){
-		return Data.getValueInDay(Sensor.PRESSURE, date);
+	public Data getPressureData(){
+		return Data.averageValue(Sensor.PRESSURE, date, beginTime, endTime);
 	}
 	
-	public ArrayList<Data> getAirQualityData(){
-		return Data.getValueInDay(Sensor.AIR_QUALITY, date);
+	public Data getAirQualityData(){
+		return Data.averageValue(Sensor.AIR_QUALITY, date, beginTime, endTime);
 	}
 	
-	public ArrayList<Data> getRadiancyData(){
-		return Data.getValueInDay(Sensor.RADIANCY, date);
+	public Data getRadiancyData(){
+		return Data.averageValue(Sensor.RADIANCY, date, beginTime, endTime);
 	}
 	
 	public ArrayList<Data> getRainData(){
@@ -41,4 +43,6 @@ public class ReceivedData {
 	}
 	
 	private LocalDate date;
+	private Time beginTime;
+	private Time endTime;
 }

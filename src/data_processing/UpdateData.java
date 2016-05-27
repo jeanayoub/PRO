@@ -29,7 +29,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
 
 /**
  * Class.
@@ -68,10 +70,10 @@ public class UpdateData {
 	 * @param period2
 	 * @throws SQLException 
 	 */
-	public UpdateData (long period_1, long period_2) {
+	public UpdateData() {
 
-		timeline = new Timeline(
-			      new KeyFrame(Duration.millis(period_1), new EventHandler() {
+		timelineRealTime = new Timeline(
+			      new KeyFrame(DURATION_TO_START, new EventHandler() {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
@@ -79,6 +81,7 @@ public class UpdateData {
 			        			System.out.println("Connection Lost");
 			        			MainWindow.updateConnectivityIcon("imInactiv");
 			        		}
+
 			        		System.out.println("Je suis UPDATE_1");
 			        		
 			        		// We try to get a connection if the user filled the connection form
@@ -87,7 +90,7 @@ public class UpdateData {
 			        			MainWindow.setIsConnected(true);
 			        			System.out.println("connection successful");
 			        			
-			        			checkLatestData();
+			        			checkLatestDataRealTime();
 			        			lostConnection = false;
 			        			//if(lostConnection){
 			        				MainWindow.updateConnectivityIcon("imActiv");
@@ -97,7 +100,9 @@ public class UpdateData {
 			        		else{
 			        			// Connection is lost for instance disconnection
 		        				return;
+
 			        		}
+
 			    		} catch (SQLException e) {
 			    			//e.printStackTrace();
 			    			System.out.println("IsConnected = "+MainWindow.getIsConnected());
@@ -109,19 +114,127 @@ public class UpdateData {
 
 			    		}	
 			      }),  
-			      new KeyFrame(Duration.millis(period_2))
+			      new KeyFrame(DURATION_1_DEFAULT)
 			    );
-		 timeline.setCycleCount(Timeline.INDEFINITE);
-		 timeline.play();
+		 timelineRealTime.setCycleCount(Timeline.INDEFINITE);
 		 
+		 
+		 	
+		timelineLcs = new TimelineLcs();
+		pt 					   = new ParallelTransition();
+		  
+		timelineLcs.setPeriod(Duration.seconds(0), 
+										 Duration.seconds(120));
+		 
+		pt.getChildren().add(timelineRealTime);
+		pt.getChildren().add(timelineLcs.getTimeline());
+		
+		 
+		pt.play();
 	}
 	
 	
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static TimelineLcs getTimelineLcs() {
+		return timelineLcs;
+	}
+
+	
+	
+	
+	
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static ParallelTransition getPt() {
+		return pt;
+	}
+	
+	
+	
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDurationToStart() {
+		return DURATION_TO_START;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration1Default() {
+		return DURATION_1_DEFAULT;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration2() {
+		return DURATION_2;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration3() {
+		return DURATION_3;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration4() {
+		return DURATION_4;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration5() {
+		return DURATION_5;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration6() {
+		return DURATION_6;
+	}
+
+
+
 	/**
 	 * 
 	 *
+	 * @throws SQLException
 	 */
-	private void checkLatestData() throws SQLException{
+	private void checkLatestDataRealTime() throws SQLException {
+
 		
 		iconText = new Text(90, 300, "");
 		
@@ -149,7 +262,6 @@ public class UpdateData {
 		//double actualAirQualityValue  = actualAirQuality.getValue();
 		
 		
-		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
 			MainWindow.updatePressureGauge(actualPressureValue);
 			pressure = actualPressureValue;
@@ -166,12 +278,6 @@ public class UpdateData {
 		}
 		
 
-		MainWindow.updateLcsTemperature(actualTemperature);
-		MainWindow.updateLcsHumidity   (actualHumidity);
-		MainWindow.updateLcsPressure   (actualPressure);
-		MainWindow.updateLcsAirQuality (actualAirQuality);
-				
-		
 		
 		/**
 		 * If it's raining or snowing 
@@ -254,34 +360,34 @@ public class UpdateData {
 		}
 	}
 	
-	public static boolean getConnectionError() {
-		return connectionError;
-	}
-	
-	public static boolean getErrorLogin(){
-		return errorLogin;
-	}
 	
 	
-	
-	/**  */
-	public  static Timer   timer = new Timer();
 	/** The actual pressure */
-	private 	   double  pressure;
+	private double pressure;
 	/** The actual humidity */
-	private 	   double  humidity;
+	private double humidity;
 	/** The actual temperature */
-	private 	   double  temperature;
+	private double temperature;
 	/**  */
-	//private static boolean status;
+	private static Timeline    timelineRealTime;
 	/**  */
-	//private static int 	   timeToStop;
+	private static TimelineLcs timelineLcs;
 	/**  */
-	private static boolean connectionError = false;
-	
-	private static boolean errorLogin = true;
+	private static ParallelTransition pt;
 	/**  */
-	private 	   Timeline timeline;
+	private static final Duration DURATION_TO_START  = Duration.millis(0);
+	/**  */
+	private static final Duration DURATION_1_DEFAULT = Duration.seconds(30);
+	/**  */
+	private static final Duration DURATION_2		 = Duration.minutes(5);
+	/**  */
+	private static final Duration DURATION_3		 = Duration.minutes(30);
+	/**  */
+	private static final Duration DURATION_4		 = Duration.hours(1);
+	/**  */
+	private static final Duration DURATION_5		 = Duration.hours(2);
+	/**  */
+	private static final Duration DURATION_6		 = Duration.hours(4);
 	
 	private static Text   iconText;
 	

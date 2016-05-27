@@ -18,6 +18,7 @@ import javafx.scene.chart.XYChart;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 
@@ -96,9 +97,6 @@ public class LineChartStat extends LineChart<String, Number> {
 		this.series.setName(seriesName);
 		this.title = title;
 
-		/**
-		 *  Setting the series name.
-		 */
 		
 	}
 
@@ -153,9 +151,11 @@ public class LineChartStat extends LineChart<String, Number> {
 	}
 	
 	
-public void refreshChart () {
-	this.updateAxisRange();
+
+	public void refreshChart () {
+		this.updateAxisRange();
 	}
+	
 	
 	
     /**  */
@@ -164,14 +164,14 @@ public void refreshChart () {
     private final  int    MAX_SHOWING 	= 12;
     
     //private static LocalDate lastDate = LocalDate.of(1000, 1, 1);
-    private static String lastDate 		= "1000-01-01";
-    
+    private static String lastDate 		= "1000-01-01"; 
+    /**  */
     private static String date 			= "";
-    
+    /**  */
     private 	   String title;
-    
+    /**  */
     private final  int    PRECISION_MIN = 5;
-    
+    /**  */
     private final  int 	  PRECISION_SEC = 8;
    
     

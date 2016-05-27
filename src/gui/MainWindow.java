@@ -39,6 +39,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -58,6 +59,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -82,6 +84,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import db.DBConnection;
+import utils.Hours;
+
+import java.sql.Time;
 
 
 /**
@@ -120,7 +125,6 @@ public void start(Stage primaryStage) throws IOException {
       primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     	 @Override
          public void handle(WindowEvent t) {
-            UpdateData.timer.cancel();
             System.out.println("Closing...");
          }
       });
@@ -168,40 +172,176 @@ public void start(Stage primaryStage) throws IOException {
       /**
        * The Menu bar
        */
-      final MenuBar menuBar 	  = new MenuBar();
-      final Menu 	menuStation   = new Menu("Station");
-      final Menu 	menuOptions   = new Menu("Option");
-      final Menu 	menuAbout     = new Menu("A propos");
-      final Menu 	menuCalendar  = new Menu("Calendrier");
-      final Menu 	menuSaveAs    = new Menu("Enregistrer Sous");
-      final Menu 	menuPrevision = new Menu("Prévision météorologique");
+
+//<<<<<<< HEAD
+//      
+//      final MenuItem exit       = new MenuItem("Quitter");
+//      final MenuItem oneday 	= new MenuItem("1 jour");
+//      final MenuItem twoDays 	= new MenuItem("2 jours");
+//      final MenuItem oneWeek 	= new MenuItem("1 semaine");
+//      final MenuItem connection = new MenuItem("Connexion");
+//      final MenuItem disconnection = new MenuItem("Déconnexion");
+//      final MenuItem refreshPeriod = new MenuItem("Fixer le délai de rafraichissement");
+//      
+//
+//      menuStation.getItems().add(connection);
+//      menuStation.getItems().add(disconnection);
+//      menuStation.getItems().add(menuSaveAs);
+//      menuStation.getItems().add(exit);
+//      
+//      menuOptions.getItems().add(menuPrevision);
+//      menuOptions.getItems().add(refreshPeriod);
+//      menuPrevision.getItems().add(0, oneday);
+//      menuPrevision.getItems().add(1, twoDays);
+//      menuPrevision.getItems().add(2, oneWeek);
+//      
+//      disconnection.setDisable(true);
+//
+//      menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
+//              menuCalendar);
+//=======
+      final MenuBar menuBar = new MenuBar();
+      final Menu menuStation     = new Menu("Station");
+      final Menu menuOptions   	 = new Menu("Option");
+      final Menu menuAbout     	 = new Menu("A propos");
+      final Menu menuCalendar    = new Menu("Calendrier");
+      final Menu menuSaveAs      = new Menu("Enregistrer Sous");
+      final Menu menuPrevision   = new Menu("Prévision météorologique");
+      final Menu menuDuration    = new Menu("Temps de mise à jour des graphes");
 
       
-      final MenuItem exit       = new MenuItem("Quitter");
-      final MenuItem oneday 	= new MenuItem("1 jour");
-      final MenuItem twoDays 	= new MenuItem("2 jours");
-      final MenuItem oneWeek 	= new MenuItem("1 semaine");
-      final MenuItem connection = new MenuItem("Connexion");
-      final MenuItem disconnection = new MenuItem("Déconnexion");
-      final MenuItem refreshPeriod = new MenuItem("Fixer le délai de rafraichissement");
-      
+      final MenuItem miExit       = new MenuItem("Quitter");
+      final MenuItem miOneday     = new MenuItem("1 jour");
+      final MenuItem miTwoDays    = new MenuItem("2 jours");
+      final MenuItem miOneWeek    = new MenuItem("1 semaine");
+      final MenuItem miConnection = new MenuItem("Connexion");
+      final MenuItem miDisconnection = new MenuItem("Déconnexion");
+      final MenuItem miDuration_1 = new MenuItem(String.valueOf(UpdateData.getDuration1Default().toMinutes()) + "min");
+      final MenuItem miDuration_2 = new MenuItem(String.valueOf(UpdateData.getDuration2().toMinutes()) + "min");
+      final MenuItem miDuration_3 = new MenuItem(String.valueOf(UpdateData.getDuration3().toMinutes()) + "min");
+      final MenuItem miDuration_4 = new MenuItem(String.valueOf(UpdateData.getDuration4().toMinutes()) + "min");
+      final MenuItem miDuration_5 = new MenuItem(String.valueOf(UpdateData.getDuration5().toMinutes()) + "min");
+      final MenuItem miDuration_6 = new MenuItem(String.valueOf(UpdateData.getDuration6().toMinutes()) + "min");
+   
+      menuStation.getItems().addAll(miConnection, miDisconnection, menuSaveAs, miExit);
+      menuOptions.getItems().addAll(menuPrevision, menuDuration);
+      menuPrevision.getItems().addAll(miOneday, miTwoDays, miOneWeek);
+      menuDuration.getItems().addAll(miDuration_1, miDuration_2, miDuration_3, 
+									 miDuration_4, miDuration_5, miDuration_6);
 
-      menuStation.getItems().add(connection);
-      menuStation.getItems().add(disconnection);
-      menuStation.getItems().add(menuSaveAs);
-      menuStation.getItems().add(exit);
-      
-      menuOptions.getItems().add(menuPrevision);
-      menuOptions.getItems().add(refreshPeriod);
-      menuPrevision.getItems().add(0, oneday);
-      menuPrevision.getItems().add(1, twoDays);
-      menuPrevision.getItems().add(2, oneWeek);
-      
-      disconnection.setDisable(true);
-
-      menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
-              menuCalendar);
+ 
+      menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout, menuCalendar);
       ((Group) scene.getRoot()).getChildren().addAll(menuBar);
+      
+      
+      
+      
+      miDuration_1.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration1Default());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      
+      
+      
+      miDuration_2.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration2());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      
+      
+      miDuration_3.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration3());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      
+      miDuration_4.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration4());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      
+      miDuration_5.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration5());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      miDuration_6.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+        	  	if(UpdateData.getPt() != null) {
+        	  		UpdateData.getPt().stop();
+        	  		UpdateData.getPt().getChildren().remove(1);
+        	  		UpdateData.getTimelineLcs().setPeriod(
+        	  									UpdateData.getDurationToStart(), 
+        	  									UpdateData.getDuration6());
+        	  		UpdateData.getPt().getChildren().add(1, 
+        	  				UpdateData.getTimelineLcs().getTimeline());
+        	  		UpdateData.getPt().play();
+      			}
+          }
+       });
+      
+      
+      
+      
 
       /**
        * The menu item for the menu About and its content which is the application's
@@ -224,6 +364,7 @@ public void start(Stage primaryStage) throws IOException {
       final Text textDialogInfo = new Text("Station Météo \nVersion 1.0"
               							 + "\n\nCopyrights ©"
               							 + "\nPRO HEIG-VD"
+              							 + "\n2016"
               							 + "\n\nR. Combremont"
               							 + "\nM. Dupraz"
               							 + "\nI. Ounon"
@@ -249,71 +390,12 @@ public void start(Stage primaryStage) throws IOException {
          }
       });
       
-      refreshPeriod.setOnAction(new EventHandler<ActionEvent>(){
-
-		@Override
-		public void handle(ActionEvent event) {
-			// TODO Auto-generated method stub
-			Stage stage = new Stage();
-			stage.setTitle("Période de rafraichissement");
-
-			GridPane root = new GridPane();
-			Label 		lblPeriod  = new Label("Temps de raffraichissement (Secondes):");
-			TextField 	tfdPeriod = new TextField();
-			Button btnValidate = new Button ("Valider");
-			
-			//double value = 0;
-
-			
-			root.add(lblPeriod, 0, 1);
-			root.add(tfdPeriod, 1, 1);
-			root.add(btnValidate, 2, 2);
-
-			root.setAlignment(Pos.CENTER);
-			root.setPadding(new Insets(20));
-			root.setHgap(10);
-			root.setVgap(15);
-
-			stage.setMinWidth(100);
-			stage.setMinHeight(50);
-			stage.setScene(new Scene(root));
-			
-			// Set action on btnValidate
-			btnValidate.setOnAction(new EventHandler<ActionEvent>(){
-
-				@Override
-				public void handle(ActionEvent event) {
-					// We try to get the value if its a valid numerical value, the program can
-					// continue, otherwise we send an alert error message so that the user
-					// try again
-					try{
-						refreshValue = Double.parseDouble(tfdPeriod.getText());
-						System.out.println(refreshValue);
-						stage.close();
-					}
-					catch(Exception e){
-						Alert alert = new Alert(AlertType.ERROR);
-		        		alert.setTitle("Erreur Saisie");
-		        		alert.setHeaderText(null);
-		        		alert.setContentText("Veuillez entrer une valeur numérique");
-		        		alert.show();
-					}
-				
-				}
-				
-			});
-			
-			
-			stage.show();
-		}
-    	  
-      });
+      
       
  
-      exit.setOnAction(new EventHandler<ActionEvent>() {
+      miExit.setOnAction(new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent event) {
-        	  UpdateData.timer.cancel();
               System.out.println("Closing...");
         	  primaryStage.close();
           }
@@ -377,7 +459,7 @@ public void start(Stage primaryStage) throws IOException {
        * Create a connection to a data base in order to fetch data and display them
        */
        
-      connection.setOnAction(new EventHandler<ActionEvent>() {
+      miConnection.setOnAction(new EventHandler<ActionEvent>() {
     	  @Override public void handle(ActionEvent e) {
     		  Stage stage = new Stage();
 
@@ -534,10 +616,10 @@ public void start(Stage primaryStage) throws IOException {
 				        		rootGroup.getChildren().remove(textInactiv);
 				        		rootGroup.getChildren().add(textActiv);
 				        		
-				        		disconnection.setDisable(false);
+				        		miDisconnection.setDisable(false);
 								
 								// Start updating
-								UpdateData updateData = new UpdateData(PERIOD_INITIATE, PERIOD_UPDATE);
+								UpdateData updateData = new UpdateData();
 
 							}
 							catch(SQLException e){
@@ -556,7 +638,7 @@ public void start(Stage primaryStage) throws IOException {
 							finally{
 								// Disability the menu connection in order to disconnect before
 								// trying to get connected again
-								connection.setDisable(true);
+								miConnection.setDisable(true);
 							}
 
 						}
@@ -598,35 +680,99 @@ public void start(Stage primaryStage) throws IOException {
 		 public void handle(ActionEvent event) {
 		      // Date Picker
 		            DatePicker dPicker = new DatePicker();
-		            dPicker.setPrefSize(230, 30);
+		            dPicker.setPrefSize(200, 30);
 		            dPicker.setShowWeekNumbers(true);
 		            Stage dateStage = new Stage();
 		            dateStage.setTitle("Calendrier");
 		            HBox hbox = new HBox(dPicker);
-		            Scene scene = new Scene(hbox, 230, 30);
+		            Scene scene = new Scene(hbox, 270, 30);
 		            dateStage.setScene(scene);
 		            Button button = new Button("Chercher");
 		            dPicker.setOnAction(e -> {
 		             LocalDate date = dPicker.getValue();
 		             button.setOnAction(new EventHandler<ActionEvent>() {
 
-		                  public void handle(ActionEvent event) {
-		                      System.out.println("date rechercée " + date);
-		                      final Stage dialog = new Stage();
-		                      VBox dialogVbox = new VBox(100);
-		                      ReceivedData data = new ReceivedData(date);
-		                      dialogVbox.getChildren().add(new Text("Données récupéré au " + date));
-		                      dialogVbox.getChildren().add(new Text("Temperature : "));
-		                      for (int i = 0; i < data.getTemperatureData().size(); i++){
-		                        Data dataR = data.getTemperatureData().get(i);
-		                        dialogVbox.getChildren().add(new Text(dataR.getValue() + "Dégré"));
-		                      }
+		            	 public void handle(ActionEvent event) {
+	                          System.out.println("date rechercée " + date);
+	                           if (!Data.checkDate(date)){
+	                            Alert alert = new Alert(Alert.AlertType.ERROR);
+	                              alert.setHeaderText(null);
+	                              alert.setContentText("Aucune données recupérée au " + date);
+	                              alert.showAndWait();
+	                          }
+	                          else{
+		                          final Stage dialog = new Stage();
+		                          HBox hbox = new HBox();
+		                   
+		                          SplitPane splitPane1 = new SplitPane();
+		                          splitPane1.setOrientation(Orientation.VERTICAL);
+		                          SplitPane splitPane2 = new SplitPane();
+		                          splitPane2.setOrientation(Orientation.VERTICAL);
+		             
+		                  
+		                          ArrayList<Data> dataTemperatureList = new ArrayList<>();
+		                          ArrayList<Data> dataPressureList = new ArrayList<>();
+		                          ArrayList<Data> dataHumidityList = new ArrayList<>();
+		                          ArrayList<Data> dataAirQualityList = new ArrayList<>();
+		                     	  ArrayList<String> hoursList = Hours.getHoursList();
+		                     	  for (int i = 0; i < hoursList.size() - 1; ++i){
+		                     		 ReceivedData data = new ReceivedData(date,Time.valueOf(hoursList.get(i)),Time.valueOf(hoursList.get(i + 1)));
+		                     		 dataTemperatureList.add(data.getTemperatureData());
+		                     		 dataPressureList.add(data.getPressureData());
+		                     		 dataHumidityList.add(data.getHumidityData());
+		                     		 dataAirQualityList.add(data.getAirQualityData());
+		                     		
+		                     	  }
+		                     	  
 		                      
-		                      Scene dialogScene = new Scene(dialogVbox, 300, 200);
-		                      dialog.setScene(dialogScene);
-		                      dialog.show();   
-		                  }
-		              });
+		                          LineChartStat lcTemperature
+		                          = (LineChartStat) createLineChart("Température",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                dataTemperatureList);
+		                          LineChartStat lcHumidity
+		                          =(LineChartStat) createLineChart("Humidité",
+                							"Variation de l'humidité",
+                							"Heures",
+                							"Humidité [%]",
+                							450,
+                							290,
+                							dataHumidityList);
+
+		                          LineChartStat lcPressure
+		                          = (LineChartStat) createLineChart("Pression",
+                							"Variation de la pression",
+                							"Heures",
+                							"Pression [hPa]",
+                							450,
+                							290,
+                							dataPressureList);
+
+		                          LineChartStat lcAirQuality
+		                          = (LineChartStat) createLineChart("Qualité d'air",
+                							"Variation de la qualité d'air",
+                							"Heures",
+                							"indice[0 - 5.5]",
+                							450,
+                							290,
+                							dataAirQualityList);
+		                       
+		                          splitPane1.getItems().addAll(lcTemperature, lcPressure);
+		                          hbox.getChildren().add(splitPane1);
+		                          splitPane2.getItems().addAll(lcHumidity, lcAirQuality);
+		                          
+		                          hbox.getChildren().add(splitPane2);
+		                          Group gr = new Group(hbox);
+		                          Scene dialogScene = new Scene(gr);
+		                          dialog.setTitle("Valeur récupérés au " + date);
+		                          dialog.setScene(dialogScene);
+		                          dialog.show();   
+	                          }
+	                      }
+	                  });
 		            
 		            });
 		           
@@ -637,15 +783,15 @@ public void start(Stage primaryStage) throws IOException {
       });
    
       
-      disconnection.setOnAction(new EventHandler<ActionEvent>() {
+      miDisconnection.setOnAction(new EventHandler<ActionEvent>() {
 
 		@Override
 		public void handle(ActionEvent event) {
 			if(isConnected){
-				connection.setDisable(false);
+				miConnection.setDisable(false);
 				isConnected = false;
 				MainWindow.getConnectionForm().resetConnectionForm();
-				disconnection.setDisable(true);
+				miDisconnection.setDisable(true);
 				
 				resetStation();
 				
@@ -680,37 +826,12 @@ public void start(Stage primaryStage) throws IOException {
        * !!! This is just for testing !!!
        */
       ArrayList<Data> dataList = new ArrayList<Data>();
-      Data data1  = new Data(2016, 4, 12,  6, 0, 0,  6.2);
-      Data data2  = new Data(2016, 4, 12,  8, 0, 0, 10.8);
-      Data data3  = new Data(2016, 4, 12, 10, 0, 0, 12.4);
-      Data data4  = new Data(2016, 4, 12, 12, 0, 0, 15.9);
-      Data data5  = new Data(2016, 4, 12, 14, 0, 0, 22.8);
-      Data data6  = new Data(2016, 4, 12, 16, 0, 0, 25.7);
-      Data data7  = new Data(2016, 4, 12, 18, 0, 0, 20.3);
-      Data data8  = new Data(2016, 4, 12, 20, 0, 0, 14.1);
-      Data data9  = new Data(2016, 4, 12, 22, 0, 0,  8.5);
-      Data data10 = new Data(2016, 4, 13, 00, 0, 0,  7.2);
-      Data data11 = new Data(2016, 4, 13,  2, 0, 0,  6.8);
-      Data data12 = new Data(2016, 4, 13,  4, 0, 0,  2.9);
-      Data data13 = new Data(2016, 4, 13,  7, 7, 0,-35.0);
-
-      dataList.add(data1);
-      dataList.add(data2);
-      dataList.add(data3);
-      dataList.add(data4);
-      dataList.add(data5);
-      dataList.add(data6);
-      dataList.add(data7);
-      dataList.add(data8);
-      dataList.add(data9);
-      dataList.add(data10);
-      dataList.add(data11);
-      dataList.add(data12);
       
+     
 
       lcsTemperature
               = (LineChartStat) createLineChart("Température",
-                      							"Variation de la température",
+                      							null,
                       							"Heures",
                       							"Temperature [°C]",
                       							450,
@@ -719,7 +840,7 @@ public void start(Stage primaryStage) throws IOException {
 
       lcsHumidity
               = (LineChartStat) createLineChart("Humidité",
-                      							"Variation de l'humidité",
+                      							null,
                       							"Heures",
                       							"Humidité [%]",
                       							450,
@@ -728,7 +849,7 @@ public void start(Stage primaryStage) throws IOException {
 
       lcsPressure
               = (LineChartStat) createLineChart("Pression",
-                      							"Variation de la pression",
+                      							null,
                       							"Heures",
                       							"Pression [hPa]",
                       							450,
@@ -737,7 +858,7 @@ public void start(Stage primaryStage) throws IOException {
 
       lcsAirQuality
               = (LineChartStat) createLineChart("Qualité d'air",
-                      							"Variation de la qualité d'air",
+                      							null,
                       							"Heures",
                       							"indice[0 - 5.5]",
                       							450,
@@ -766,11 +887,15 @@ public void start(Stage primaryStage) throws IOException {
     		        public void changed(ObservableValue<? extends Tab> ov, 
     		        					Tab tabTemperature, 
     		        					Tab tabHumidity) {
+
+ 
     		        	
     		        	lcsTemperature.refreshChart();
     		        	lcsHumidity.refreshChart();
     		        	lcsPressure.refreshChart();
     		        	lcsAirQuality.refreshChart();
+    		        	
+    		        	UpdateData.getPt().play();
     		        }
     		    }
     		);
@@ -829,8 +954,10 @@ public void start(Stage primaryStage) throws IOException {
     		  			.build();
 
       rootGroup.getChildren().add(pressureGauge);
-      
+   
    }
+      
+   //}
    
    
    
@@ -839,8 +966,7 @@ public void start(Stage primaryStage) throws IOException {
    public static ImageView getIvConnect(){
 	   return ivConnect;
    }
-      
-   
+         
    
    
    public static void updateConnectivityIcon(String status){
@@ -932,42 +1058,46 @@ public void start(Stage primaryStage) throws IOException {
 
    
 
+   
+ 
    /**
+    * 
     *
-    *
+    * @param lcs
     * @param data
     */
-   public static void updateLcsTemperature(Data data) {
-      lcsTemperature.updateSeries(data);
+   public static void updateLcs(LineChartStat lcs, Data data) {
+      lcs.updateSeries(data);
    }
 
-   /**
-    *
-    *
-    * @param data
-    */
-   public static void updateLcsHumidity(Data data) {
-      lcsHumidity.updateSeries(data);
-   }
-
-   /**
-    *
-    *
-    * @param data
-    */
-   public static void updateLcsPressure(Data data) {
-      lcsPressure.updateSeries(data);
-   }
-
-   /**
-    *
-    *
-    * @param data
-    */
-   public static void updateLcsAirQuality(Data data) {
-	   lcsAirQuality.updateSeries(data);
+   
+   
+   public static LineChartStat getLcsTemperature() {
+	   return lcsTemperature;
    }
    
+   
+   public static LineChartStat getLcsHumidity() {
+	   return lcsHumidity;
+   }
+   
+   
+   public static LineChartStat getLcsPressure() {
+	   return lcsPressure;
+   }
+   
+   
+   public static LineChartStat getLcsAirQuality() {
+	   return lcsAirQuality;
+   }
+   
+  
+   
+   /**
+    * 
+ 	*
+ 	* @return
+ 	*/
    public static ConnectionForm getConnectionForm(){
 	   return  connectionForm;
    }
@@ -1020,6 +1150,10 @@ public void start(Stage primaryStage) throws IOException {
 
       lcs.setPrefSize(xSize, ySize);
       lcs.setMaxSize(xSize, ySize);
+      lcs.setAnimated(true);
+      lcs.setLegendVisible(false);
+      xAxis.setAnimated(true);
+      yAxis.setAnimated(true);
 
       return lcs;
    }
@@ -1043,10 +1177,8 @@ public void start(Stage primaryStage) throws IOException {
    private static ImageView			ivConnect = new ImageView();
    /**  */
    private static ProgressBar 	pbHumidity 		= new ProgressBar();
-   
    /**  */
    private static Text   		progressTextValue;
-
    /**  */
    private static Lcd 			lcdTemperature;
    /**  */
