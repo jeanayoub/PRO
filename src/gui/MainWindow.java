@@ -38,6 +38,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -57,6 +58,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -570,11 +572,18 @@ public class MainWindow extends Application {
 	                          }
 	                          else{
 		                          final Stage dialog = new Stage();
+		                         
+		                   
+		                          SplitPane splitPane1 = new SplitPane();
+		                          splitPane1.setOrientation(Orientation.VERTICAL);
+		                          SplitPane splitPane2 = new SplitPane();
+		                          splitPane2.setOrientation(Orientation.VERTICAL);
+		                          SplitPane splitPane3 = new SplitPane();
 		                          Group gr = new Group();
+		                          //splitPane1.setPrefSize(200, 200);
 		                          VBox dialogVbox = new VBox(100);
 		                          ReceivedData data = new ReceivedData(date);
 		                          gr.getChildren().add(new Text("Données récupéré au " + date));
-		                          gr.getChildren().add(new Text("Temperature : "));
 		                          LineChartStat lTemperature
 		                          = (LineChartStat) createLineChart("Température",
 		                                                "Variation de la température",
@@ -582,20 +591,55 @@ public class MainWindow extends Application {
 		                                                "Temperature [°C]",
 		                                                450,
 		                                                290,
+		                                                data.getTemperatureData());
+		                          LineChartStat lHumidity
+		                          = (LineChartStat) createLineChart("Humidité",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                data.getHumidityData());
+		                          LineChartStat lRain
+		                          = (LineChartStat) createLineChart("Pluie",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                data.getRainData());
+		                          LineChartStat lAirQuality
+		                          = (LineChartStat) createLineChart("Qualité de l'air",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
 		                                                data.getAirQualityData());
-		                          System.out.println("Taille :" + data.getAirQualityData().size());
-		                          gr.getChildren().add(lTemperature);
-		                          for (int i = 0; i < data.getTemperatureData().size(); i++){
-		                            Data dataR = data.getTemperatureData().get(i);
-		                            String s = "Valeur : " + dataR.getValue();
-		                            System.out.println(s);
-		                            gr.getChildren().add(new Text(s));
-		                          }
+		                          
+		                          LineChartStat lPressure
+		                          = (LineChartStat) createLineChart("Pression",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                data.getPressureData());
+		                          //System.out.println("Taille :" + data.getAirQualityData().size());
+		                          splitPane1.getItems().addAll(lTemperature, lPressure);
+		                          splitPane2.getItems().addAll(splitPane1, lRain, lHumidity);
+		                          splitPane3.getItems().addAll(splitPane2,lAirQuality);
+		                          gr.getChildren().add(splitPane3);
+		                          /*gr.getChildren().add(lPressure);
+		                          gr.getChildren().add(lHumidity);
+		                          gr.getChildren().add(lRain);
+		                          gr.getChildren().add(lAirQuality);*/
+		                          
 		                          //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
 		                         // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
 		                         // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
 		                         // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
-		                          Scene dialogScene = new Scene(gr, 800, 600);
+		                          Scene dialogScene = new Scene(gr);
 		                          dialog.setScene(dialogScene);
 		                          dialog.show();   
 	                          }
