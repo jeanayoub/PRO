@@ -327,6 +327,32 @@ public class Data {
 		return listData;
 	}
 	
+	public static boolean checkDate(LocalDate searchDate){
+		if (searchDate == null)
+			return false;
+		final String QUERY   = "CALL checkDate('" + searchDate + "');"; 
+		boolean dateFound = false;
+		try{
+				
+				dbConn = new DBConnection(MainWindow.getConnectionForm());
+				ResultSet result = dbConn.executeQuery(QUERY);
+				//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
+				if (result.next())
+					dateFound = true;
+				
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		}
+
+		 finally {
+		      if (OpenConnection.getConnectionLink() != null)
+		    	  OpenConnection.getConnectionLink().close();
+		 }
+		 return dateFound;				
+	}
+	
 	
 	
 	/**

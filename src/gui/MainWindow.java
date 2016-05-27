@@ -560,26 +560,47 @@ public class MainWindow extends Application {
 		             LocalDate date = dPicker.getValue();
 		             button.setOnAction(new EventHandler<ActionEvent>() {
 
-		                  public void handle(ActionEvent event) {
-		                      System.out.println("date rechercée " + date);
-		                      final Stage dialog = new Stage();
-		                      VBox dialogVbox = new VBox(100);
-		                      ReceivedData data = new ReceivedData(date);
-		                      dialogVbox.getChildren().add(new Text("Données récupéré au " + date));
-		                      dialogVbox.getChildren().add(new Text("Temperature : "));
-		                      for (int i = 0; i < data.getTemperatureData().size(); i++){
-		                        Data dataR = data.getTemperatureData().get(i);
-		                        dialogVbox.getChildren().add(new Text(dataR.getValue() + "Dégré"));
-		                      }
-		                      //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
-		                     // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
-		                      Scene dialogScene = new Scene(dialogVbox, 300, 200);
-		                      dialog.setScene(dialogScene);
-		                      dialog.show();   
-		                  }
-		              });
+		            	 public void handle(ActionEvent event) {
+	                          System.out.println("date rechercée " + date);
+	                           if (!Data.checkDate(date)){
+	                            Alert alert = new Alert(Alert.AlertType.ERROR);
+	                              alert.setHeaderText(null);
+	                              alert.setContentText("Aucune données recupérée au " + date);
+	                              alert.showAndWait();
+	                          }
+	                          else{
+		                          final Stage dialog = new Stage();
+		                          Group gr = new Group();
+		                          VBox dialogVbox = new VBox(100);
+		                          ReceivedData data = new ReceivedData(date);
+		                          gr.getChildren().add(new Text("Données récupéré au " + date));
+		                          gr.getChildren().add(new Text("Temperature : "));
+		                          LineChartStat lTemperature
+		                          = (LineChartStat) createLineChart("Température",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                data.getAirQualityData());
+		                          System.out.println("Taille :" + data.getAirQualityData().size());
+		                          gr.getChildren().add(lTemperature);
+		                          for (int i = 0; i < data.getTemperatureData().size(); i++){
+		                            Data dataR = data.getTemperatureData().get(i);
+		                            String s = "Valeur : " + dataR.getValue();
+		                            System.out.println(s);
+		                            gr.getChildren().add(new Text(s));
+		                          }
+		                          //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
+		                         // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
+		                         // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
+		                         // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
+		                          Scene dialogScene = new Scene(gr, 800, 600);
+		                          dialog.setScene(dialogScene);
+		                          dialog.show();   
+	                          }
+	                      }
+	                  });
 		            
 		            });
 		           
