@@ -326,6 +326,101 @@ public class Data {
 		return listData;
 	}
 	
+	public static boolean checkDate(LocalDate searchDate){
+		if (searchDate == null)
+			return false;
+		final String QUERY   = "CALL checkDate('" + searchDate + "');"; 
+		boolean dateFound = false;
+		try{
+				
+				dbConn = new DBConnection(MainWindow.getConnectionForm());
+				ResultSet result = dbConn.executeQuery(QUERY);
+				//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
+				if (result.next())
+					dateFound = true;
+				
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		}
+
+		 finally {
+		      if (OpenConnection.getConnectionLink() != null)
+		    	  OpenConnection.getConnectionLink().close();
+		 }
+		 return dateFound;				
+	}
+	
+	public static Data averageValue(Sensor sensor, 
+									  LocalDate searchDate, 
+									  Time beginTime, 
+									  Time endTime){
+		final String QUERY   = "CALL capturedValueDayByHour('" + sensor + "','" 
+									                           + searchDate + "','" 
+				                                               + beginTime + "','" 
+									                           + endTime + "');"; 
+	    double averageValue = 0.;
+		int    		 year    = 0, 
+					 month   = 0, 
+					 day	 = 0, 
+					 hours   = 0, 
+					 minutes = 0, 
+					 seconds = 0;
+		try{
+				
+				dbConn = new DBConnection(MainWindow.getConnectionForm());
+				ResultSet result = dbConn.executeQuery(QUERY);
+				//ResultSet result = OpenConnection.getConnectionLink().executeQuery(QUERY);
+				if (result.next()){
+					averageValue = result.getDouble("AVG(value_)");
+					String tempString = searchDate.toString();
+					year              = Integer.parseInt(tempString.substring(0, 4));
+					if (Integer.parseInt(tempString.substring(5,6)) == 1)
+						month = Integer.parseInt(tempString.substring(5,7));
+					else
+						month = Integer.parseInt(String.valueOf(tempString.substring(6,7)));
+					
+					if (Integer.parseInt(String.valueOf(tempString.substring(8,9))) != 0)
+						day = Integer.parseInt(tempString.substring(8,10));
+					else
+						day = Integer.parseInt(String.valueOf(tempString.substring(9,10)));
+					
+					
+					tempString = endTime.toString();
+					
+					if (Integer.parseInt(tempString.substring(0, 1)) == 0)
+						hours = Integer.parseInt(tempString.substring(1, 2));
+					else
+						hours = Integer.parseInt(tempString.substring(0, 2));
+
+					
+					if (Integer.parseInt(tempString.substring(3, 4)) == 0)
+						minutes = Integer.parseInt(tempString.substring(4, 5));
+					else
+						minutes = Integer.parseInt(tempString.substring(3, 5));
+					
+					
+					if (Integer.parseInt(tempString.substring(6, 7)) == 0)
+						seconds = Integer.parseInt(tempString.substring(7, 8));
+					else
+						seconds = Integer.parseInt(tempString.substring(6, 8));	
+				}
+				
+		}
+		catch (SQLException se){
+		      System.out.println("An error occurated during the execution!");
+		      se.printStackTrace();
+		}
+
+		 finally {
+		      if (OpenConnection.getConnectionLink() != null)
+		    	  OpenConnection.getConnectionLink().close();
+		 }
+		 return new Data(year, month, day, hours, minutes, seconds, averageValue);
+		
+	}
+	
 	
 	
 	/**

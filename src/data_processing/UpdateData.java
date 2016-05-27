@@ -14,6 +14,7 @@ package data_processing;
 import java.sql.SQLException;
 import java.util.Timer;
 
+import db.ConnectionForm;
 import db.DBConnection;
 import db.Data;
 import db.Data.Sensor;
@@ -24,6 +25,9 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -69,20 +73,50 @@ public class UpdateData {
 	public UpdateData() {
 
 		timelineRealTime = new Timeline(
-			      new KeyFrame(Duration.millis(0), new EventHandler() {
+			      new KeyFrame(DURATION_TO_START, new EventHandler() {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
-			        		checkLatestDataRealTime();
-			    			connectionError = false;
-			    			System.out.println("connection successful");
+
+			        		System.out.println("Je suis UPDATE_1");
+			        		
+			        		// We try to get a connection if the user filled the connection form
+			        		if(MainWindow.getConnectionForm().getFormStatus() || MainWindow.getIsConnected()){
+			        			System.out.println("Je suis UPDATE_2");
+			        			DBConnection dbConn = 
+			        					new DBConnection(MainWindow.getConnectionForm());
+			        			
+			        			MainWindow.setIsConnected(true);
+			        			//connectionError = false;
+			        			System.out.println("connection successful");
+			        			checkLatestDataRealTime();
+
+			        		}
+
 			    		} catch (SQLException e) {
-			    			connectionError = true;
+			    			//e.printStackTrace();
+			    			System.out.println("IsConnected = "+MainWindow.getIsConnected());
+			    			System.out.println("FormStatus  = "+MainWindow.getConnectionForm().getFormStatus());
+			    			MainWindow.setIsConnected(false);
+			    			//connectionError = true;
 			    			System.out.println("connection failed !");
+
+			    			// Show an alert box to the user
+			    			Alert alert = new Alert(AlertType.ERROR);
+		          			alert.setTitle("Erreur");
+		          			alert.setHeaderText(null);
+		          			alert.setContentText("Echec de connexion. Veuillez recommencer svp !");
+		          			
+		          			// We reset the connection from and let the user  try again
+		          			MainWindow.getConnectionForm().resetConnectionForm();
+		          			alert.show();
+			    			return;
+			    		}
+
 			    		}	
-			        }
+			        //}
 			      }),  
-			      new KeyFrame(Duration.millis(30000))
+			      new KeyFrame(DURATION_1_DEFAULT)
 			    );
 		 timelineRealTime.setCycleCount(Timeline.INDEFINITE);
 		 
@@ -111,17 +145,6 @@ public class UpdateData {
 		return timelineLcs;
 	}
 
-
-	
-
-	/**
-	 * 
-	 *
-	 * @return
-	 */
-	public static boolean getConnectionError() {
-		return connectionError;
-	}
 	
 	
 	
@@ -213,6 +236,11 @@ public class UpdateData {
 	 * @throws SQLException
 	 */
 	private void checkLatestDataRealTime() throws SQLException {
+
+		
+		iconText = new Text(90, 300, "");
+		
+		iconText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -265,13 +293,20 @@ public class UpdateData {
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
+				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imRainLight);
+					iconText.setText("Pluie");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
-				else
+				else{
 					MainWindow.updateImageView(imSnow);
+					iconText.setText("Neige");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 			}
 					
 			
@@ -283,13 +318,20 @@ public class UpdateData {
 				/**
 				 * If it's raining (depending on the temperature)
 				 */
+				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imNightRain);
+					iconText.setText("Pluie");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
-				else
+				else{
 					MainWindow.updateImageView(imNightSnow);
+					iconText.setText("Neige");
+					MainWindow.getRootGroup().getChildren().add(iconText);
+				}
 			}
 		}
 		
@@ -306,17 +348,19 @@ public class UpdateData {
 				 * It's sunny / with few clouds
 				 */
 				MainWindow.updateImageView(imSunnyCloudy);
+				iconText.setText("Ensoleillé");
+				MainWindow.getRootGroup().getChildren().add(iconText);
 			}
 			
 			/**
 			 * Then it's night time without any rain or snow fall
 			 */
-			else
+			else{
 				MainWindow.updateImageView(imNight);
+				
+			}
 		}
 	}
-	
-
 	
 	
 	
@@ -326,8 +370,6 @@ public class UpdateData {
 	private double humidity;
 	/** The actual temperature */
 	private double temperature;
-	/**  */
-	private static boolean connectionError = false;
 	/**  */
 	private static Timeline    timelineRealTime;
 	/**  */
@@ -348,4 +390,8 @@ public class UpdateData {
 	private static final Duration DURATION_5		 = Duration.hours(2);
 	/**  */
 	private static final Duration DURATION_6		 = Duration.hours(4);
+	
+	private static Text   iconText;
+	
+	
 }

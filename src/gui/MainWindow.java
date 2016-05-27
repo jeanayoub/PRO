@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import data_processing.ReceivedData;
+import data_processing.ResourceLoader;
 import data_processing.UpdateData;
 import data_processing.generateFile;
 import db.ConnectionForm;
@@ -37,6 +38,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -56,6 +58,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -79,6 +82,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import utils.Hours;
+
+import java.sql.Time;
+
 
 
 /**
@@ -89,13 +96,24 @@ import javafx.util.Duration;
  * @version 1.3
  */
 public class MainWindow extends Application {
-
    /* (non-Javadoc)
     * @see javafx.application.Application#start(javafx.stage.Stage)
     */
    public void start(Stage primaryStage) throws IOException {
+	   
+	   // Icon to be place for active and inactive connection   
+	    final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
+	    final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
+	    
+	    final Text textActiv = new Text(430, 27, "Actif");
+	    final Text textInactiv = new Text(430, 27, "Inactif");
+	    textActiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
+	    textInactiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
+	    
+	   
 
       final Group rootGroup = new Group();
+      rootGroupCopy = rootGroup;
       final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
 
       primaryStage.setTitle("Station Météo");
@@ -113,7 +131,7 @@ public class MainWindow extends Application {
        * Declaration and definition of all the Text fields
        */
       final Text text1 = new Text(100,  80, "Météo actuelle");
-      final Text text2 = new Text( 60, 400, "Pression atmosphérique");
+      final Text text2 = new Text( 60, 350, "Pression atmosphérique");
       final Text text3 = new Text(370,  80, "Humidité");
       final Text text4 = new Text(500, 270, "Statistiques");
       final Text text5 = new Text(600,  80, "Thermomètre");
@@ -137,12 +155,22 @@ public class MainWindow extends Application {
       iv.setFitWidth(180);
       iv.setX(60);
       iv.setY(100);
-      //iv.setImage(miSunnyCloud);
+      
+      /**
+       * This code sets the activ and inactiv image in place
+       */
+      ivConnect.setX(400);
+      ivConnect.setY(10);
+      
+      ivConnect.setImage(imInactiv);
       rootGroup.getChildren().add(iv);
+      rootGroup.getChildren().add(ivConnect);
+      rootGroup.getChildren().add(textInactiv);
 
       /**
        * The Menu bar
        */
+
       final MenuBar menuBar = new MenuBar();
       final Menu menuStation     = new Menu("Station");
       final Menu menuOptions   	 = new Menu("Option");
@@ -151,6 +179,7 @@ public class MainWindow extends Application {
       final Menu menuSaveAs      = new Menu("Enregistrer Sous");
       final Menu menuPrevision   = new Menu("Prévision météorologique");
       final Menu menuDuration    = new Menu("Temps de mise à jour des graphes");
+
       
       final MenuItem miExit       = new MenuItem("Quitter");
       final MenuItem miOneday     = new MenuItem("1 jour");
@@ -164,7 +193,6 @@ public class MainWindow extends Application {
       final MenuItem miDuration_5 = new MenuItem(String.valueOf(UpdateData.getDuration5().toMinutes()) + "min");
       final MenuItem miDuration_6 = new MenuItem(String.valueOf(UpdateData.getDuration6().toMinutes()) + "min");
    
-      
       menuStation.getItems().addAll(miConnection, menuSaveAs, miExit);
       menuOptions.getItems().addAll(menuPrevision, menuDuration);
       menuPrevision.getItems().addAll(miOneday, miTwoDays, miOneWeek);
@@ -332,6 +360,9 @@ public class MainWindow extends Application {
          }
       });
       
+      
+      
+ 
       miExit.setOnAction(new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent event) {
@@ -342,7 +373,6 @@ public class MainWindow extends Application {
       
  
 
-      //--------------------------------PASCAL--------------------------------------
       /**
        * The menu item for the menu Station and its content
        */
@@ -516,28 +546,46 @@ public class MainWindow extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					
-				    connectionForm = new ConnectionForm(
-				    							tfdConnectionName.getText(), 
-				    							tfdHostname.getText(), 
-				    							Integer.parseInt(tfdPort.getText()),
-				    							tfdUsername.getText(), 
-				    							pwfPassword.getText());
-				    
-				    // Close the window when login button is clicked
-				    stage.close();
-				    
-				    // Show an alert box to confirm an attempt of connection to the data base
-				    Alert dialogW = new Alert(AlertType.INFORMATION);
-				    dialogW.setTitle("Confirmation");
-				    dialogW.setHeaderText(null); // No header
-				    dialogW.setContentText(
-				    			"Tentative de connexion à la base de données !");
-				    dialogW.showAndWait();
+					// We try to get the value of the port which must be an Integer value
+					// If we couldn't we sent an error alert to the user in order to give
+					// a valid value
+					try{
+						portNumber = Integer.parseInt(tfdPort.getText());
+
+						connectionForm.setConnectionForm(
+								tfdConnectionName.getText(), 
+								tfdHostname.getText(), 
+								portNumber,
+								tfdUsername.getText(), 
+								pwfPassword.getText());
+
+						// Close the window when login button is clicked
+						stage.close();
+
+						// Show an alert box to confirm an attempt of connection to the data base
+						Alert dialogW = new Alert(AlertType.INFORMATION);
+						dialogW.setTitle("Confirmation");
+						dialogW.setHeaderText(null); // No header
+						dialogW.setContentText(
+								"Tentative de connexion à la base de données !");
+						dialogW.showAndWait();
+
+					}
+					// The port value is not valid and the user have to correct the port number
+					catch(Exception e){
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Erreur Saisie");
+						alert.setHeaderText(null);
+						alert.setContentText("Le port doit être de valeur numérique");
+						alert.show();
+					}
+					
 					
 				}
     			  
     		  });
     		  
+    		  // A click on the cancel button close the window
     		  btnCancel.setOnAction(actionEvent -> stage.close());
     		     		  
     		  stage.show();
@@ -559,38 +607,99 @@ public class MainWindow extends Application {
 		 public void handle(ActionEvent event) {
 		      // Date Picker
 		            DatePicker dPicker = new DatePicker();
-		            dPicker.setPrefSize(230, 30);
+		            dPicker.setPrefSize(200, 30);
 		            dPicker.setShowWeekNumbers(true);
 		            Stage dateStage = new Stage();
 		            dateStage.setTitle("Calendrier");
 		            HBox hbox = new HBox(dPicker);
-		            Scene scene = new Scene(hbox, 230, 30);
+		            Scene scene = new Scene(hbox, 270, 30);
 		            dateStage.setScene(scene);
 		            Button button = new Button("Chercher");
 		            dPicker.setOnAction(e -> {
 		             LocalDate date = dPicker.getValue();
 		             button.setOnAction(new EventHandler<ActionEvent>() {
 
-		                  public void handle(ActionEvent event) {
-		                      System.out.println("date rechercée " + date);
-		                      final Stage dialog = new Stage();
-		                      VBox dialogVbox = new VBox(100);
-		                      ReceivedData data = new ReceivedData(date);
-		                      dialogVbox.getChildren().add(new Text("Données récupéré au " + date));
-		                      dialogVbox.getChildren().add(new Text("Temperature : "));
-		                      for (int i = 0; i < data.getTemperatureData().size(); i++){
-		                        Data dataR = data.getTemperatureData().get(i);
-		                        dialogVbox.getChildren().add(new Text(dataR.getValue() + "Dégré"));
-		                      }
-		                      //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
-		                     // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
-		                     // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
-		                      Scene dialogScene = new Scene(dialogVbox, 300, 200);
-		                      dialog.setScene(dialogScene);
-		                      dialog.show();   
-		                  }
-		              });
+		            	 public void handle(ActionEvent event) {
+	                          System.out.println("date rechercée " + date);
+	                           if (!Data.checkDate(date)){
+	                            Alert alert = new Alert(Alert.AlertType.ERROR);
+	                              alert.setHeaderText(null);
+	                              alert.setContentText("Aucune données recupérée au " + date);
+	                              alert.showAndWait();
+	                          }
+	                          else{
+		                          final Stage dialog = new Stage();
+		                          HBox hbox = new HBox();
+		                   
+		                          SplitPane splitPane1 = new SplitPane();
+		                          splitPane1.setOrientation(Orientation.VERTICAL);
+		                          SplitPane splitPane2 = new SplitPane();
+		                          splitPane2.setOrientation(Orientation.VERTICAL);
+		             
+		                  
+		                          ArrayList<Data> dataTemperatureList = new ArrayList<>();
+		                          ArrayList<Data> dataPressureList = new ArrayList<>();
+		                          ArrayList<Data> dataHumidityList = new ArrayList<>();
+		                          ArrayList<Data> dataAirQualityList = new ArrayList<>();
+		                     	  ArrayList<String> hoursList = Hours.getHoursList();
+		                     	  for (int i = 0; i < hoursList.size() - 1; ++i){
+		                     		 ReceivedData data = new ReceivedData(date,Time.valueOf(hoursList.get(i)),Time.valueOf(hoursList.get(i + 1)));
+		                     		 dataTemperatureList.add(data.getTemperatureData());
+		                     		 dataPressureList.add(data.getPressureData());
+		                     		 dataHumidityList.add(data.getHumidityData());
+		                     		 dataAirQualityList.add(data.getAirQualityData());
+		                     		
+		                     	  }
+		                     	  
+		                      
+		                          LineChartStat lcTemperature
+		                          = (LineChartStat) createLineChart("Température",
+		                                                "Variation de la température",
+		                                                "Heures",
+		                                                "Temperature [°C]",
+		                                                450,
+		                                                290,
+		                                                dataTemperatureList);
+		                          LineChartStat lcHumidity
+		                          =(LineChartStat) createLineChart("Humidité",
+                							"Variation de l'humidité",
+                							"Heures",
+                							"Humidité [%]",
+                							450,
+                							290,
+                							dataHumidityList);
+
+		                          LineChartStat lcPressure
+		                          = (LineChartStat) createLineChart("Pression",
+                							"Variation de la pression",
+                							"Heures",
+                							"Pression [hPa]",
+                							450,
+                							290,
+                							dataPressureList);
+
+		                          LineChartStat lcAirQuality
+		                          = (LineChartStat) createLineChart("Qualité d'air",
+                							"Variation de la qualité d'air",
+                							"Heures",
+                							"indice[0 - 5.5]",
+                							450,
+                							290,
+                							dataAirQualityList);
+		                       
+		                          splitPane1.getItems().addAll(lcTemperature, lcPressure);
+		                          hbox.getChildren().add(splitPane1);
+		                          splitPane2.getItems().addAll(lcHumidity, lcAirQuality);
+		                          
+		                          hbox.getChildren().add(splitPane2);
+		                          Group gr = new Group(hbox);
+		                          Scene dialogScene = new Scene(gr);
+		                          dialog.setTitle("Valeur récupérés au " + date);
+		                          dialog.setScene(dialogScene);
+		                          dialog.show();   
+	                          }
+	                      }
+	                  });
 		            
 		            });
 		           
@@ -754,8 +863,7 @@ public class MainWindow extends Application {
       pbHumidity.getTransforms().setAll(new Rotate(-90, 0, 0));
       rootGroup.getChildren().add(pbHumidity);
       rootGroup.getChildren().add(progressTextValue);
-      
-
+ 
       
     //-------------------------TEST GAUGE RADIAL---------------------------------------------
  
@@ -764,6 +872,7 @@ public class MainWindow extends Application {
     		  	.prefHeight(100)
     		  	.layoutX(560)
     		  	.layoutY(90)
+    		  	.decimals(1)
     		  	/*Lcd.STYLE_CLASS_FLAT_MIDNIGHT_BLUE*/
     		  	.styleClass(Lcd.STYLE_CLASS_LIGHTGREEN_BLACK)
     		  	.backgroundVisible(true)
@@ -790,37 +899,20 @@ public class MainWindow extends Application {
     		  			.unit("hPa")
     		  			.unit("hPa")
     		  			.shadowsEnabled(true)
-    		  			.layoutY(410)
+    		  			.layoutY(370)
     		  			.build();
 
       rootGroup.getChildren().add(pressureGauge);
+   
+   }
       
  
       
       // Before updating data we need to connect to the data base
-      connectionForm = new ConnectionForm();
+      //connectionForm = new ConnectionForm();
 	   
-      timeline = new Timeline(
-		      	 new KeyFrame(Duration.millis(PERIOD_CONNECTION), 
-		      	 new EventHandler() {
-		      	 @Override public void handle(Event event) {
-		        	System.out.println("waiting for conection");
-		        	if (connectionForm.getFormStatus()) {	
-		          		UpdateData updateData = new UpdateData();
-		          		if (!UpdateData.getConnectionError()) {
-		          			timeline.stop();
-		          		}
-		          	}
-		        }
-		      }),  
-		    new KeyFrame(Duration.millis(PERIOD_CONNECTION))
-		    );
-	 timeline.setCycleCount(Timeline.INDEFINITE);
-	 timeline.play();
-   }
-   
-   
-
+      
+		        
 
    /**
     *
@@ -830,6 +922,19 @@ public class MainWindow extends Application {
    public static void updateImageView(Image image) {
       iv.setImage(image);
    }
+   
+   /**
+   *
+   *
+   * @param image
+   */
+  public static void updateImageConnect(Image image) {
+	  ivConnect.setImage(image);
+  }
+   
+   
+   
+   
    
    
    
@@ -862,7 +967,10 @@ public class MainWindow extends Application {
     */
    public static void updatePbHumidity(double value) {
       pbHumidity.setProgress(value/100.);
-      progressTextValue.setText(pbHumidity.getProgress()*100. + " %");
+      double copyValue = pbHumidity.getProgress()*100;
+	  String textValue = String.format("%.2f", copyValue);
+	  textValue += " %";
+      progressTextValue.setText(textValue);
    }
 
    
@@ -911,6 +1019,18 @@ public class MainWindow extends Application {
 	   return  connectionForm;
    }
    
+   public static Group getRootGroup(){
+	   return rootGroupCopy;
+   }
+   
+   public static boolean getIsConnected(){
+	   return isConnected;
+   }
+   public static void setIsConnected(boolean status){
+	   isConnected = status;
+   }
+   
+   
    
 
    /**
@@ -955,7 +1075,6 @@ public class MainWindow extends Application {
       return lcs;
    }
 
-   //----------------------------------Pascal--------------------------------------
    /**
     * This method returns the current tabPane.
     *
@@ -965,12 +1084,14 @@ public class MainWindow extends Application {
    private TabPane getTabPane() {
       return copyPane;
    }
-    //----------------------------------Pascal--------------------------------------
 
+   
    /** A copy of the tabPane */
    private 		  TabPane 		copyPane   = new TabPane();
    /**  */
    private static ImageView 	iv 		   = new ImageView();
+   
+   private static ImageView			ivConnect = new ImageView();
    /**  */
    private static ProgressBar 	pbHumidity 		= new ProgressBar();
    /**  */
@@ -988,15 +1109,26 @@ public class MainWindow extends Application {
    /**  */
    private static LineChartStat lcsAirQuality;
    /**  */
-   private static ConnectionForm connectionForm;
+   private static ConnectionForm connectionForm = new ConnectionForm();;
    /**  */
    private        Timeline 		 timeline;
    /**  */
    private final  long           PERIOD_CONNECTION = 10000;
    /**  */
-   private final  long 			 PERIOD_UPDATE 	   = 30000;
+   private final  long 			 PERIOD_UPDATE 	   = 20000;//30000
    /**  */
    private final  long			 PERIOD_INITIATE   = 3000;
+   
+   private static Group rootGroupCopy = new Group();
+   
+   private static boolean isConnected = false;
+   
+   private double refreshValue;
+   
+   private int portNumber;
+   
+   
+   
    
 
    /**
