@@ -82,6 +82,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import utils.Hours;
+
+import java.sql.Time;
+
 
 
 /**
@@ -550,12 +554,12 @@ public class MainWindow extends Application {
 		 public void handle(ActionEvent event) {
 		      // Date Picker
 		            DatePicker dPicker = new DatePicker();
-		            dPicker.setPrefSize(230, 30);
+		            dPicker.setPrefSize(200, 30);
 		            dPicker.setShowWeekNumbers(true);
 		            Stage dateStage = new Stage();
 		            dateStage.setTitle("Calendrier");
 		            HBox hbox = new HBox(dPicker);
-		            Scene scene = new Scene(hbox, 230, 30);
+		            Scene scene = new Scene(hbox, 270, 30);
 		            dateStage.setScene(scene);
 		            Button button = new Button("Chercher");
 		            dPicker.setOnAction(e -> {
@@ -572,74 +576,72 @@ public class MainWindow extends Application {
 	                          }
 	                          else{
 		                          final Stage dialog = new Stage();
-		                         
+		                          HBox hbox = new HBox();
 		                   
 		                          SplitPane splitPane1 = new SplitPane();
 		                          splitPane1.setOrientation(Orientation.VERTICAL);
 		                          SplitPane splitPane2 = new SplitPane();
 		                          splitPane2.setOrientation(Orientation.VERTICAL);
-		                          SplitPane splitPane3 = new SplitPane();
-		                          Group gr = new Group();
-		                          //splitPane1.setPrefSize(200, 200);
-		                          VBox dialogVbox = new VBox(100);
-		                          ReceivedData data = new ReceivedData(date);
-		                          gr.getChildren().add(new Text("Données récupéré au " + date));
-		                          LineChartStat lTemperature
+		             
+		                  
+		                          ArrayList<Data> dataTemperatureList = new ArrayList<>();
+		                          ArrayList<Data> dataPressureList = new ArrayList<>();
+		                          ArrayList<Data> dataHumidityList = new ArrayList<>();
+		                          ArrayList<Data> dataAirQualityList = new ArrayList<>();
+		                     	  ArrayList<String> hoursList = Hours.getHoursList();
+		                     	  for (int i = 0; i < hoursList.size() - 1; ++i){
+		                     		 ReceivedData data = new ReceivedData(date,Time.valueOf(hoursList.get(i)),Time.valueOf(hoursList.get(i + 1)));
+		                     		 dataTemperatureList.add(data.getTemperatureData());
+		                     		 dataPressureList.add(data.getPressureData());
+		                     		 dataHumidityList.add(data.getHumidityData());
+		                     		 dataAirQualityList.add(data.getAirQualityData());
+		                     		
+		                     	  }
+		                     	  
+		                      
+		                          LineChartStat lcTemperature
 		                          = (LineChartStat) createLineChart("Température",
 		                                                "Variation de la température",
 		                                                "Heures",
 		                                                "Temperature [°C]",
 		                                                450,
 		                                                290,
-		                                                data.getTemperatureData());
-		                          LineChartStat lHumidity
-		                          = (LineChartStat) createLineChart("Humidité",
-		                                                "Variation de la température",
-		                                                "Heures",
-		                                                "Temperature [°C]",
-		                                                450,
-		                                                290,
-		                                                data.getHumidityData());
-		                          LineChartStat lRain
-		                          = (LineChartStat) createLineChart("Pluie",
-		                                                "Variation de la température",
-		                                                "Heures",
-		                                                "Temperature [°C]",
-		                                                450,
-		                                                290,
-		                                                data.getRainData());
-		                          LineChartStat lAirQuality
-		                          = (LineChartStat) createLineChart("Qualité de l'air",
-		                                                "Variation de la température",
-		                                                "Heures",
-		                                                "Temperature [°C]",
-		                                                450,
-		                                                290,
-		                                                data.getAirQualityData());
-		                          
-		                          LineChartStat lPressure
+		                                                dataTemperatureList);
+		                          LineChartStat lcHumidity
+		                          =(LineChartStat) createLineChart("Humidité",
+                							"Variation de l'humidité",
+                							"Heures",
+                							"Humidité [%]",
+                							450,
+                							290,
+                							dataHumidityList);
+
+		                          LineChartStat lcPressure
 		                          = (LineChartStat) createLineChart("Pression",
-		                                                "Variation de la température",
-		                                                "Heures",
-		                                                "Temperature [°C]",
-		                                                450,
-		                                                290,
-		                                                data.getPressureData());
-		                          //System.out.println("Taille :" + data.getAirQualityData().size());
-		                          splitPane1.getItems().addAll(lTemperature, lPressure);
-		                          splitPane2.getItems().addAll(splitPane1, lRain, lHumidity);
-		                          splitPane3.getItems().addAll(splitPane2,lAirQuality);
-		                          gr.getChildren().add(splitPane3);
-		                          /*gr.getChildren().add(lPressure);
-		                          gr.getChildren().add(lHumidity);
-		                          gr.getChildren().add(lRain);
-		                          gr.getChildren().add(lAirQuality);*/
+                							"Variation de la pression",
+                							"Heures",
+                							"Pression [hPa]",
+                							450,
+                							290,
+                							dataPressureList);
+
+		                          LineChartStat lcAirQuality
+		                          = (LineChartStat) createLineChart("Qualité d'air",
+                							"Variation de la qualité d'air",
+                							"Heures",
+                							"indice[0 - 5.5]",
+                							450,
+                							290,
+                							dataAirQualityList);
+		                       
+		                          splitPane1.getItems().addAll(lcTemperature, lcPressure);
+		                          hbox.getChildren().add(splitPane1);
+		                          splitPane2.getItems().addAll(lcHumidity, lcAirQuality);
 		                          
-		                          //dialogVbox.getChildren().add(new Text("Qualité de l'air : " + data.getAirQualityData().getValue()));
-		                         // dialogVbox.getChildren().add(new Text("Pluie : " + data.getRainData().getValue() == 0.0 ? + "Oui"  : +"Non"));
-		                         // dialogVbox.getChildren().add(new Text("Humidité : " + data.getHumidityData().getValue()));
-		                         // dialogVbox.getChildren().add(new Text("Ensoleillement : " + data.getRadiancyData().getValue()));
+		                          hbox.getChildren().add(splitPane2);
+		                          Group gr = new Group(hbox);
 		                          Scene dialogScene = new Scene(gr);
+		                          dialog.setTitle("Valeur récupérés au " + date);
 		                          dialog.setScene(dialogScene);
 		                          dialog.show();   
 	                          }

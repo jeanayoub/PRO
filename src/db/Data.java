@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import gui.MainWindow;
@@ -356,8 +355,8 @@ public class Data {
 	
 	public static Data averageValue(Sensor sensor, 
 									  LocalDate searchDate, 
-									  LocalTime beginTime, 
-									  LocalTime endTime){
+									  Time beginTime, 
+									  Time endTime){
 		final String QUERY   = "CALL capturedValueDayByHour('" + sensor + "','" 
 									                           + searchDate + "','" 
 				                                               + beginTime + "','" 
