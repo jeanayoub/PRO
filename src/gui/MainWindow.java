@@ -885,8 +885,8 @@ public void start(Stage primaryStage) throws IOException {
     		    new ChangeListener<Tab>() {
     		        @Override
     		        public void changed(ObservableValue<? extends Tab> ov, 
-    		        					Tab tabTemperature, 
-    		        					Tab tabHumidity) {
+    		        					Tab t, 
+    		        					Tab t1) {
 
  
     		        	
@@ -894,8 +894,6 @@ public void start(Stage primaryStage) throws IOException {
     		        	lcsHumidity.refreshChart();
     		        	lcsPressure.refreshChart();
     		        	lcsAirQuality.refreshChart();
-    		        	
-    		        	UpdateData.getPt().play();
     		        }
     		    }
     		);
