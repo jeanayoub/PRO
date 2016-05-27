@@ -25,7 +25,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
 
 /**
  * Class.
@@ -64,17 +66,14 @@ public class UpdateData {
 	 * @param period2
 	 * @throws SQLException 
 	 */
-	public UpdateData (long period_1, long period_2) {
+	public UpdateData() {
 
-		timeline = new Timeline(
-			      new KeyFrame(Duration.millis(period_1), new EventHandler() {
+		timelineRealTime = new Timeline(
+			      new KeyFrame(Duration.millis(0), new EventHandler() {
 			        @Override public void handle(Event event) {
 			        	
 			        	try {
-			    			//DBConnection dbConn = 
-			    				//new DBConnection(MainWindow.getConnectionForm())
-			        		System.out.println("hellozzzzzzzzzzzzzzzz");
-			        		checkLatestData();
+			        		checkLatestDataRealTime();
 			    			connectionError = false;
 			    			System.out.println("connection successful");
 			    		} catch (SQLException e) {
@@ -83,19 +82,137 @@ public class UpdateData {
 			    		}	
 			        }
 			      }),  
-			      new KeyFrame(Duration.millis(period_2))
+			      new KeyFrame(Duration.millis(30000))
 			    );
-		 timeline.setCycleCount(Timeline.INDEFINITE);
-		 timeline.play();
+		 timelineRealTime.setCycleCount(Timeline.INDEFINITE);
 		 
+		 
+		 	
+		timelineLcs = new TimelineLcs();
+		pt 					   = new ParallelTransition();
+		  
+		timelineLcs.setPeriod(Duration.seconds(0), 
+										 Duration.seconds(120));
+		 
+		pt.getChildren().add(timelineRealTime);
+		pt.getChildren().add(timelineLcs.getTimeline());
+		
+		 
+		pt.play();
 	}
 	
 	
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static TimelineLcs getTimelineLcs() {
+		return timelineLcs;
+	}
+
+
+	
+
 	/**
 	 * 
 	 *
+	 * @return
 	 */
-	private void checkLatestData () throws SQLException {
+	public static boolean getConnectionError() {
+		return connectionError;
+	}
+	
+	
+	
+	
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static ParallelTransition getPt() {
+		return pt;
+	}
+	
+	
+	
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDurationToStart() {
+		return DURATION_TO_START;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration1Default() {
+		return DURATION_1_DEFAULT;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration2() {
+		return DURATION_2;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration3() {
+		return DURATION_3;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration4() {
+		return DURATION_4;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration5() {
+		return DURATION_5;
+	}
+
+
+
+	/**
+	 * Returns.
+	 * @return
+	 */
+	public static Duration getDuration6() {
+		return DURATION_6;
+	}
+
+
+
+	/**
+	 * 
+	 *
+	 * @throws SQLException
+	 */
+	private void checkLatestDataRealTime() throws SQLException {
 		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
@@ -119,7 +236,6 @@ public class UpdateData {
 		//double actualAirQualityValue  = actualAirQuality.getValue();
 		
 		
-		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
 			MainWindow.updatePressureGauge(actualPressureValue);
 			pressure = actualPressureValue;
@@ -136,12 +252,6 @@ public class UpdateData {
 		}
 		
 
-		MainWindow.updateLcsTemperature(actualTemperature);
-		MainWindow.updateLcsHumidity   (actualHumidity);
-		MainWindow.updateLcsPressure   (actualPressure);
-		MainWindow.updateLcsAirQuality (actualAirQuality);
-				
-		
 		
 		/**
 		 * If it's raining or snowing 
@@ -206,26 +316,36 @@ public class UpdateData {
 		}
 	}
 	
-	public static boolean getConnectionError() {
-		return connectionError;
-	}
+
 	
 	
 	
-	/**  */
-	public  static Timer   timer = new Timer();
 	/** The actual pressure */
-	private 	   double  pressure;
+	private double pressure;
 	/** The actual humidity */
-	private 	   double  humidity;
+	private double humidity;
 	/** The actual temperature */
-	private 	   double  temperature;
-	/**  */
-	private static boolean status;
-	/**  */
-	private static int 	   timeToStop;
+	private double temperature;
 	/**  */
 	private static boolean connectionError = false;
 	/**  */
-	private 	   Timeline timeline;
+	private static Timeline    timelineRealTime;
+	/**  */
+	private static TimelineLcs timelineLcs;
+	/**  */
+	private static ParallelTransition pt;
+	/**  */
+	private static final Duration DURATION_TO_START  = Duration.millis(0);
+	/**  */
+	private static final Duration DURATION_1_DEFAULT = Duration.seconds(30);
+	/**  */
+	private static final Duration DURATION_2		 = Duration.minutes(5);
+	/**  */
+	private static final Duration DURATION_3		 = Duration.minutes(30);
+	/**  */
+	private static final Duration DURATION_4		 = Duration.hours(1);
+	/**  */
+	private static final Duration DURATION_5		 = Duration.hours(2);
+	/**  */
+	private static final Duration DURATION_6		 = Duration.hours(4);
 }
