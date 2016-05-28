@@ -103,26 +103,24 @@ public class MainWindow extends Application {
    @SuppressWarnings("static-access")
 public void start(Stage primaryStage) throws IOException {
 	   
-	   // Icon to be place for active and inactive connection   
-	    //final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
-	    //final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
-	    
-	    //final Text textActiv = new Text(740, 27, "Actif");
-	    //final Text textInactiv = new Text(740, 27, "Inactif");
-	    textActiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
-	    textInactiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
-	    
+	   textActiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
+	   textInactiv.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
 	   
+	   textAirQualityStatus.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
+	   textAirQuality.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 19));
+	   //textAirQuality.setText("Qualité d'air : ");
 
-      final Group rootGroup = new Group();
-      rootGroupCopy = rootGroup;
-      final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
 
-      primaryStage.setTitle("Station Météo");
-      primaryStage.setResizable(false);
-      primaryStage.setScene(scene);
-      primaryStage.show();
-      primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+	   final Group rootGroup = new Group();
+	   rootGroupCopy = rootGroup;
+	   final Scene scene = new Scene(rootGroup, 800, 600, Color.HONEYDEW);
+
+	   primaryStage.setTitle("Station Météo");
+	   primaryStage.setResizable(false);
+	   primaryStage.setScene(scene);
+	   primaryStage.show();
+	   primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     	 @Override
          public void handle(WindowEvent t) {
             System.out.println("Closing...");
@@ -168,38 +166,13 @@ public void start(Stage primaryStage) throws IOException {
       rootGroup.getChildren().add(iv);
       rootGroup.getChildren().add(ivConnect);
       rootGroup.getChildren().add(textInactiv);
+      rootGroup.getChildren().add(textAirQualityStatus);
+      rootGroup.getChildren().add(textAirQuality);
 
       /**
        * The Menu bar
        */
 
-//<<<<<<< HEAD
-//      
-//      final MenuItem exit       = new MenuItem("Quitter");
-//      final MenuItem oneday 	= new MenuItem("1 jour");
-//      final MenuItem twoDays 	= new MenuItem("2 jours");
-//      final MenuItem oneWeek 	= new MenuItem("1 semaine");
-//      final MenuItem connection = new MenuItem("Connexion");
-//      final MenuItem disconnection = new MenuItem("Déconnexion");
-//      final MenuItem refreshPeriod = new MenuItem("Fixer le délai de rafraichissement");
-//      
-//
-//      menuStation.getItems().add(connection);
-//      menuStation.getItems().add(disconnection);
-//      menuStation.getItems().add(menuSaveAs);
-//      menuStation.getItems().add(exit);
-//      
-//      menuOptions.getItems().add(menuPrevision);
-//      menuOptions.getItems().add(refreshPeriod);
-//      menuPrevision.getItems().add(0, oneday);
-//      menuPrevision.getItems().add(1, twoDays);
-//      menuPrevision.getItems().add(2, oneWeek);
-//      
-//      disconnection.setDisable(true);
-//
-//      menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout,
-//              menuCalendar);
-//=======
       final MenuBar menuBar = new MenuBar();
       final Menu menuStation     = new Menu("Station");
       final Menu menuOptions   	 = new Menu("Option");
@@ -680,111 +653,157 @@ public void start(Stage primaryStage) throws IOException {
       miCalendarShow.setOnAction(new EventHandler<ActionEvent>(){
 
 
-		 public void handle(ActionEvent event) {
-		      // Date Picker
-		            DatePicker dPicker = new DatePicker();
-		            dPicker.setPrefSize(200, 30);
-		            dPicker.setShowWeekNumbers(true);
-		            Stage dateStage = new Stage();
-		            dateStage.setTitle("Calendrier");
-		            HBox hbox = new HBox(dPicker);
-		            Scene scene = new Scene(hbox, 270, 30);
-		            dateStage.setScene(scene);
-		            Button button = new Button("Chercher");
-		            dPicker.setOnAction(e -> {
-		             LocalDate date = dPicker.getValue();
-		             button.setOnAction(new EventHandler<ActionEvent>() {
+    	  public void handle(ActionEvent event) {
+    		  // Date Picker
+    		  DatePicker dPicker = new DatePicker();
+    		  dPicker.setPrefSize(200, 30);
+    		  dPicker.setShowWeekNumbers(true);
+    		  Stage dateStage = new Stage();
+    		  dateStage.setTitle("Calendrier");
+    		  HBox hbox = new HBox(dPicker);
+    		  Scene scene = new Scene(hbox, 270, 30);
+    		  dateStage.setScene(scene);
+    		  
+    		  Button searchButton = new Button("Chercher");
+    		  hbox.getChildren().add(searchButton);
+    		  if(!isConnected){
+    			  searchButton.setDisable(true);
+    		  }
+    		  dPicker.setOnAction(e -> {
+    			  LocalDate date = dPicker.getValue();
+    			  
+    			  
+    			  searchButton.setOnAction(new EventHandler<ActionEvent>() {
 
-		            	 public void handle(ActionEvent event) {
-	                          System.out.println("date rechercée " + date);
-	                           if (!Data.checkDate(date)){
-	                            Alert alert = new Alert(Alert.AlertType.ERROR);
-	                              alert.setHeaderText(null);
-	                              alert.setContentText("Aucune données recupérée au " + date);
-	                              alert.showAndWait();
-	                          }
-	                          else{
-		                          final Stage dialog = new Stage();
-		                          HBox hbox = new HBox();
-		                   
-		                          SplitPane splitPane1 = new SplitPane();
-		                          splitPane1.setOrientation(Orientation.VERTICAL);
-		                          SplitPane splitPane2 = new SplitPane();
-		                          splitPane2.setOrientation(Orientation.VERTICAL);
-		             
-		                  
-		                          ArrayList<Data> dataTemperatureList = new ArrayList<>();
-		                          ArrayList<Data> dataPressureList = new ArrayList<>();
-		                          ArrayList<Data> dataHumidityList = new ArrayList<>();
-		                          ArrayList<Data> dataAirQualityList = new ArrayList<>();
-		                     	  ArrayList<String> hoursList = Hours.getHoursList();
-		                     	  for (int i = 0; i < hoursList.size() - 1; ++i){
-		                     		 ReceivedData data = new ReceivedData(date,Time.valueOf(hoursList.get(i)),Time.valueOf(hoursList.get(i + 1)));
-		                     		 dataTemperatureList.add(data.getTemperatureData());
-		                     		 dataPressureList.add(data.getPressureData());
-		                     		 dataHumidityList.add(data.getHumidityData());
-		                     		 dataAirQualityList.add(data.getAirQualityData());
-		                     		
-		                     	  }
-		                     	  
-		                      
-		                          LineChartStat lcTemperature
-		                          = (LineChartStat) createLineChart("Température",
-		                                                "Variation de la température",
-		                                                "Heures",
-		                                                "Temperature [°C]",
-		                                                450,
-		                                                290,
-		                                                dataTemperatureList);
-		                          LineChartStat lcHumidity
-		                          =(LineChartStat) createLineChart("Humidité",
-                							"Variation de l'humidité",
-                							"Heures",
-                							"Humidité [%]",
-                							450,
-                							290,
-                							dataHumidityList);
+    				  public void handle(ActionEvent event) {
+    					  System.out.println("date rechercée " + date);
+    					  if (!Data.checkDate(date)){
+    						  Alert alert = new Alert(Alert.AlertType.ERROR);
+    						  alert.setHeaderText(null);
+    						  alert.setContentText("Aucune données recupérée au " + date);
+    						  alert.showAndWait();
+    					  }
+    					  else{
+    						  
+    						  Button saveButton = new Button("Enregistrer");
+    						  final Stage dialog = new Stage();
 
-		                          LineChartStat lcPressure
-		                          = (LineChartStat) createLineChart("Pression",
-                							"Variation de la pression",
-                							"Heures",
-                							"Pression [hPa]",
-                							450,
-                							290,
-                							dataPressureList);
+    						  HBox hbox = new HBox();
+    						  hbox.setAlignment(Pos.BASELINE_RIGHT);
 
-		                          LineChartStat lcAirQuality
-		                          = (LineChartStat) createLineChart("Qualité d'air",
-                							"Variation de la qualité d'air",
-                							"Heures",
-                							"indice[0 - 5.5]",
-                							450,
-                							290,
-                							dataAirQualityList);
-		                       
-		                          splitPane1.getItems().addAll(lcTemperature, lcPressure);
-		                          hbox.getChildren().add(splitPane1);
-		                          splitPane2.getItems().addAll(lcHumidity, lcAirQuality);
-		                          
-		                          hbox.getChildren().add(splitPane2);
-		                          Group gr = new Group(hbox);
-		                          Scene dialogScene = new Scene(gr);
-		                          dialog.setTitle("Valeur récupérés au " + date);
-		                          dialog.setScene(dialogScene);
-		                          dialog.show();   
-	                          }
-	                      }
-	                  });
-		            
-		            });
-		           
-		           
-		            hbox.getChildren().add(button);
-		            dateStage.show();
-		    }
+    						  hbox.getChildren().add(saveButton);
+
+    						  SplitPane splitPane1 = new SplitPane();
+    						  splitPane1.setOrientation(Orientation.VERTICAL);
+    						  SplitPane splitPane2 = new SplitPane();
+    						  splitPane2.setOrientation(Orientation.VERTICAL);
+
+
+    						  ArrayList<Data> dataTemperatureList = new ArrayList<>();
+    						  ArrayList<Data> dataPressureList = new ArrayList<>();
+    						  ArrayList<Data> dataHumidityList = new ArrayList<>();
+    						  ArrayList<Data> dataAirQualityList = new ArrayList<>();
+    						  ArrayList<String> hoursList = Hours.getHoursList();
+    						  for (int i = 0; i < hoursList.size() - 1; ++i){
+    							  ReceivedData data = new ReceivedData(date,Time.valueOf(hoursList.get(i)),Time.valueOf(hoursList.get(i + 1)));
+    							  dataTemperatureList.add(data.getTemperatureData());
+    							  dataPressureList.add(data.getPressureData());
+    							  dataHumidityList.add(data.getHumidityData());
+    							  dataAirQualityList.add(data.getAirQualityData());
+
+    						  }
+
+
+    						  LineChartStat lcTemperature
+    						  = (LineChartStat) createLineChart("Température",
+    								  "Variation de la température",
+    								  "Heures",
+    								  "Temperature [°C]",
+    								  450,
+    								  290,
+    								  dataTemperatureList);
+    						  LineChartStat lcHumidity
+    						  =(LineChartStat) createLineChart("Humidité",
+    								  "Variation de l'humidité",
+    								  "Heures",
+    								  "Humidité [%]",
+    								  450,
+    								  290,
+    								  dataHumidityList);
+
+    						  LineChartStat lcPressure
+    						  = (LineChartStat) createLineChart("Pression",
+    								  "Variation de la pression",
+    								  "Heures",
+    								  "Pression [hPa]",
+    								  450,
+    								  290,
+    								  dataPressureList);
+
+    						  LineChartStat lcAirQuality
+    						  = (LineChartStat) createLineChart("Qualité d'air",
+    								  "Variation de la qualité d'air",
+    								  "Heures",
+    								  "indice[0 - 5.5]",
+    								  450,
+    								  290,
+    								  dataAirQualityList);
+
+    						  splitPane1.getItems().addAll(lcTemperature, lcPressure);
+    						  hbox.getChildren().add(splitPane1);
+    						  splitPane2.getItems().addAll(lcHumidity, lcAirQuality);
+
+    						  hbox.getChildren().add(splitPane2);
+    						  Group gr = new Group(hbox);
+    						  Scene dialogScene = new Scene(gr);
+    						  dialog.setTitle("Valeur récupérés au " + date);
+    						  dialog.setScene(dialogScene);
+    						  dialog.show();
+
+
+    						  saveButton.setOnAction(new EventHandler<ActionEvent>() {
+
+    							  @Override
+    							  public void handle(ActionEvent event) {
+
+    								  final generateFile myFile = new generateFile();
+
+    								  FileChooser fileChooser = new FileChooser();
+    								  fileChooser.setTitle("Enregistrer sous ...");
+    								  fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
+
+    								  FileChooser.ExtensionFilter extFilterJpeg = new FileChooser.ExtensionFilter("JPEG files (*.jpeg)", "*.jpeg");
+    								  fileChooser.getExtensionFilters().add(extFilterJpeg);
+
+    								  File file = fileChooser.showSaveDialog(primaryStage);
+    								  if (file != null) {
+
+    									  // Save the file into jpeg format
+    									  if(fileChooser.getSelectedExtensionFilter().getDescription().equals("JPEG files (*.jpeg)")){
+    										  myFile.toJpeg(hbox, file.toPath().toString());
+    										  Alert alert = new Alert(AlertType.INFORMATION);
+    										  alert.setTitle("Information Dialog");
+    										  alert.setHeaderText(null);
+    										  alert.setContentText("Sauvegarde en JPEG Résussi !!!");
+    										  alert.showAndWait();
+    									  }
+
+    								  }
+
+    							  }
+
+    						  });
+
+    					  }
+    				  }
+    			  });
+
+    		  });
+    		  
+    		  dateStage.show();
+    	  }
       });
-   
+
       
       miDisconnection.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -887,8 +906,8 @@ public void start(Stage primaryStage) throws IOException {
     		    new ChangeListener<Tab>() {
     		        @Override
     		        public void changed(ObservableValue<? extends Tab> ov, 
-    		        					Tab tabTemperature, 
-    		        					Tab tabHumidity) {
+    		        					Tab t, 
+    		        					Tab t1) {
 
  
     		        	
@@ -896,8 +915,6 @@ public void start(Stage primaryStage) throws IOException {
     		        	lcsHumidity.refreshChart();
     		        	lcsPressure.refreshChart();
     		        	lcsAirQuality.refreshChart();
-    		        	
-    		        	UpdateData.getPt().play();
     		        }
     		    }
     		);
@@ -1005,6 +1022,7 @@ public void start(Stage primaryStage) throws IOException {
 //	   lcsHumidity.getData().clear();
 //	   lcsPressure.getData().clear();
 //	   lcsAirQuality.getData().clear();
+	   textAirQualityStatus.setText("");
 	   updatePbHumidity(0.);
    }
 
@@ -1061,10 +1079,16 @@ public void start(Stage primaryStage) throws IOException {
       progressTextValue.setText(textValue);
    }
 
-   
+   public static void updateAirQualityText(double value){
+	   if(Double.compare(value, airqualityThreshold) < 0){//value < airqualityThreshold
+		   textAirQualityStatus.setText("Bonne");
+	   }
+	   else{
+		   textAirQualityStatus.setText("Mauvaise");
+	   }
+   }
 
    
- 
    /**
     * 
     *
@@ -1199,26 +1223,23 @@ public void start(Stage primaryStage) throws IOException {
    /**  */
    private static ConnectionForm connectionForm = new ConnectionForm();;
    /**  */
-   private        Timeline 		 timeline;
-   /**  */
-   private final  long           PERIOD_CONNECTION = 10000;
-   /**  */
-   private final  long 			 PERIOD_UPDATE 	   = 2000;//30000
-   /**  */
-   private final  long			 PERIOD_INITIATE   = 3000;
-   
    private static Group rootGroupCopy = new Group();
-   
+   /**  */
    private static boolean isConnected = false;
-   
-   private double refreshValue;
-   
+   /**  */
    private int portNumber;
+   /**  */
+   private static final double airqualityThreshold = 0.42;
    
+   // Icon to be place for active and inactive connection 
    private static final Image imActiv   = new Image(ResourceLoader.load("meteoImages/actif.png"));
    private static final Image imInactiv = new Image(ResourceLoader.load("meteoImages/inactif.png"));
+   
+   // Text to be place for activ and inactiv connection
    private static final Text textActiv = new Text(740, 27, "Actif");
    private static final Text textInactiv = new Text(740, 27, "Inactif");
+   private static final	Text textAirQuality = new Text(300, 27, "Qualité d'air : ");
+   private static		Text textAirQualityStatus = new Text(430, 27, "");
       
 
 

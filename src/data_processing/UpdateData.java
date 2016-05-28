@@ -124,8 +124,7 @@ public class UpdateData {
 		timelineLcs = new TimelineLcs();
 		pt 					   = new ParallelTransition();
 		  
-		timelineLcs.setPeriod(Duration.seconds(0), 
-										 Duration.seconds(120));
+		timelineLcs.setPeriod(DURATION_TO_START, DURATION_1_DEFAULT);
 		 
 		pt.getChildren().add(timelineRealTime);
 		pt.getChildren().add(timelineLcs.getTimeline());
@@ -254,13 +253,13 @@ public class UpdateData {
 		Data actualRain        = Data.getLastData(
 				Sensor.RAIN);
 		
-		
+	
 		double actualTemperatureValue = actualTemperature.getValue();
 		double actualHumidityValue    = actualHumidity.getValue();
 		double actualPressureValue    = actualPressure.getValue();
 		double actualRainValue		  = actualRain.getValue();
 		double actualRadiancyValue    = actualRadiancy.getValue();
-		//double actualAirQualityValue  = actualAirQuality.getValue();
+		double actualAirQualityValue  = actualAirQuality.getValue();
 		
 		
 		if (!Double.valueOf(pressure).equals(actualPressureValue)) {
@@ -276,6 +275,11 @@ public class UpdateData {
 		if (!Double.valueOf(temperature).equals(actualTemperatureValue)) {
 			MainWindow.updateLcdTemperature(actualTemperatureValue);
 			temperature = actualTemperatureValue;
+		}
+		
+		if (!Double.valueOf(airQuality).equals(actualAirQualityValue)) {
+			MainWindow.updateAirQualityText(actualTemperatureValue);
+			airQuality = actualTemperatureValue;
 		}
 		
 
@@ -369,6 +373,9 @@ public class UpdateData {
 	private double humidity;
 	/** The actual temperature */
 	private double temperature;
+	/** The actual air quality */
+	private double airQuality;
+	
 	/**  */
 	private static Timeline    timelineRealTime;
 	/**  */

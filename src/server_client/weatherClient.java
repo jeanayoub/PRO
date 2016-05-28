@@ -2,7 +2,7 @@
  * Pascal
  */
 
-package Serveur_Client;
+package server_client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
