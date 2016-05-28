@@ -274,8 +274,8 @@ public class UpdateData {
 		}
 		
 		if (!Double.valueOf(airQuality).equals(actualAirQualityValue)) {
-			MainWindow.updateAirQualityText(actualTemperatureValue);
-			airQuality = actualTemperatureValue;
+			MainWindow.updateAirQualityText(actualAirQualityValue);
+			airQuality = actualAirQualityValue;
 		}
 		
 

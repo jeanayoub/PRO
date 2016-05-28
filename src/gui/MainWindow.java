@@ -1080,7 +1080,7 @@ public void start(Stage primaryStage) throws IOException {
    }
 
    public static void updateAirQualityText(double value){
-	   if(Double.compare(value, airqualityThreshold) < 0){//value < airqualityThreshold
+	   if(Double.compare(value, airqualityThreshold) <= 0){//value < airqualityThreshold
 		   textAirQualityStatus.setText("Bonne");
 	   }
 	   else{
