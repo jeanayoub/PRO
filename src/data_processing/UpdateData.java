@@ -236,10 +236,6 @@ public class UpdateData {
 	private void checkLatestDataRealTime() throws SQLException {
 
 		
-		iconText = new Text(90, 300, "");
-		
-		iconText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-		
 		Data actualTemperature = Data.getLastData(
 				Sensor.TEMPERATURE);
 		Data actualHumidity    = Data.getLastData(
@@ -299,16 +295,14 @@ public class UpdateData {
 				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imRainLight);
-					iconText.setText("Pluie");
-					MainWindow.getRootGroup().getChildren().add(iconText);
+					
 				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
 				else{
 					MainWindow.updateImageView(imSnow);
-					iconText.setText("Neige");
-					MainWindow.getRootGroup().getChildren().add(iconText);
+					
 				}
 			}
 					
@@ -324,16 +318,14 @@ public class UpdateData {
 				if (Data.getLastData(Sensor.TEMPERATURE).getValue() >= 0){
 				if (actualTemperatureValue >= 0)
 					MainWindow.updateImageView(imNightRain);
-					iconText.setText("Pluie");
-					MainWindow.getRootGroup().getChildren().add(iconText);
+					
 				}
 				/**
 				 * Else it's snowing (below 0 degree)
 				 */
 				else{
 					MainWindow.updateImageView(imNightSnow);
-					iconText.setText("Neige");
-					MainWindow.getRootGroup().getChildren().add(iconText);
+					
 				}
 			}
 		}
@@ -351,8 +343,7 @@ public class UpdateData {
 				 * It's sunny / with few clouds
 				 */
 				MainWindow.updateImageView(imSunnyCloudy);
-				iconText.setText("Ensoleillé - Nuageux");
-				MainWindow.getRootGroup().getChildren().add(iconText);
+				
 			}
 			
 			/**
@@ -396,9 +387,7 @@ public class UpdateData {
 	private static final Duration DURATION_5		 = Duration.hours(2);
 	/**  */
 	private static final Duration DURATION_6		 = Duration.hours(4);
-	
-	private static Text   iconText;
-	
+		
 	private static boolean lostConnection = false;
 	
 	

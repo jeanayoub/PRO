@@ -6,7 +6,7 @@ public class Hours {
 	public static ArrayList<String> getHoursList(){
 		ArrayList<String> hoursList = new ArrayList<>();
 		final String extension = ":00:00";
-		 for (short i = 0; i < 25; i++){
+		 for (short i = 0; i < 24; i++){
      		 if (i < 10)
      		   hoursList.add( "0" +i + extension);
      		 else
