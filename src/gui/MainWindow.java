@@ -30,7 +30,6 @@ import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -72,6 +71,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -123,6 +123,7 @@ public void start(Stage primaryStage) throws IOException {
 	   primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     	 @Override
          public void handle(WindowEvent t) {
+    		System.exit(0);
             System.out.println("Closing...");
          }
       });
@@ -184,9 +185,7 @@ public void start(Stage primaryStage) throws IOException {
 
       
       final MenuItem miExit       = new MenuItem("Quitter");
-      final MenuItem miOneday     = new MenuItem("1 jour");
-      final MenuItem miTwoDays    = new MenuItem("2 jours");
-      final MenuItem miOneWeek    = new MenuItem("1 semaine");
+      final MenuItem miOneday     = new MenuItem("Demain");
       final MenuItem miConnection = new MenuItem("Connexion");
       final MenuItem miDisconnection = new MenuItem("Déconnexion");
       final MenuItem miDuration_1 = new MenuItem(String.valueOf(UpdateData.getDuration1Default().toMinutes()) + "min");
@@ -198,16 +197,20 @@ public void start(Stage primaryStage) throws IOException {
    
       menuStation.getItems().addAll(miConnection, miDisconnection, menuSaveAs, miExit);
       menuOptions.getItems().addAll(menuPrevision, menuDuration);
-      menuPrevision.getItems().addAll(miOneday, miTwoDays, miOneWeek);
+      menuPrevision.getItems().addAll(miOneday);
       menuDuration.getItems().addAll(miDuration_1, miDuration_2, miDuration_3, 
 									 miDuration_4, miDuration_5, miDuration_6);
 
  
-      menuBar.getMenus().addAll(menuStation, menuOptions, menuAbout, menuCalendar);
+      menuBar.getMenus().addAll(menuStation, menuOptions, menuCalendar , menuAbout);
       ((Group) scene.getRoot()).getChildren().addAll(menuBar);
       
       miDisconnection.setDisable(true);
       
+      // If the user is not connected he can not make a forecast
+      if(!isConnected){
+    	  miOneday.setDisable(true);
+      }
       
       
       
@@ -376,6 +379,67 @@ public void start(Stage primaryStage) throws IOException {
           }
        });
       
+      
+      
+      miOneday.setOnAction(new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+
+        	  //Label boxLabel = new Label("Hello");
+        	  Text forcastInfo = new Text();
+
+        	  StackPane forcastLayout = new StackPane();
+        	  forcastLayout.getChildren().add(forcastInfo);
+
+        	  Scene forcastScene = new Scene(forcastLayout, 500, 100);
+
+        	  Stage forcastStage = new Stage();
+        	  forcastStage.setTitle("Prévision de demain");
+        	  forcastStage.setScene(forcastScene);
+
+        	  Forcasting forcast = new Forcasting();
+        	  int PressureVariation = forcast.makeForcasting();
+
+        	  switch(PressureVariation){ 
+        	  
+        	  // No change of the weather
+        	  case 0:
+        		  forcastInfo.setFill(Color.CORNFLOWERBLUE);
+        		  forcastInfo.setFont(Font.font(null, FontWeight.EXTRA_BOLD, 20));
+        		  forcastInfo.setText("Demain il va faire le même temps qu'aujourd'hui");
+        		  break;
+        		  
+        	  //Good weather
+        	  case 1:
+        		  forcastInfo.setFill(Color.CORNFLOWERBLUE);
+        		  forcastInfo.setFont(Font.font(null, FontWeight.EXTRA_BOLD, 20));
+        		  forcastInfo.setText("Demain il va faire beau");
+        		  break;
+        		  
+              // bad weather
+        	  case 2:
+        		  forcastInfo.setFill(Color.RED);
+        		  forcastInfo.setFont(Font.font(null, FontWeight.EXTRA_BOLD, 20));
+        		  forcastInfo.setText("Demain il va faire mauvais temps");
+        		  break;
+        		  
+              // really bad weather
+        	  case 3:
+        		  forcastInfo.setFill(Color.RED);
+        		  forcastInfo.setFont(Font.font(null, FontWeight.BOLD, 20));
+        		  forcastInfo.setText("Demain il va faire très mauvais temps");
+        		  break;
+        	  }
+
+              
+              
+              
+              
+              
+              forcastStage.show();
+      	  
+          }
+       });
  
 
       /**
@@ -593,6 +657,8 @@ public void start(Stage primaryStage) throws IOException {
 				        		rootGroup.getChildren().add(textActiv);
 				        		
 				        		miDisconnection.setDisable(false);
+				        	    miOneday.setDisable(false);
+				        	   
 								
 								// Start updating
 								UpdateData updateData = new UpdateData();
@@ -759,6 +825,9 @@ public void start(Stage primaryStage) throws IOException {
     						  dialog.setTitle("Valeur récupérés au " + date);
     						  dialog.setScene(dialogScene);
     						  dialog.show();
+    						  
+    						  // Close the datePicker stage calendar
+    						  dateStage.close();
 
 
     						  saveButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -796,12 +865,15 @@ public void start(Stage primaryStage) throws IOException {
 
     					  }
     				  }
+    				  
     			  });
+    			  
 
     		  });
     		  
     		  dateStage.show();
     	  }
+    	  // End handle
       });
 
       
@@ -1018,10 +1090,7 @@ public void start(Stage primaryStage) throws IOException {
 	   updateImageView(null);
 	   updateLcdTemperature(0.);
 	   updatePressureGauge(0.);
-//	   lcsTemperature.getData().clear();
-//	   lcsHumidity.getData().clear();
-//	   lcsPressure.getData().clear();
-//	   lcsAirQuality.getData().clear();
+
 	   textAirQualityStatus.setText("");
 	   updatePbHumidity(0.);
    }

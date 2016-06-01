@@ -444,6 +444,40 @@ public class Data {
 		return null;
 	}
 	
+	public static double getOneHourBeforeValue(Sensor sensor){
+	    final String QUERY = "CALL capturedValueOneHourBefore('"+ sensor + "');";
+	    double value = 0;
+	    try{
+	      
+	      dbConn = new DBConnection(MainWindow.getConnectionForm());
+	      ResultSet result = dbConn.executeQuery(QUERY);
+	        if (result.next()){
+	          value = result.getDouble("value_");
+	        }
+	          }
+	      catch (SQLException se){
+	            System.out.println("An error occurated during the execution!");
+	            se.printStackTrace();
+	      }
+
+	       finally {
+	    
+	            if (dbConn != null)
+	              dbConn.close();
+	    
+	       }
+	         return value;
+	  }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/** Date and time of the data */
 	private 	   LocalDateTime dateAndTime;
