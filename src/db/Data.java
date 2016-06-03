@@ -361,9 +361,6 @@ public class Data {
 	
 			listData.add(new Data(year, month, day, hours, minutes, seconds, value));
 			
-		
-		
-		System.out.println("Sensor " + sensor + new Data(year, month, day, hours, minutes, seconds, value));
 		return listData;
 	}
 	

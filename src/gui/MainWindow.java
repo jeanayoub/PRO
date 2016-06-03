@@ -659,7 +659,6 @@ public class MainWindow extends Application {
 						System.out.println("Waiting to connect");
 						if (connectionForm.getFormStatus() && 
 											(MainWindow.getIsConnected()==false)) {
-							System.out.println("Apres waiting");
 							try{
 								testConnection = 
 								   new DBConnection(MainWindow.getConnectionForm());
@@ -772,7 +771,6 @@ public class MainWindow extends Application {
     			  /** Event handler when clicked on the search button */
     			  searchButton.setOnAction(new EventHandler<ActionEvent>() {
     				  public void handle(ActionEvent event) {
-    					  System.out.println("date rechercée " + date);
     					  if (!Data.checkDate(date)){
     						  Alert alert = new Alert(Alert.AlertType.ERROR);
     						  alert.setHeaderText(null);
@@ -1133,7 +1131,6 @@ public class MainWindow extends Application {
    public static void updateConnectivityIcon(String status){
 	/** Update the connectivity icon image. */
 	   if(status.equals("imActiv")){
-		   System.out.println("Dans imActiv");
 		   if(MainWindow.getRootGroup().getChildren().contains(textInactiv)){
 			   MainWindow.getRootGroup().getChildren().remove(imInactiv);
 			   MainWindow.getRootGroup().getChildren().remove(textInactiv);

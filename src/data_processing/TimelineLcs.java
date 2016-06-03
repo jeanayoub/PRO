@@ -43,7 +43,6 @@ public class TimelineLcs {
 						MainWindow.updateLcs(MainWindow.getLcsHumidity(), Data.getLastData(Sensor.HUMIDITY));
 						MainWindow.updateLcs(MainWindow.getLcsPressure(), Data.getLastData(Sensor.PRESSURE));
 						MainWindow.updateLcs(MainWindow.getLcsAirQuality(), Data.getLastData(Sensor.AIR_QUALITY));
-						System.out.println("LA DEDANS");
 					} catch (SQLException e) {
 						return;
 					}

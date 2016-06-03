@@ -42,8 +42,6 @@ public class Forcasting {
             
             /** get the pressure value an hour ago */
             pressureHourAgo = Data.getOneHourBeforeValue(Sensor.PRESSURE);
-            System.out.println("Presion Hour Ago = " + pressureHourAgo);
-            System.out.println("Presion Now = " + pressureNow);
             
         }
         catch(SQLException e)
@@ -65,7 +63,6 @@ public class Forcasting {
         double pressureDifference;
         pressureDifference = pressureHourAgo - pressureNow;
         
-        System.out.println("PresionDiffe = " + pressureDifference);
         /** Good weather */
         if(Double.compare(pressureDifference, -1.5) <= 0) 
         	//pressureDifference <= -1.5
@@ -77,7 +74,7 @@ public class Forcasting {
         											pressureDifference, 1.5) < 0)
         	/**pressureDifference > -1.5 && pressureDifference < 1.5 */
         {
-            value = 0;System.out.println("value = "+value);
+            value = 0;
         }
         /** bad weather */
         if(Double.compare(pressureDifference, 1.5) >= 0 && Double.compare(

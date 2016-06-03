@@ -111,7 +111,6 @@ public class LineChartStat extends LineChart<String, Number> {
 		
 		if (series.getData().size() != 0) {
 			if (data.getTime().length() == 8) {
-				System.out.println(data.getTime().substring(0,PRECISION_SEC) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
 				if(data.getTime().substring(0,PRECISION_SEC).equals(
 						series.getData().get(series.getData().size() - 1).getXValue())) {
 					return;
@@ -119,8 +118,6 @@ public class LineChartStat extends LineChart<String, Number> {
 			}
 			
 			else {
-				
-				System.out.println(data.getTime().substring(0,PRECISION_MIN) + "  ---  " + series.getData().get(series.getData().size() - 1).getXValue());
 				if(data.getTime().substring(0,PRECISION_MIN).equals(
 						series.getData().get(series.getData().size() - 1).getXValue())) {
 						return;
