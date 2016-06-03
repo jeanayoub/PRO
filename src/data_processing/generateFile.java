@@ -54,14 +54,6 @@ import javafx.scene.paint.Color;
 public class GenerateFile {
 
 	
-	/**
-	 * Constructor.
-	 * 
-	 */
-	public GenerateFile(){
-
-	}
-
 	
 	/**
 	 * This methods generate a PDF from the application's main dashboard.
@@ -170,7 +162,8 @@ public class GenerateFile {
 	
 
 	/**
-	 * This method generates a PNG file
+	 * This method generates a PNG file inspired by a hint on stackoverflow.
+	 * See sources links mentioned in our reports.
 	 *
 	 * @param node
 	 * @return the image
@@ -232,6 +225,5 @@ public class GenerateFile {
 
 		graphics.dispose();
 
-		System.out.println("your file created in : "+ System.getProperty("user.dir"));
 	}
 }
