@@ -1,12 +1,12 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : PRO
- Fichier     : DBConnection.java
- Auteur(s)   : Jean AYOUB
- Date        : 12 avr. 2016
- But         : 
- Remarque(s) :
- Compilateur : jdk 1.8.0_60
+ Project 	 : Projet PRO
+ File     	 : DBConnection.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 12.04.2016
+ Purpose     : Tools to establish a connection with the data base. 
+ remark(s)   : n/a
+ Compiler    : jdk 1.8.0_60
  -----------------------------------------------------------------------------------
  */
 
@@ -24,25 +24,17 @@ import java.sql.Statement;
 /**
  * Class.
  *
- * @author Jean AYOUB
- * @date 18 janv. 2016
+ * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ * @date 12.04.2016
  * @version 1.0
  */
 public class DBConnection {
 
-	/** NEED TO BE UPDATED */
-	//private static final String URL = "jdbc:mysql://limayankee.com:3306/pro_meteo?user=prometeo&password=sO_6qq11";
-	private static String URL;
-	
-	/**  */
-	private Connection connection;
-	/**  */
-	public  Statement  statement;
-
 
 	/**
-	 * Constructor.
+	 * Constructor that needs the connection form to establish a connection.
 	 * 
+	 * @param connectionForm
 	 * @throws SQLException
 	 */
 	public DBConnection (ConnectionForm connectionForm) throws SQLException{
@@ -57,12 +49,13 @@ public class DBConnection {
 		statement  = connection.createStatement();
 	}
 
+
 	
 	/**
-	 * 
+	 * This method execute an sql query and return the resultSet.
 	 *
 	 * @param sql
-	 * @return 
+	 * @return ResultSet
 	 * @throws SQLException
 	 */
 	public ResultSet executeQuery (String sql) throws SQLException {
@@ -71,10 +64,10 @@ public class DBConnection {
 
 	
 	/**
-	 * 
+	 * This method execute an sql wuery for an update.
 	 *
 	 * @param sql
-	 * @return
+	 * @return int
 	 * @throws SQLException
 	 */
 	public int executeUpdate (String sql) throws SQLException {
@@ -83,10 +76,10 @@ public class DBConnection {
 	
 
 	/**
-	 * 
+	 * Returns a prepared statement 
 	 *
 	 * @param sql
-	 * @return
+	 * @return PreparedStatement
 	 * @throws SQLException
 	 */
 	public PreparedStatement prepareStatement (String sql) throws SQLException {
@@ -95,10 +88,10 @@ public class DBConnection {
 	
 	
 	/**
-	 * 
+	 * Executes an sql query. 
 	 *
 	 * @param sql
-	 * @return
+	 * @return boolean
 	 * @throws SQLException
 	 */
 	public boolean execute (String sql) throws SQLException {
@@ -107,10 +100,10 @@ public class DBConnection {
 	
 	
 	/**
-	 * 
+	 * Prepares an sql call.
 	 *
 	 * @param sql
-	 * @return
+	 * @return CallableStatement
 	 * @throws SQLException
 	 */
 	public CallableStatement prepareCall (String sql) throws SQLException {
@@ -119,8 +112,7 @@ public class DBConnection {
 
 	
 	/**
-	 * 
-	 *
+	 * Closes the connection.
 	 */
 	public void close() {
 		
@@ -135,4 +127,12 @@ public class DBConnection {
 			e.printStackTrace();
 		}	
 	}
+	
+	
+	/** URL for the connection */
+	private static String URL;
+	/** The connection */
+	private Connection connection;
+	/** The statement */
+	public  Statement  statement;
 }

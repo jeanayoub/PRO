@@ -1,7 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ -----------------------------------------------------------------------------------
+ Project 	 : Projet PRO
+ File     	 : WeatherServer.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 24.05.2016
+ Purpose     : A server model for a client-server connection type. 
+ remark(s)   : In this application this model is not used.
+ Compiler    : jdk 1.8.0_60
+ -----------------------------------------------------------------------------------
  */
 
 package server_client;
@@ -15,27 +21,49 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
- * 
- * @author Pascal SEKLEY
+ * This class is a server model for a client-server connection type.
+ *
+ * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub
+ * @date 24.05.2016
+ * @version 1.0
  */
 public class weatherServer {
-   private final int port;
+	/** The connection port  */
+	private final int port;
    
    
+  /**
+   * Constructor.
+   * 
+   * @param port
+   */
    public weatherServer(int port){
       this.port = port;
    }
    
    
+   /**
+    * Responds for eah new client.
+    *
+    */
    public void serveClients(){
       System.out.println("Starting the Receptionist Worker on a new thread...");
       new Thread(new ReceptionistWorker()).start();
    }
    
+   /**
+    * Class.
+    *
+    * @author Jean AYOUB
+    * @date 3 juin 2016
+    * @version 1.0
+    */
    private class ReceptionistWorker implements Runnable {
 
-      @Override
+      @SuppressWarnings("resource")
+	@Override
       public void run() {
          ServerSocket serverSocket = null;
          
@@ -48,27 +76,45 @@ public class weatherServer {
          while(true){
             try {
                Socket clientSocket = serverSocket.accept();
-               System.out.println(" A new client has arrived. Starting a new thread for it");
+               System.out.println(" A new client has arrived. Starting a new thread"
+               															+ "for it");
                new Thread(new ServantWorker(clientSocket)).start();
             } catch (IOException ex) {
-               Logger.getLogger(weatherServer.class.getName()).log(Level.SEVERE, null, ex);
+               Logger.getLogger(weatherServer.class.getName()).log(Level.SEVERE, 
+            		   													null, ex);
             }
          }
       }
       
       
-      // Inner class that will take care of client once there are connected
-      // Here is where to serve clients according to the command.
+       
+      /**
+       * Inner class that will take care of client once there are connected.
+       * Here is where to serve clients according to the command.
+       *
+       * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayou
+       * @date 3 juin 2016
+       * @version 1.0
+       */
       private class ServantWorker implements Runnable {
          
-         Socket clientSocket;
-         BufferedReader in = null;
-         PrintWriter out = null;
+        /** The socket for the client */
+        Socket clientSocket;
+        /** A buffered Reader */
+        BufferedReader in = null;
+        /** A print writer */
+        PrintWriter out = null;
 
-         private ServantWorker(Socket clientSocket) {
+         /**
+         * Constructor.
+         * 
+         * @param clientSocket
+         */
+        private ServantWorker(Socket clientSocket) {
             try {
                this.clientSocket = clientSocket;
-               in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+               in = new BufferedReader(new InputStreamReader(clientSocket
+            		   											.getInputStream()));
                out = new PrintWriter(clientSocket.getOutputStream());
             } catch (IOException ex) {
                System.out.println("Error unable to initialize a servant worker");
@@ -119,14 +165,8 @@ public class weatherServer {
                   }
                }
                ex.getMessage();
-            }
-            
-            
+            }    
          }
-         
-      }
-      
+      }  
    }
-   
-
 }

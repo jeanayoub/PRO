@@ -1,14 +1,15 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : PRO
- Fichier     : Data.java
- Auteur(s)   : Jean AYOUB
- Date        : 12 avr. 2016
- But         : 
- Remarque(s) :
- Compilateur : jdk 1.8.0_60
+ Project 	 : Projet PRO
+ File     	 : Data.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 02.04.2016
+ Purpose     : This class defines the data type needed for this application. 
+ remark(s)   : n/a
+ Compiler    : jdk 1.8.0_60
  -----------------------------------------------------------------------------------
  */
+
 package db;
 
 import java.sql.Date;
@@ -24,17 +25,17 @@ import gui.MainWindow;
 
 
 /**
- * Class representing the data type.
+ * Class representing the data type which is a value at a precise date and time.
  *
- * @author Jean AYOUB
- * @date 8 avr. 2016
+ * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub
+ * @date 02.04.2016
  * @version 1.1
  */
 public class Data {
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor with the type LocalDateTime.
 	 * 
 	 * @param dateAndTime
 	 * @param value
@@ -47,7 +48,7 @@ public class Data {
 	
 
 	/**
-	 * Constructor.
+	 * Constructor with a time precision of minutes.
 	 * 
 	 * @param year
 	 * @param month
@@ -65,7 +66,7 @@ public class Data {
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor with a time precision of seconds.
 	 * 
 	 * @param year
 	 * @param month
@@ -77,13 +78,14 @@ public class Data {
 	 */
 	public Data (int year, int month, int dayOfMonth, 
 					int hour, int minute, int second, double value) {
-		this(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second), value);
+		this(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second), 
+																			value);
 	}
 	
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor with a time precision of nano-seconds.
 	 * 
 	 * @param year
 	 * @param month
@@ -96,15 +98,16 @@ public class Data {
 	 */
 	public Data (int year, int month, int dayOfMonth, 
 			int hour, int minute, int second, int nanoOfSecond, double value) {
-		this(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond), value);
-}
+		this(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, 
+															nanoOfSecond), value);
+	}
 	
 	
 	
 	/**
 	 * Returns the DateTime attribut.
 	 *
-	 * @return date and time
+	 * @return LocalDateTime
 	 */
 	public LocalDateTime getDateTime() {
 		return this.dateAndTime;
@@ -114,7 +117,7 @@ public class Data {
 	/**
 	 * Returns the value attribut. 
 	 *
-	 * @return numerical value
+	 * @return double
 	 */
 	public double getValue() {
 		return this.value;
@@ -151,29 +154,55 @@ public class Data {
 		return dateAndTime.toString() + ", " + value;
 	}
 	
+	
+	/**
+	 * Return the Connection.
+	 *
+	 * @return dbConn
+	 */
 	public static DBConnection getdbConnection(){
 		return dbConn;
 	}
 	
 	
 	
+	/**
+	 * This enum represents the different sensors
+	 */
 	public enum Sensor {
 		
+		/**  */
 		TEMPERATURE("temperatureSensor"),
+		/**  */
 		HUMIDITY("humiditySensor"),
+		/**  */
 		PRESSURE("pressureSensor"),
+		/**  */
 		RADIANCY("radiancySensor"),
+		/**  */
 		RAIN("rainSensor"),
+		/**  */
 		AIR_QUALITY("airQualitySensor");
 		
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param id
+		 */
 		private Sensor (String id) {
 			this.id = id;
 		}
 		
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 */
 		public String toString() {
 			return this.id;
 		}
 		
+		/** The name of the sensor is the sensor's id */
 		private final String id; 
 	}
 	
@@ -181,10 +210,11 @@ public class Data {
 	
 	
 	/**
-	 * 
+	 * This method returns the last data for a given Sensor
 	 *
 	 * @param sensor
-	 * @return the last data in the db for the selected sensorID.
+	 * @return Data
+	 * @throws SQLException
 	 */
 	public static Data getLastData(Sensor sensor) throws SQLException  {
 		final String QUERY   = "CALL lastCapturedValue('" + sensor + "');"; 
@@ -218,6 +248,9 @@ public class Data {
 				dbConn.close();
 			}
 				
+				/**
+				 * Parsing the Data 
+				 */
 				String tempString = date.toString();
 				year              = Integer.parseInt(tempString.substring(0, 4));
 				if (Integer.parseInt(tempString.substring(5,6)) == 1)
@@ -250,14 +283,17 @@ public class Data {
 				else
 					seconds = Integer.parseInt(tempString.substring(6, 8));	
 			
-			
-		
-		
-		System.out.println("Sensor " + sensor 
-					  + new Data(year, month, day, hours, minutes, seconds, value));
 		return new Data(year, month, day, hours, minutes, seconds, value);
 	}
 	
+	
+	/**
+	 * Return an array liste of the data for a specific day.
+	 *
+	 * @param sensor
+	 * @param searchDate
+	 * @return arrayList<Data>
+	 */
 	public static ArrayList<Data> getValueInDay(Sensor sensor, LocalDate searchDate) {
 		final String QUERY   = "CALL capturedValueInDay('" + sensor + "','" + searchDate + "');"; 
 		Double 		 value   = 0.;
@@ -291,8 +327,6 @@ public class Data {
 				dbConn.close();
 		}
 				
-				// TEST DB !!!!!
-				//cvalue + " : " + date + ":" + time);
 				String tempString = date.toString();
 				year              = Integer.parseInt(tempString.substring(0, 4));
 				if (Integer.parseInt(tempString.substring(5,6)) == 1)
@@ -324,7 +358,7 @@ public class Data {
 					seconds = Integer.parseInt(tempString.substring(7, 8));
 				else
 					seconds = Integer.parseInt(tempString.substring(6, 8));	
-			//}
+	
 			listData.add(new Data(year, month, day, hours, minutes, seconds, value));
 			
 		
@@ -333,6 +367,13 @@ public class Data {
 		return listData;
 	}
 	
+	
+	/**
+	 * Returns true if the date is available, else false.
+	 *
+	 * @param searchDate
+	 * @return boolean
+	 */
 	public static boolean checkDate(LocalDate searchDate){
 		if (searchDate == null)
 			return false;
@@ -359,6 +400,17 @@ public class Data {
 		 return dateFound;				
 	}
 	
+	
+	
+	/**
+	 * Return the average value for a specific period.
+	 *
+	 * @param sensor
+	 * @param searchDate
+	 * @param beginTime
+	 * @param endTime
+	 * @return Data
+	 */
 	public static Data averageValue(Sensor sensor, 
 									  LocalDate searchDate, 
 									  Time beginTime, 
@@ -367,7 +419,7 @@ public class Data {
 									                           + searchDate + "','" 
 				                                               + beginTime + "','" 
 									                           + endTime + "');"; 
-	    double averageValue = 0.;
+	    double averageValue  = 0.;
 		int    		 year    = 0, 
 					 month   = 0, 
 					 day	 = 0, 
@@ -444,6 +496,14 @@ public class Data {
 		return null;
 	}
 	
+	
+	
+	/**
+	 * Returns the value of a sensor one hour ago. 
+	 *
+	 * @param sensor
+	 * @return the value
+	 */
 	public static double getOneHourBeforeValue(Sensor sensor){
 	    final String QUERY = "CALL capturedValueOneHourBefore('"+ sensor + "');";
 	    double value = 0;
@@ -470,19 +530,11 @@ public class Data {
 	  }
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	/** Date and time of the data */
 	private 	   LocalDateTime dateAndTime;
 	/** Value of the data */
 	private 	   double 		 value;
-	/**  */
+	/** The connection */
 	private static DBConnection  dbConn;
 }

@@ -1,5 +1,13 @@
 /*
- * Pascal
+ -----------------------------------------------------------------------------------
+ Project 	 : Projet PRO
+ File     	 : WeatherClient.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 24.05.2016
+ Purpose     : A client model for a client-server connection type. 
+ remark(s)   : In this application this model is not used.
+ Compiler    : jdk 1.8.0_60
+ -----------------------------------------------------------------------------------
  */
 
 package server_client;
@@ -11,32 +19,44 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import utils.readConfiguration;
 
+
 /**
- * 
- * @author Pascal SEKLEY
+ * This class is a client model for a client-server connection type. 
+ *
+ * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ * @date 25.05.2016
+ * @version 1.0
  */
 public class weatherClient {
    
-   public void start(){
+   /**
+    * To stard the connection
+ 	*
+ 	*/
+	public void start() {
       Socket clientSocket = null;
       BufferedReader reader;
-      BufferedWriter writer;
+      @SuppressWarnings("unused")
+	BufferedWriter writer;
       
       readConfiguration readConf = new readConfiguration();
       
       
       try{
-         clientSocket = new Socket(readConf.getServerAddress(), readConf.getServerPort());
-         reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-         writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+         clientSocket = new Socket(readConf.getServerAddress(), 
+        		 										readConf.getServerPort());
+         reader = new BufferedReader(new InputStreamReader(
+        		 									clientSocket.getInputStream()));
+         writer = new BufferedWriter(new OutputStreamWriter(
+        		 								clientSocket.getOutputStream()));
          
-         // We wait il the stream is ready to be used
+         /** We wait il the stream is ready to be used */
          while(!reader.ready()){}
          
-         // Do something while we did not get the end command.
+         /** Do something while we did not get the end command */
          do{
             
-            /* FILL HERE WITH WHAT WE WANT TO GET FROM THE SERVER */
+            /** FILL HERE WITH WHAT WE WANT TO GET FROM THE SERVER */
             
          } while(!clientSocket.isClosed());
  

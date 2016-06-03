@@ -1,7 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ -----------------------------------------------------------------------------------
+ Project 	 : Projet PRO
+ File     	 : GenerateFile.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 10.05.2016
+ Purpose     : Generate a file to be saved in JPEG or PDF. 
+ remark(s)   : n/a
+ Compiler    : jdk 1.8.0_60
+ -----------------------------------------------------------------------------------
  */
 
 package data_processing;
@@ -37,23 +43,31 @@ import javafx.scene.paint.Color;
 
 
 
-/**
- * 
- * @author Pascal SEKLEY
- */
-public class generateFile {
 
+/**
+ * Class that offers methods to generate a file from the application's main view.
+ *
+ * @author R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub
+ * @date 10.05.2016
+ * @version 1.1
+ */
+public class GenerateFile {
+
+	
 	/**
 	 * Constructor.
 	 * 
 	 */
-	public generateFile(){
+	public GenerateFile(){
 
 	}
 
+	
 	/**
-	 * 
+	 * This methods generate a PDF from the application's main dashboard.
 	 *
+	 * @param tabPaneStat
+	 * @param pdfFilePathname
 	 * @throws IOException
 	 */
 	public void toPDF(TabPane tabPaneStat, String pdfFilePathname) throws IOException{
@@ -62,8 +76,8 @@ public class generateFile {
 		 * Position of the header into the file to be generated
 		 */
 		float xPos = 100;
-		final float xPosDefault = xPos;
 		float yPos = 610;
+		final float xPosDefault = xPos;
 		final float yPosDefault = yPos;
 		final String heigLogoPath = "meteoImages/HEIG-VD_Logo.png";
 
@@ -73,13 +87,12 @@ public class generateFile {
 			 */
 			PDPageContentStream contentStream_1 = null;
 			PDPageContentStream contentStream_2 = null;
-			BufferedImage buffImage = null;
-			PDXObjectImage ximage = null;
-			BufferedImage  xHeigLogoImage = null;
-			PDXObjectImage ximageLogoHeig = null;
+			BufferedImage 		buffImage 		= null;
+			PDXObjectImage	 	ximage 			= null;
+			BufferedImage  		xHeigLogoImage  = null;
+			PDXObjectImage 		ximageLogoHeig  = null;
 			
 			try (PDDocument document = new PDDocument()) {
-				
 				PDPage page_1 = new PDPage();
 				PDPage page_2 = new PDPage();
 				document.addPage(page_1);
@@ -89,13 +102,18 @@ public class generateFile {
 				 * We get the first page and write the header
 				 */
 				page_1 = (PDPage)document.getDocumentCatalog().getAllPages().get(0);
-				contentStream_1 = new PDPageContentStream(document, page_1, true, true);
-				contentStream_2 = new PDPageContentStream(document, page_2, true, true);
+				contentStream_1 = new PDPageContentStream(document, page_1, true, 
+																			true);
+				contentStream_2 = new PDPageContentStream(document, page_2, true, 
+																			true);
 				
-				// Read the image and then draw it in the file at a specific position mentioned
+				/** Read the image and then draw it in the file at a specific 
+				 * position mentioned
+				 */
 				xHeigLogoImage = ImageIO.read(ResourceLoader.load(heigLogoPath));
 				ximageLogoHeig = new PDPixelMap(document, xHeigLogoImage);
-				contentStream_1.drawXObject(ximageLogoHeig, 80, 700, ximageLogoHeig.getWidth()-130, ximageLogoHeig.getHeight()-50);
+				contentStream_1.drawXObject(ximageLogoHeig, 80, 700, ximageLogoHeig
+									.getWidth()-130, ximageLogoHeig.getHeight()-50);
 
 				// Beginning of writing text and settings of the font
 				contentStream_1.beginText();
@@ -119,46 +137,50 @@ public class generateFile {
 				contentStream_1.endText();
 
 				/**
-				 * We get the second page of the document in which we are going to draw images from statistics
-				 * especially graphs
+				 * We get the second page of the document in which we are going to 
+				 * draw images from statistics especially graphs
 				 */
 				page_2 = (PDPage)document.getDocumentCatalog().getAllPages().get(1);
 				for(int i = 0; i < tabPaneStat.getTabs().size(); i++){
-					buffImage = generate_png_from_container(tabPaneStat.getTabs().get(i).getContent());
+					buffImage = generate_png_from_container(tabPaneStat.getTabs()
+															 		.get(i)
+															 		.getContent());
 					ximage = new PDJpeg(document, buffImage, 1.0f);
 
 					contentStream_2.drawXObject(ximage, xPos, yPos, ximage.getWidth()-70, ximage.getHeight()-110);
 					yPos -= 200;
 				}
-				// We close the stream after writing into it
+				/** We close the stream after writing into it */
 				contentStream_1.close();
 				contentStream_2.close();
 
-				// We sent to the default value for further treatments
+				/** We sent to the default value for further treatments */
 				xPos = xPosDefault;
 				yPos = yPosDefault;
 
-				// Save the file uder the name specified by the user
+				/** Save the file under the name specified by the user */
 				document.save(pdfFilePathname);
-
 			}
 
 		} catch (COSVisitorException ex) {
-			Logger.getLogger(generateFile.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GenerateFile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	
-	/*
-	 * 
-	 */
 
+	/**
+	 * This method generates a PNG file
+	 *
+	 * @param node
+	 * @return the image
+	 */
 	public static BufferedImage generate_png_from_container(Node node) {
 		SnapshotParameters param = new SnapshotParameters();
 		param.setDepthBuffer(true);
 		WritableImage snapshot = node.snapshot(param, null);
-		BufferedImage tempImg = SwingFXUtils.fromFXImage(snapshot, null);
-		BufferedImage img = null;
+		BufferedImage tempImg  = SwingFXUtils.fromFXImage(snapshot, null);
+		BufferedImage img      = null;
 		byte[] imageInByte;
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -169,22 +191,22 @@ public class generateFile {
 			InputStream in = new ByteArrayInputStream(imageInByte);
 			img = ImageIO.read(in);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//the final image sent to the PDJpeg
+		/** the final image sent to the PDJpeg */
 		return img;
 	}
+	
 
 	/**
-	 * 
+	 * This methods generate a JPEG from the application's main dashboard.
 	 *
 	 * @param node
+	 * @param jpegfilename
 	 */
 	public void toJpeg(Node node, String jpegfilename){
-		//String fileName = "Courbe_Meteo.jpg";
+		
 		WritableImage wi;
-
 		SnapshotParameters parameters = new SnapshotParameters();
 		parameters.setFill(Color.HONEYDEW);
 
@@ -211,9 +233,5 @@ public class generateFile {
 		graphics.dispose();
 
 		System.out.println("your file created in : "+ System.getProperty("user.dir"));
-
 	}
-
-
-
 }

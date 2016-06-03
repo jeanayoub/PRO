@@ -1,12 +1,13 @@
 /*
  -----------------------------------------------------------------------------------
- Laboratoire : PRO
- Fichier     : LineChartStat.java
- Auteur(s)   : Jean AYOUB
- Date        : 6 avr. 2016
- But         : 
- Remarque(s) :
- Compilateur : jdk 1.8.0_60
+ Project 	 : Projet PRO
+ File     	 : LineChartStat.java
+ Author(s)   : R. Combremont, M. Dupraz, I. Ounon, P. Sekley, J. Ayoub 
+ Date        : 06.0.2016
+ Purpose     : Modelize a specific line chart that responds to the application's 
+ 			   needs. 
+ remark(s)   : n/a
+ Compiler    : jdk 1.8.0_60
  -----------------------------------------------------------------------------------
  */
 package gui;
@@ -16,10 +17,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Objects;
-
 
 
 /**
@@ -34,7 +32,7 @@ public class LineChartStat extends LineChart<String, Number> {
         
 	
 	/**
-	 * Constructor.
+	 * Constructor with initial data.
 	 * 
 	 * @param title
 	 * @param seriesName
@@ -78,7 +76,7 @@ public class LineChartStat extends LineChart<String, Number> {
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor without initial data.
 	 * 
 	 * @param title
 	 * @param seriesName
@@ -152,26 +150,29 @@ public class LineChartStat extends LineChart<String, Number> {
 	
 	
 
+	/**
+	 * Refresh the chart view.
+	 *
+	 */
 	public void refreshChart () {
 		this.updateAxisRange();
 	}
 	
 	
 	
-    /**  */
+    /** The chart series */
     private XYChart.Series<String, Number> series = new Series<String, Number>();
-    /**  */
+    /** The max number of data on the chart at the same time */
     private final  int    MAX_SHOWING 	= 12;
-    
-    //private static LocalDate lastDate = LocalDate.of(1000, 1, 1);
+    /** The latest date possible to be shown */
     private static String lastDate 		= "1000-01-01"; 
-    /**  */
+    /** The date of the last update */
     private static String date 			= "";
-    /**  */
+    /** the chart title */
     private 	   String title;
-    /**  */
+    /** The minute precision for the time axis */
     private final  int    PRECISION_MIN = 5;
-    /**  */
+    /**  The second precision for the time axis */
     private final  int 	  PRECISION_SEC = 8;
    
     
